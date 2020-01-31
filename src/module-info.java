@@ -16,5 +16,8 @@ module phyloedit {
     exports phyloedit.actions;
 
     opens phyloedit.window;
+    opens phyloedit.resources.icons;
+    opens phyloedit.resources.images;
+
 
 }

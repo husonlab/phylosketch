@@ -92,7 +92,7 @@
     </target>
 
     <target name="run" depends="jar">
-        <java classname="phyloedit.main.Dingo" fork="true"
+        <java classname="phyloedit.main.PhyloEdit" fork="true"
               modulepathref="run.modulepath">
             <jvmarg value="-Xshare:off"/>
             <jvmarg value="-Dapple.laf.useScreenMenuBar=true"/>

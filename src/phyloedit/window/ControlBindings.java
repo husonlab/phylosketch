@@ -55,6 +55,7 @@ import jloda.fx.util.BasicFX;
 import jloda.fx.util.Print;
 import jloda.fx.util.RecentFilesManager;
 import jloda.fx.window.MainWindowManager;
+import jloda.fx.window.SplashScreen;
 import jloda.fx.window.WindowGeometry;
 import jloda.graph.Edge;
 import jloda.graph.Node;
@@ -66,6 +67,7 @@ import splitstree5.gui.utils.RubberBandSelection;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.time.Duration;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.stream.Stream;
@@ -277,6 +279,8 @@ public class ControlBindings {
 
         RecentFilesManager.getInstance().setFileOpener(FileOpenManager.getFileOpener());
         RecentFilesManager.getInstance().setupMenu(controller.getRecentMenu());
+
+        controller.getAboutMenuItem().setOnAction((e) -> SplashScreen.showSplash(Duration.ofMinutes(2)));
 
         setupSelect(editor, controller);
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="8.0.4" transformSequenceNumber="8">
   <directoryPresets config="../../../../catylnet.pfx" />
-  <application name="Dingo" applicationId="3801-6361-6203-7564" mediaDir="../../../builds" shortName="Dingo" publisher="Daniel Huson and Mike Steel" publisherWeb="http://www.husonlab.org/dingo" version="0.0.0" allPathsRelative="true" macVolumeId="b8c0a1154e563a9a" javaMinVersion="11">
+  <application name="PhyloEdit" applicationId="3801-6361-6203-7564" mediaDir="../../../builds" shortName="PhyloEdit" publisher="Daniel Huson and Mike Steel" publisherWeb="http://www.husonlab.org/phyloedit" version="0.0.0" allPathsRelative="true" macVolumeId="b8c0a1154e563a9a" javaMinVersion="11">
     <codeSigning macEnabled="true" macPkcs12File="../../../../etc/application.p12" windowsEnabled="true" windowsPkcs12File="../../../../etc/windows.pfx" macNotarize="true" appleId="daniel@huson.de" />
     <jreBundles jdkProviderId="AdoptOpenJDK" release="openjdk12/jdk-12.0.2+10_openj9-0.15.1" />
   </application>
@@ -43,14 +43,14 @@
       <fileEntry mountPoint="675425072" file="./License.txt" overrideFileMode="true" overrideOverwriteMode="true" overrideUninstallMode="true" />
     </entries>
     <components>
-      <component name="Dingo" id="1691242194" changeable="false">
-        <description>Dingo program.</description>
+      <component name="PhyloEdit" id="1691242194" changeable="false">
+        <description>PhyloEdit program.</description>
         <include>
           <entry location="jars" />
           <entry location="jars2" />
           <entry location="openjfx" />
           <entry location="License.txt" />
-          <entry location="Dingo" fileType="launcher" />
+          <entry location="PhyloEdit" fileType="launcher" />
         </include>
       </component>
       <component name="Examples" id="1691242192">
@@ -62,11 +62,11 @@
     </components>
   </files>
   <launchers>
-    <launcher name="CatylNet" id="1691242142" menuName="Dingo">
-      <executable name="Dingo" iconSet="true" executableMode="gui" changeWorkingDirectory="false" singleInstance="true" dpiAware="false">
-        <versionInfo include="true" fileDescription="Dingo auto-catalytic networks program" legalCopyright="Copyright (C)  2019 ${compiler:sys.publisher}" internalName="Dingo" />
+    <launcher name="CatylNet" id="1691242142" menuName="PhyloEdit">
+      <executable name="PhyloEdit" iconSet="true" executableMode="gui" changeWorkingDirectory="false" singleInstance="true" dpiAware="false">
+        <versionInfo include="true" fileDescription="PhyloEdit auto-catalytic networks program" legalCopyright="Copyright (C)  2019 ${compiler:sys.publisher}" internalName="PhyloEdit" />
       </executable>
-      <java mainClass="phyloedit/phyloedit.main.Dingo" mainMode="module" vmParameters="-server -Duser.language=en -Duser.region=US --add-modules=phyloedit">
+      <java mainClass="phyloedit/phyloedit.main.PhyloEdit" mainMode="module" vmParameters="-server -Duser.language=en -Duser.region=US --add-modules=phyloedit">
         <modulePath>
           <directory location="jars" failOnError="false" />
           <directory location="openjfx/${compiler:sys.platform}/lib" failOnError="false" />
@@ -75,14 +75,15 @@
       </java>
       <macStaticAssociationActions mode="selected" />
       <iconImageFiles>
-        <file path="../src/phyloedit/resources/icons/Dingo-16.png" />
-        <file path="../src/phyloedit/resources/icons/Dingo-64.png" />
-        <file path="../src/phyloedit/resources/icons/Dingo-32.png" />
-        <file path="../src/phyloedit/resources/icons/Dingo-128.png" />
+        <file path="../src/phyloedit/resources/icons/PhyloEdit-16.png" />
+        <file path="../src/phyloedit/resources/icons/PhyloEdit-32.png" />
+        <file path="../src/phyloedit/resources/icons/PhyloEdit-48.png" />
+        <file path="../src/phyloedit/resources/icons/PhyloEdit-64.png" />
+        <file path="../src/phyloedit/resources/icons/PhyloEdit-128.png" />
       </iconImageFiles>
     </launcher>
   </launchers>
-  <installerGui autoUpdateDescriptorUrl="http://software-ab.informatik.uni-tuebingen.de/download/dingo/updates.xml">
+  <installerGui autoUpdateDescriptorUrl="http://software-ab.informatik.uni-tuebingen.de/download/phyloedit/updates.xml">
     <applications>
       <application id="installer" beanClass="com.install4j.runtime.beans.applications.InstallerApplication" launchInNewProcess="false">
         <serializedBean>
@@ -262,7 +263,7 @@ return console.askOkCancel(message, true);
           <screen id="1691242246" beanClass="com.install4j.runtime.beans.screens.FormScreen">
             <serializedBean>
               <property name="subTitle" type="string">Check for updates how often?</property>
-              <property name="title" type="string">Dingo Updater</property>
+              <property name="title" type="string">PhyloEdit Updater</property>
             </serializedBean>
             <formComponents>
               <formComponent id="1691242248" beanClass="com.install4j.runtime.beans.formcomponents.UpdateScheduleSelectorComponent" />
@@ -271,7 +272,7 @@ return console.askOkCancel(message, true);
           <screen id="1691242249" beanClass="com.install4j.runtime.beans.screens.FormScreen">
             <serializedBean>
               <property name="subTitle" type="string">Set maximum allowed memory usage for CatylNet</property>
-              <property name="title" type="string">Set Dingo memory</property>
+              <property name="title" type="string">Set PhyloEdit memory</property>
             </serializedBean>
             <condition>	!context.getMediaName().toLowerCase().contains("windows") || context.getMediaName().toLowerCase().contains("x64") || context.getMediaName().toLowerCase().contains("64bits") </condition>
             <actions>
@@ -288,7 +289,7 @@ return console.askOkCancel(message, true);
             <formComponents>
               <formComponent id="1691242250" beanClass="com.install4j.runtime.beans.formcomponents.NumberSpinnerComponent">
                 <serializedBean>
-                  <property name="helpText" type="string">Set maximum amount of memory that Dingo may use.</property>
+                  <property name="helpText" type="string">Set maximum amount of memory that PhyloEdit may use.</property>
                   <property name="initialValue" type="int" value="2" />
                   <property name="labelText" type="string">Set max memory usage (in gigabytes)</property>
                   <property name="maxValue" type="int" value="512" />
@@ -1096,7 +1097,7 @@ return true;</property>
         <variable name="jfxlib" value="openjfx/linux/lib" />
       </variables>
     </unixInstaller>
-    <macosFolder name="Mac OS X Folder" id="1691242165" installDir="Dingo" overridePrincipalLanguage="true" compressDmg="true" signLaunchers="true">
+    <macosFolder name="Mac OS X Folder" id="1691242165" installDir="PhyloEdit" overridePrincipalLanguage="true" compressDmg="true" signLaunchers="true">
       <exclude>
         <entry location="openjfx/unix" />
         <entry location="openjfx/windows-x64" />
@@ -1110,7 +1111,7 @@ return true;</property>
         </modules>
       </jreBundle>
     </macosFolder>
-    <windows name="Windows64bit" id="1691242288" installDir="Dingo" overridePrincipalLanguage="true">
+    <windows name="Windows64bit" id="1691242288" installDir="PhyloEdit" overridePrincipalLanguage="true">
       <overriddenPrincipalLanguage id="409" />
       <exclude>
         <entry location="tools" />
