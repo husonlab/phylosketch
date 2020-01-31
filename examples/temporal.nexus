@@ -1,0 +1,47 @@
+#nexus [SplitsTree5 compatible]
+
+
+BEGIN TAXA;
+DIMENSIONS ntax=5;
+TAXLABELS
+	[1] 'A'
+	[2] 'B'
+	[3] 'C'
+	[4] 'D'
+	[5] 'E'
+;
+END; [TAXA]
+
+BEGIN NETWORK;
+DIMENSIONS nNodes=12 nEdges=13;
+	TYPE=Other;
+NODES
+	id=1 x='424.93' y='107.42',
+	id=2 x='374.43' y='209.47',
+	id=3 label='A' x='287.30' y='401.71',
+	id=4 x='427.99' y='351.76',
+	id=5 label='B' x='427.99' y='441.28',
+	id=6 x='522.98' y='321.61',
+	id=7 x='508.69' y='176.49',
+	id=8 x='576.54' y='282.03',
+	id=9 label='E' x='645.10' y='508.19',
+	id=10 label='D' x='531.55' y='470.49',
+	id=11 x='477.27' y='360.24',
+	id=12 label='C' x='480.13' y='443.17'
+;
+EDGES
+	id=1 sid=1 tid=2 c2x='389.58' c1y='138.04' c1x='409.78' c2y='178.86' type='cubic',
+	id=2 sid=2 tid=3 c2x='313.44' c1y='267.14' c1x='348.29' c2y='344.04' type='cubic',
+	id=3 sid=1 tid=4 c2x='427.07' c1y='180.73' c1x='425.85' c2y='278.46' type='cubic',
+	id=4 sid=4 tid=5 c2x='427.99' c1y='378.62' c1x='427.99' c2y='414.43' type='cubic',
+	id=5 sid=2 tid=6 c2x='478.41' c1y='243.11' c1x='418.99' c2y='287.97' type='cubic',
+	id=6 sid=1 tid=7 c2x='483.56' c1y='128.14' c1x='450.06' c2y='155.77' type='cubic',
+	id=7 sid=7 tid=8 c2x='556.18' c1y='208.15' c1x='529.05' c2y='250.37' type='cubic',
+	id=8 sid=8 tid=9 c2x='624.53' c1y='349.88' c1x='597.11' c2y='440.34' type='cubic',
+	id=9 sid=8 tid=6 c2x='539.04' c1y='293.90' c1x='560.47' c2y='309.73' type='cubic',
+	id=10 sid=6 tid=10 c2x='528.98' c1y='366.27' c1x='525.55' c2y='425.83' type='cubic',
+	id=11 sid=7 tid=11 c2x='486.70' c1y='231.62' c1x='499.27' c2y='305.12' type='cubic',
+	id=12 sid=4 tid=11 c2x='462.49' c1y='354.31' c1x='442.78' c2y='357.70' type='cubic',
+	id=13 sid=11 tid=12 c2x='479.27' c1y='385.12' c1x='478.13' c2y='418.29' type='cubic'
+;
+END; [NETWORK]
