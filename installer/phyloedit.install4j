@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="8.0.4" transformSequenceNumber="8">
-  <directoryPresets config="../../../../catylnet.pfx" />
-  <application name="PhyloEdit" applicationId="3801-6361-6203-7564" mediaDir="../../../builds" shortName="PhyloEdit" publisher="Daniel Huson and Mike Steel" publisherWeb="http://www.husonlab.org/phyloedit" version="0.0.0" allPathsRelative="true" macVolumeId="b8c0a1154e563a9a" javaMinVersion="11">
+  <directoryPresets config="../../../../phlyoedit.pfx" />
+  <application name="PhyloEdit" applicationId="6936-1140-5584-9278" mediaDir="../../../builds" shortName="PhyloEdit" publisher="Daniel Huson and Mike Steel" publisherWeb="http://www.husonlab.org/phyloedit" version="0.0.0" allPathsRelative="true" macVolumeId="b8c0a1154e563a9a" javaMinVersion="11">
     <codeSigning macEnabled="true" macPkcs12File="../../../../etc/application.p12" windowsEnabled="true" windowsPkcs12File="../../../../etc/windows.pfx" macNotarize="true" appleId="daniel@huson.de" />
     <jreBundles jdkProviderId="AdoptOpenJDK" release="openjdk12/jdk-12.0.2+10_openj9-0.15.1" />
   </application>
@@ -26,7 +26,9 @@
       <fileEntry mountPoint="1691242167" file="../antbuild/splitstree5.jar" />
       <dirEntry mountPoint="1691242167" file="../../splitstree5/jars" subDirectory="jars">
         <exclude>
-          <entry location=".DS_Store" />
+          <entry location="i4jruntime.jar" />
+          <entry location="fx-platform-utils.jar" />
+          <entry location="fx-platform-utils-license.txt" />
         </exclude>
       </dirEntry>
       <fileEntry mountPoint="1691242167" file="../antbuild/jloda.jar" />
@@ -62,9 +64,9 @@
     </components>
   </files>
   <launchers>
-    <launcher name="CatylNet" id="1691242142" menuName="PhyloEdit">
+    <launcher name="PhlyoEdit" id="1691242142" menuName="PhyloEdit">
       <executable name="PhyloEdit" iconSet="true" executableMode="gui" changeWorkingDirectory="false" singleInstance="true" dpiAware="false">
-        <versionInfo include="true" fileDescription="PhyloEdit auto-catalytic networks program" legalCopyright="Copyright (C)  2019 ${compiler:sys.publisher}" internalName="PhyloEdit" />
+        <versionInfo include="true" fileDescription="PhyloEdit phylogenetic network editor" legalCopyright="Copyright (C)  2020 ${compiler:sys.publisher}" internalName="PhyloEdit" />
       </executable>
       <java mainClass="phyloedit/phyloedit.main.PhyloEdit" mainMode="module" vmParameters="-server -Duser.language=en -Duser.region=US --add-modules=phyloedit">
         <modulePath>
@@ -271,7 +273,7 @@ return console.askOkCancel(message, true);
           </screen>
           <screen id="1691242249" beanClass="com.install4j.runtime.beans.screens.FormScreen">
             <serializedBean>
-              <property name="subTitle" type="string">Set maximum allowed memory usage for CatylNet</property>
+              <property name="subTitle" type="string">Set maximum allowed memory usage for PhyloNet</property>
               <property name="title" type="string">Set PhyloEdit memory</property>
             </serializedBean>
             <condition>	!context.getMediaName().toLowerCase().contains("windows") || context.getMediaName().toLowerCase().contains("x64") || context.getMediaName().toLowerCase().contains("64bits") </condition>
@@ -1129,6 +1131,7 @@ return true;</property>
     </windows>
   </mediaSets>
   <buildIds buildAll="false">
-    <mediaSet refId="1691242146" />
+    <mediaSet refId="1691242165" />
   </buildIds>
+  <buildOptions disableNotarization="true" />
 </install4j>

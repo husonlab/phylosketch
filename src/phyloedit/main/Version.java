@@ -21,7 +21,7 @@ package phyloedit.main;
 
 public class Version {
     static public final String NAME = "PhyloEdit";
-    static public final String SHORT_DESCRIPTION = "PhyloEdit (version 0.0.1-alpha, built 31 Jan 2020)";
+    static public final String SHORT_DESCRIPTION = "PhyloEdit (version 0.0.1_alpha, built 1 Feb 2020)";
     static public final String VERSION = "0.0.1-alpha";
 
 }
