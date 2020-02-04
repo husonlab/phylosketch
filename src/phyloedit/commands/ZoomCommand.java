@@ -1,4 +1,24 @@
 /*
+ * ZoomCommand.java Copyright (C) 2020 Daniel H. Huson
+ *
+ *  (Some files contain contributions from other authors, who are then mentioned separately.)
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+/*
  *  ZoomCommand.java Copyright (C) 2020 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
@@ -17,18 +37,18 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package phyloedit.actions;
+package phyloedit.commands;
 
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.CubicCurve;
-import javafx.scene.shape.Shape;
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
 import jloda.util.Pair;
 import jloda.util.Triplet;
-import phyloedit.window.PhyloEditor;
+import phyloedit.window.NodeView;
+import phyloedit.window.PhyloView;
 
 import java.util.ArrayList;
 
@@ -45,20 +65,20 @@ public class ZoomCommand extends UndoableRedoableCommand {
     private final ArrayList<Pair<Integer, double[]>> oldEdges = new ArrayList<>();
     private final ArrayList<Pair<Integer, double[]>> newEdges = new ArrayList<>();
 
-    public ZoomCommand(double zoomFactorX, double zoomFactorY, Pane mainPane, PhyloEditor editor) {
+    public ZoomCommand(double zoomFactorX, double zoomFactorY, Pane mainPane, PhyloView editor) {
         super("Zoom");
 
         final PhyloTree graph = editor.getGraph();
 
         for (Node v : graph.nodes()) {
-            oldNodes.add(new Triplet<>(v.getId(), editor.getShape(v).getTranslateX(), editor.getShape(v).getTranslateY()));
-            newNodes.add(new Triplet<>(v.getId(), zoomFactorX * editor.getShape(v).getTranslateX(), zoomFactorY * editor.getShape(v).getTranslateY()));
+            oldNodes.add(new Triplet<>(v.getId(), editor.getNodeView(v).getTranslateX(), editor.getNodeView(v).getTranslateY()));
+            newNodes.add(new Triplet<>(v.getId(), zoomFactorX * editor.getNodeView(v).getTranslateX(), zoomFactorY * editor.getNodeView(v).getTranslateY()));
         }
         undo = () -> {
             oldNodes.forEach(t -> {
-                final Shape shape = editor.getShape(graph.searchNodeId(t.getFirst()));
-                shape.setTranslateX(t.getSecond());
-                shape.setTranslateY(t.getThird());
+                final NodeView nodeView = editor.getNodeView(graph.searchNodeId(t.getFirst()));
+                nodeView.setTranslateX(t.getSecond());
+                nodeView.setTranslateY(t.getThird());
             });
             if (mainPane.getChildren().size() > 0 && mainPane.getChildren().get(0) instanceof ImageView) {
                 ImageView imageView = (ImageView) mainPane.getChildren().get(0);
@@ -69,9 +89,9 @@ public class ZoomCommand extends UndoableRedoableCommand {
 
         redo = () ->
                 newNodes.forEach(t -> {
-                    final Shape shape = editor.getShape(graph.searchNodeId(t.getFirst()));
-                    shape.setTranslateX(t.getSecond());
-                    shape.setTranslateY(t.getThird());
+                    final NodeView nodeView = editor.getNodeView(graph.searchNodeId(t.getFirst()));
+                    nodeView.setTranslateX(t.getSecond());
+                    nodeView.setTranslateY(t.getThird());
                 });
         if (mainPane.getChildren().size() > 0 && mainPane.getChildren().get(0) instanceof ImageView) {
             ImageView imageView = (ImageView) mainPane.getChildren().get(0);
@@ -90,7 +110,7 @@ public class ZoomCommand extends UndoableRedoableCommand {
         redo.run();
     }
 
-    public static void zoom(double zoomFactorX, double zoomFactorY, Pane mainPane, PhyloEditor editor) {
+    public static void zoom(double zoomFactorX, double zoomFactorY, Pane mainPane, PhyloView editor) {
         if (mainPane.getChildren().size() > 0 && mainPane.getChildren().get(0) instanceof ImageView) {
             ImageView imageView = (ImageView) mainPane.getChildren().get(0);
             //imageView.setFitWidth(zoomFactorX*imageView.getFitWidth());
@@ -98,9 +118,9 @@ public class ZoomCommand extends UndoableRedoableCommand {
         }
 
         editor.getGraph().nodes().forEach(v -> {
-            final Shape shape = editor.getShape(v);
-            shape.setTranslateX(zoomFactorX * shape.getTranslateX());
-            shape.setTranslateY(zoomFactorY * shape.getTranslateY());
+            final NodeView nodeView = editor.getNodeView(v);
+            nodeView.setTranslateX(zoomFactorX * nodeView.getTranslateX());
+            nodeView.setTranslateY(zoomFactorY * nodeView.getTranslateY());
         });
         editor.getGraph().edges().forEach(e -> {
             final CubicCurve cubicCurve = editor.getEdgeView(e).getCurve();

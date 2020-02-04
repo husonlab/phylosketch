@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018. Daniel H. Huson
+ * EdgeView.java Copyright (C) 2020 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -15,46 +15,10 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 
-/*
- *  Copyright (C) 2018. Daniel H. Huson
- *
- *  (Some files contain contributions from other authors, who are then mentioned separately.)
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-package phyloedit.window;/*
- *  EdgeView.java Copyright (C) 2020 Daniel H. Huson
- *
- *  (Some files contain contributions from other authors, who are then mentioned separately.)
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
+package phyloedit.window;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.collections.FXCollections;
@@ -71,7 +35,7 @@ import javafx.scene.shape.Shape;
 import jloda.fx.util.GeometryUtilsFX;
 import jloda.fx.util.MouseDragClosestNode;
 import jloda.graph.Edge;
-import phyloedit.actions.EdgeShapeCommand;
+import phyloedit.commands.EdgeShapeCommand;
 
 import java.util.function.Function;
 
@@ -94,12 +58,7 @@ public class EdgeView {
      * @param bX
      * @param bY
      */
-    public EdgeView(PhyloEditor editor, Edge edge, ReadOnlyDoubleProperty aX, ReadOnlyDoubleProperty aY, ReadOnlyDoubleProperty bX, ReadOnlyDoubleProperty bY) {
-        arrowHead = new Polyline(-5, -3, 5, 0, -5, 3);
-        arrowHead.setStroke(Color.BLACK);
-        arrowHead.setFill(Color.BLACK);
-        arrowHead.setStrokeWidth(2);
-
+    public EdgeView(PhyloView editor, Edge edge, ReadOnlyDoubleProperty aX, ReadOnlyDoubleProperty aY, ReadOnlyDoubleProperty bX, ReadOnlyDoubleProperty bY) {
         curve = new CubicCurve();
         curve.setFill(Color.TRANSPARENT);
         curve.setStroke(Color.BLACK);
@@ -137,11 +96,9 @@ public class EdgeView {
                 return edgeView.getCircle2();
         };
 
-        MouseDragClosestNode.setup(curve, editor.getNode2shapeAndLabel().get(edge.getSource()).get1(), circle1,
-                editor.getNode2shapeAndLabel().get(edge.getTarget()).get1(), circle2,
-                (circle, delta) -> {
-                    editor.getUndoManager().add(new EdgeShapeCommand("Edge Shape", translatingControl.apply((Circle) circle), delta));
-                });
+        MouseDragClosestNode.setup(curve, editor.getNode2View().get(edge.getSource()).getShapeGroup(), circle1,
+                editor.getNode2View().get(edge.getTarget()).getShapeGroup(), circle2,
+                (circle, delta) -> editor.getUndoManager().add(new EdgeShapeCommand("Edge Shape", translatingControl.apply((Circle) circle), delta)));
 
         curve.setOnMouseClicked(c -> {
             if (!c.isShiftDown()) {
@@ -151,18 +108,24 @@ public class EdgeView {
                 editor.getEdgeSelection().toggleSelection(edge);
         });
 
-        //arrowHead.translateXProperty().bindBidirectional(curve.controlXProperty());
-        //arrowHead.translateYProperty().bindBidirectional(curve.controlYProperty());
+        arrowHead = new Polyline(-5, -3, 5, 0, -5, 3);
+        arrowHead.setStrokeWidth(curve.getStrokeWidth());
+        arrowHead.setFill(curve.getFill());
+        arrowHead.setStroke(curve.getStroke());
+
+        arrowHead.strokeWidthProperty().bind(curve.strokeWidthProperty());
+        arrowHead.fillProperty().bind(curve.strokeProperty());
+        arrowHead.strokeProperty().bind(curve.strokeProperty());
 
         final InvalidationListener invalidationListener = (e) -> {
             final double angle = GeometryUtilsFX.computeAngle(new Point2D(curve.getEndX() - curve.getControlX2(), curve.getEndY() - curve.getControlY2()));
             arrowHead.setRotationAxis(new Point3D(0, 0, 1));
             arrowHead.setRotate(angle);
-
             final Point2D location = GeometryUtilsFX.translateByAngle(new Point2D(curve.getEndX(), curve.getEndY()), angle, -15);
             arrowHead.setTranslateX(location.getX());
             arrowHead.setTranslateY(location.getY());
         };
+
         invalidationListener.invalidated(null);
 
         curve.startXProperty().addListener(invalidationListener);
@@ -175,8 +138,8 @@ public class EdgeView {
         label = null;
 
         children = FXCollections.observableArrayList();
-        children.add(arrowHead);
         children.add(curve);
+        children.add(arrowHead);
     }
 
     public ObservableList<Node> getChildren() {
@@ -205,16 +168,6 @@ public class EdgeView {
 
     public Shape getArrowHead() {
         return arrowHead;
-    }
-
-    public void moveControl1(double dx, double dy) {
-        circle1.setTranslateX(circle1.getTranslateX() + dx);
-        circle1.setTranslateY(circle1.getTranslateY() + dy);
-    }
-
-    public void moveControl2(double dx, double dy) {
-        circle2.setTranslateX(circle2.getTranslateX() + dx);
-        circle2.setTranslateY(circle2.getTranslateY() + dy);
     }
 
     public void startMoved(double deltaX, double deltaY) {

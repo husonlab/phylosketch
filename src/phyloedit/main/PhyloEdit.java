@@ -26,7 +26,7 @@ public class PhyloEdit extends Application {
      *
      * @param args
      */
-    public static void main(String[] args) throws CanceledException, UsageException {
+    public static void main(String[] args) {
         Basic.restoreSystemOut(System.err); // send system out to system err
         Basic.startCollectionStdErr();
 

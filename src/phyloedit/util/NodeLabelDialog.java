@@ -17,15 +17,16 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package phyloedit.actions;
+package phyloedit.util;
 
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
-import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Node;
-import phyloedit.window.PhyloEditor;
+import phyloedit.commands.ChangeNodeLabelsCommand;
+import phyloedit.window.PhyloView;
 
+import java.util.Collections;
 import java.util.Optional;
 
 
@@ -35,7 +36,7 @@ import java.util.Optional;
  */
 public class NodeLabelDialog extends ContextMenu {
 
-    public static boolean apply(Stage owner, PhyloEditor editor, Node v) {
+    public static boolean apply(Stage owner, PhyloView editor, Node v) {
         final int id = v.getId();
         final String oldLabel = editor.getLabel(v).getText();
 
@@ -50,17 +51,7 @@ public class NodeLabelDialog extends ContextMenu {
         final String newLabel;
         if (result.isPresent()) {
             newLabel = result.get();
-            editor.getUndoManager().doAndAdd(new UndoableRedoableCommand("Label") {
-                @Override
-                public void undo() {
-                    editor.getLabel(editor.getGraph().searchNodeId(id)).setText(oldLabel);
-                }
-
-                @Override
-                public void redo() {
-                    editor.getLabel(editor.getGraph().searchNodeId(id)).setText(newLabel);
-                }
-            });
+            editor.getUndoManager().doAndAdd(new ChangeNodeLabelsCommand(editor, Collections.singletonList(new ChangeNodeLabelsCommand.Data(id, oldLabel, newLabel))));
             return true;
         }
         return false; // canceled

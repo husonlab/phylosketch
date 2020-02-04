@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package phyloedit.actions;
+package phyloedit.util;
 
 import javafx.geometry.Bounds;
 import jloda.fx.control.ItemSelectionModel;

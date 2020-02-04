@@ -17,13 +17,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package phyloedit.actions;
+package phyloedit.util;
 
 import javafx.stage.Stage;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
 import jloda.util.Triplet;
-import phyloedit.window.PhyloEditor;
+import phyloedit.commands.ChangeNodeLabelsCommand;
+import phyloedit.window.PhyloView;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,29 +35,28 @@ import java.util.stream.Collectors;
  */
 public class LabelLeaves {
 
-    public static void labelLeavesABC(PhyloEditor editor) {
+    public static List<ChangeNodeLabelsCommand.Data> labelLeavesABC(PhyloView editor) {
         final PhyloTree graph = editor.getGraph();
 
-        final List<Node> leaves = sortLeaves(editor);
-
         final Set<String> seen = new HashSet<>();
-        leaves.stream().filter(v -> graph.getLabel(v) != null).forEach(v -> seen.add(graph.getLabel(v)));
+        graph.nodeStream().filter(v -> graph.getLabel(v) != null).forEach(v -> seen.add(graph.getLabel(v)));
 
-        leaves.forEach(v -> editor.getLabel(v).setText(getNextLabelABC(seen)));
+        final List<Node> leaves = sortLeaves(editor);
+        return leaves.stream().filter(v -> editor.getLabel(v).getText().length() == 0).map(v -> new ChangeNodeLabelsCommand.Data(v.getId(), editor.getLabel(v).getText(), getNextLabelABC(seen))).collect(Collectors.toList());
     }
 
-    public static void labelLeaves123(PhyloEditor editor) {
+
+    public static List<ChangeNodeLabelsCommand.Data> labelLeaves123(PhyloView editor) {
         final PhyloTree graph = editor.getGraph();
 
-        final List<Node> leaves = sortLeaves(editor);
-
         final Set<String> seen = new HashSet<>();
-        leaves.stream().filter(v -> graph.getLabel(v) != null).forEach(v -> seen.add(graph.getLabel(v)));
+        graph.nodeStream().filter(v -> graph.getLabel(v) != null).forEach(v -> seen.add(graph.getLabel(v)));
 
-        leaves.forEach(v -> editor.getLabel(v).setText(getNextLabel123(seen)));
+        final List<Node> leaves = sortLeaves(editor);
+        return leaves.stream().filter(v -> editor.getLabel(v).getText().length() == 0).map(v -> new ChangeNodeLabelsCommand.Data(v.getId(), editor.getLabel(v).getText(), getNextLabel123(seen))).collect(Collectors.toList());
     }
 
-    public static void labelLeaves(Stage owner, PhyloEditor editor) {
+    public static void labelLeaves(Stage owner, PhyloView editor) {
         final List<Node> leaves = sortLeaves(editor);
 
         for (Node v : leaves) {
@@ -66,10 +66,10 @@ public class LabelLeaves {
         }
     }
 
-    private static List<Node> sortLeaves(PhyloEditor editor) {
+    private static List<Node> sortLeaves(PhyloView editor) {
         final PhyloTree graph = editor.getGraph();
         final List<Triplet<Node, Double, Double>> list = graph.getNodesAsSet().stream().filter(v -> v.getOutDegree() == 0)
-                .map(v -> new Triplet<>(v, editor.getShape(v).getTranslateX(), editor.getShape(v).getTranslateY())).collect(Collectors.toList());
+                .map(v -> new Triplet<>(v, editor.getNodeView(v).getTranslateX(), editor.getNodeView(v).getTranslateY())).collect(Collectors.toList());
 
 
         final Optional<Double> minx = list.stream().map(Triplet::getSecond).min(Double::compare);
@@ -117,4 +117,5 @@ public class LabelLeaves {
         seen.add(label);
         return label;
     }
+
 }

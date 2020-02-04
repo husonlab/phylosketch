@@ -67,7 +67,7 @@ import jloda.fx.window.MainWindowManager;
 import jloda.util.Basic;
 import jloda.util.FileOpenManager;
 import jloda.util.ProgramProperties;
-import phyloedit.actions.PhyloEditorFileOpener;
+import phyloedit.io.PhyloEditorFileOpener;
 
 import java.util.Arrays;
 
@@ -76,9 +76,9 @@ import java.util.Arrays;
  * Daniel Huson, 1.2020
  */
 public class PhyloEditorWindow implements IMainWindow {
-    private Parent root;
-    private PhyloEditorWindowController controller;
-    private final PhyloEditor editor = new PhyloEditor(this);
+    private final Parent root;
+    private final PhyloEditorWindowController controller;
+    private final PhyloView view = new PhyloView(this);
     private Stage stage;
 
     public PhyloEditorWindow() {
@@ -126,24 +126,20 @@ public class PhyloEditorWindow implements IMainWindow {
         final MemoryUsage memoryUsage = MemoryUsage.getInstance();
         //controller.getMemoryUsageLabel().textProperty().bind(memoryUsage.memoryUsageStringProperty());
 
-        editor.fileNameProperty().addListener(c -> {
-            stage.setTitle(Basic.getFileNameWithoutPath(editor.getFileName()) + (editor.isDirty() ? "*" : "")
-                    + " - " + ProgramProperties.getProgramName());
-        });
+        view.fileNameProperty().addListener(c -> stage.setTitle(Basic.getFileNameWithoutPath(view.getFileName()) + (view.isDirty() ? "*" : "")
+                + " - " + ProgramProperties.getProgramName()));
 
-        editor.dirtyProperty().addListener(c -> {
-            stage.setTitle(Basic.getFileNameWithoutPath(editor.getFileName()) + (editor.isDirty() ? "*" : "")
-                    + " - " + ProgramProperties.getProgramName());
-        });
+        view.dirtyProperty().addListener(c -> stage.setTitle(Basic.getFileNameWithoutPath(view.getFileName()) + (view.isDirty() ? "*" : "")
+                + " - " + ProgramProperties.getProgramName()));
 
-        editor.setFileName("Untitled.nexus");
+        view.setFileName("Untitled.nexus");
 
         stage.show();
     }
 
     @Override
     public boolean isEmpty() {
-        return editor.getGraph().getNumberOfNodes() == 0;
+        return view.getGraph().getNumberOfNodes() == 0;
     }
 
     @Override
@@ -156,7 +152,7 @@ public class PhyloEditorWindow implements IMainWindow {
         return controller;
     }
 
-    public PhyloEditor getEditor() {
-        return editor;
+    public PhyloView getView() {
+        return view;
     }
 }

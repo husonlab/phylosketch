@@ -1,5 +1,5 @@
 /*
- *  DuplicateNodesCommand.java Copyright (C) 2020 Daniel H. Huson
+ * MoveNodeLabelCommand.java Copyright (C) 2020 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -15,30 +15,39 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 
-package phyloedit.actions;
+package phyloedit.commands;
 
+import javafx.scene.control.Label;
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Node;
-import phyloedit.window.PhyloEditor;
+import phyloedit.window.PhyloView;
 
-import java.util.Collection;
+/**
+ * move node label
+ * Daniel Huson, 2.2020
+ */
+public class MoveNodeLabelCommand extends UndoableRedoableCommand {
+    private final Runnable undo;
+    private final Runnable redo;
 
-public class DuplicateNodesCommand extends UndoableRedoableCommand {
-    final Runnable undo;
-    final Runnable redo;
 
-    public DuplicateNodesCommand(Collection<Node> nodes, PhyloEditor view) {
-        super("Duplicate");
+    public MoveNodeLabelCommand(PhyloView editor, Node v, double dx, double dy) {
+        super("Move Node Label");
+        final int id = v.getId();
+
         undo = () -> {
-
+            final Label label = editor.getNodeView(editor.getGraph().searchNodeId(id)).getLabel();
+            label.setLayoutX(label.getLayoutX() - dx);
+            label.setLayoutY(label.getLayoutY() - dy);
         };
+
         redo = () -> {
-
-            for (Node v : nodes) {
-
-            }
+            final Label label = editor.getNodeView(editor.getGraph().searchNodeId(id)).getLabel();
+            label.setLayoutX(label.getLayoutX() + dx);
+            label.setLayoutY(label.getLayoutY() + dy);
         };
 
     }

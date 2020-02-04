@@ -5,19 +5,22 @@ module phyloedit {
     requires transitive javafx.controls;
     requires transitive javafx.graphics;
     requires transitive javafx.fxml;
-    requires transitive javafx.web;
-    requires transitive java.sql;
     requires transitive java.desktop;
 
     requires fx.platform.utils;
+    requires com.install4j.runtime;
 
     exports phyloedit.main;
     exports phyloedit.window;
-    exports phyloedit.actions;
+    exports phyloedit.util;
+    exports phyloedit.commands;
 
     opens phyloedit.window;
     opens phyloedit.resources.icons;
     opens phyloedit.resources.images;
+
+    opens phyloedit.formattab;
+    opens phyloedit.formattab.fontselector;
 
 
 }

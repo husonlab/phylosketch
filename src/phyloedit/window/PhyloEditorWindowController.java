@@ -36,25 +36,9 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package phyloedit.window;/*
- *  PhyloEditorWindowController.java Copyright (C) 2020 Daniel H. Huson
- *
- *  (Some files contain contributions from other authors, who are then mentioned separately.)
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+package phyloedit.window;
 
+import javafx.beans.InvalidationListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCharacterCombination;
@@ -63,8 +47,13 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import jloda.fx.control.ZoomableScrollPane;
+import jloda.fx.window.IMainWindow;
+import jloda.fx.window.MainWindowManager;
 import jloda.util.ProgramProperties;
+
+import java.util.ArrayList;
 
 public class PhyloEditorWindowController {
 
@@ -91,6 +80,9 @@ public class PhyloEditorWindowController {
 
     @FXML
     private MenuItem saveAsMenuItem;
+
+    @FXML
+    private MenuItem importMenuItem;
 
     @FXML
     private MenuItem exportMenuItem;
@@ -141,6 +133,11 @@ public class PhyloEditorWindowController {
     private MenuItem selectInvertMenuItem;
 
     @FXML
+    private MenuItem selectTreeEdgesMenuItem;
+
+    @FXML
+    private MenuItem selectReticulateEdgesMenuItem;
+    @FXML
     private MenuItem selectLeavesMenuItem;
 
     @FXML
@@ -150,19 +147,16 @@ public class PhyloEditorWindowController {
     private MenuItem selectReticulateNodesMenuitem;
 
     @FXML
-    private MenuItem selectStableNodesMenuItem;
+    private MenuItem selectVisibleNodesMenuItem;
 
     @FXML
-    private MenuItem selectVisibleNodesMenuItem;
+    private MenuItem selectStableNodesMenuItem;
 
     @FXML
     private MenuItem selectAllBelowMenuItem;
 
     @FXML
     private MenuItem selectAllAboveMenuItem;
-
-    @FXML
-    private MenuItem enterFullScreenMenuItem;
 
     @FXML
     private MenuItem labelLeavesABCMenuItem;
@@ -172,6 +166,45 @@ public class PhyloEditorWindowController {
 
     @FXML
     private MenuItem labelLeavesMenuItem;
+
+    @FXML
+    private MenuItem alignLeftMenuItem;
+
+    @FXML
+    private MenuItem alignCenterMenuItem;
+
+    @FXML
+    private MenuItem alignRightMenuItem;
+
+    @FXML
+    private MenuItem alignTopMenuItem;
+
+    @FXML
+    private MenuItem alignMiddleMenuItem;
+
+    @FXML
+    private MenuItem alignBottomMenuItem;
+
+    @FXML
+    private MenuItem distributeHorizontallyMenuItem;
+
+    @FXML
+    private MenuItem distributeVerticallyMenuItem;
+
+    @FXML
+    private MenuItem labelPositionLeftMenuItem;
+
+    @FXML
+    private MenuItem labelPositionRightMenuItem;
+
+    @FXML
+    private MenuItem labelPositionAboveMenuItem;
+
+    @FXML
+    private MenuItem labelPositionBelowMenuItem;
+
+    @FXML
+    private MenuItem straightenEdgesMenuItem;
 
     @FXML
     private MenuItem increaseFontSizeMenuItem;
@@ -190,11 +223,28 @@ public class PhyloEditorWindowController {
 
     @FXML
     private MenuItem zoomOutHorizontallyMenuItem;
+
+    @FXML
+    private MenuItem enterFullScreenMenuItem;
+
     @FXML
     private Menu windowMenu;
 
     @FXML
     private MenuItem aboutMenuItem;
+
+    @FXML
+    private MenuItem checkForUpdatesMenuItem;
+
+
+    @FXML
+    private FlowPane statusFlowPane;
+
+    @FXML
+    private ScrollPane scrollPane;
+
+    @FXML
+    private Pane mainPane;
 
     @FXML
     private ToolBar toolBar;
@@ -212,21 +262,56 @@ public class PhyloEditorWindowController {
     private Button printButton;
 
     @FXML
-    private FlowPane statusFlowPane;
+    private TitledPane formatTitledPane;
 
     @FXML
-    private ScrollPane scrollPane;
+    private Label infoLabel;
 
     @FXML
-    private Pane mainPane;
+    private BorderPane formatBorderPane;
 
     @FXML
     private Label selectionLabel;
 
     @FXML
-    private Label infoLabel;
+    private MenuItem alignLeftButton;
+
+    @FXML
+    private MenuItem alignCenterButton;
+
+    @FXML
+    private MenuItem alignRightButton;
+
+    @FXML
+    private MenuItem alignTopButton;
+
+    @FXML
+    private MenuItem alignMiddleButton;
+
+    @FXML
+    private MenuItem alignBottomButton;
+
+    @FXML
+    private MenuItem distributeHorizontallyButton;
+
+    @FXML
+    private MenuItem distributeVerticallyButton;
+
+    @FXML
+    private MenuItem labelLeftButton;
+
+    @FXML
+    private MenuItem labelRightButton;
+
+    @FXML
+    private MenuItem labelAboveButton;
+
+    @FXML
+    private MenuItem labelBelowButton;
+
 
     private ZoomableScrollPane zoomableScrollPane;
+
 
     @FXML
     void initialize() {
@@ -240,10 +325,46 @@ public class PhyloEditorWindowController {
             //editMenu.getItems().remove(getPreferencesMenuItem());
         }
 
+        final ArrayList<MenuItem> originalWindowMenuItems = new ArrayList<>(windowMenu.getItems());
+
+        final InvalidationListener invalidationListener = observable -> {
+            windowMenu.getItems().setAll(originalWindowMenuItems);
+            int count = 0;
+            for (IMainWindow mainWindow : MainWindowManager.getInstance().getMainWindows()) {
+                if (mainWindow.getStage() != null) {
+                    final String title = mainWindow.getStage().getTitle();
+                    if (title != null) {
+                        final MenuItem menuItem = new MenuItem(title.replaceAll("- " + ProgramProperties.getProgramName(), ""));
+                        menuItem.setOnAction((e) -> mainWindow.getStage().toFront());
+                        menuItem.setAccelerator(new KeyCharacterCombination("" + (++count), KeyCombination.SHORTCUT_DOWN));
+                        windowMenu.getItems().add(menuItem);
+                    }
+                }
+                if (MainWindowManager.getInstance().getAuxiliaryWindows(mainWindow) != null) {
+                    for (Stage auxStage : MainWindowManager.getInstance().getAuxiliaryWindows(mainWindow)) {
+                        final String title = auxStage.getTitle();
+                        if (title != null) {
+                            final MenuItem menuItem = new MenuItem(title.replaceAll("- " + ProgramProperties.getProgramName(), ""));
+                            menuItem.setOnAction((e) -> auxStage.toFront());
+                            windowMenu.getItems().add(menuItem);
+                        }
+                    }
+                }
+            }
+        };
+        MainWindowManager.getInstance().changedProperty().addListener(invalidationListener);
+        invalidationListener.invalidated(null);
+
+
+        final BorderPane parentPane = (BorderPane) scrollPane.getParent();
 
         zoomableScrollPane = new ZoomableScrollPane(scrollPane.getContent());
         scrollPane.setContent(null);
-        borderPane.setCenter(zoomableScrollPane);
+        parentPane.setCenter(zoomableScrollPane);
+    }
+
+    public BorderPane getBorderPane() {
+        return borderPane;
     }
 
     public VBox getTopVBox() {
@@ -264,6 +385,10 @@ public class PhyloEditorWindowController {
 
     public MenuItem getOpenMenuItem() {
         return openMenuItem;
+    }
+
+    public MenuItem getImportMenuItem() {
+        return importMenuItem;
     }
 
     public Menu getRecentMenu() {
@@ -326,6 +451,7 @@ public class PhyloEditorWindowController {
         return deleteMenuItem;
     }
 
+
     public MenuItem getSelectAllMenuItem() {
         return selectAllMenuItem;
     }
@@ -336,6 +462,14 @@ public class PhyloEditorWindowController {
 
     public MenuItem getSelectInvertMenuItem() {
         return selectInvertMenuItem;
+    }
+
+    public MenuItem getSelectTreeEdgesMenuItem() {
+        return selectTreeEdgesMenuItem;
+    }
+
+    public MenuItem getSelectReticulateEdgesMenuItem() {
+        return selectReticulateEdgesMenuItem;
     }
 
     public MenuItem getSelectLeavesMenuItem() {
@@ -350,12 +484,12 @@ public class PhyloEditorWindowController {
         return selectReticulateNodesMenuitem;
     }
 
-    public MenuItem getSelectStableNodesMenuItem() {
-        return selectStableNodesMenuItem;
-    }
-
     public MenuItem getSelectVisibleNodesMenuItem() {
         return selectVisibleNodesMenuItem;
+    }
+
+    public MenuItem getSelectStableNodesMenuItem() {
+        return selectStableNodesMenuItem;
     }
 
     public MenuItem getSelectAllBelowMenuItem() {
@@ -364,10 +498,6 @@ public class PhyloEditorWindowController {
 
     public MenuItem getSelectAllAboveMenuItem() {
         return selectAllAboveMenuItem;
-    }
-
-    public MenuItem getEnterFullScreenMenuItem() {
-        return enterFullScreenMenuItem;
     }
 
     public MenuItem getLabelLeavesABCMenuItem() {
@@ -380,58 +510,6 @@ public class PhyloEditorWindowController {
 
     public MenuItem getLabelLeavesMenuItem() {
         return labelLeavesMenuItem;
-    }
-
-    public Menu getWindowMenu() {
-        return windowMenu;
-    }
-
-    public MenuItem getAboutMenuItem() {
-        return aboutMenuItem;
-    }
-
-    public ToolBar getToolBar() {
-        return toolBar;
-    }
-
-    public Button getOpenButton() {
-        return openButton;
-    }
-
-    public Button getSaveButton() {
-        return saveButton;
-    }
-
-    public Button getExportButton() {
-        return exportButton;
-    }
-
-    public Button getPrintButton() {
-        return printButton;
-    }
-
-    public FlowPane getStatusFlowPane() {
-        return statusFlowPane;
-    }
-
-    public ZoomableScrollPane getScrollPane() {
-        return zoomableScrollPane;
-    }
-
-    public Pane getMainPane() {
-        return mainPane;
-    }
-
-    public Label getSelectionLabel() {
-        return selectionLabel;
-    }
-
-    public BorderPane getBorderPane() {
-        return borderPane;
-    }
-
-    public Label getInfoLabel() {
-        return infoLabel;
     }
 
     public MenuItem getIncreaseFontSizeMenuItem() {
@@ -458,7 +536,167 @@ public class PhyloEditorWindowController {
         return zoomOutHorizontallyMenuItem;
     }
 
-    public ZoomableScrollPane getZoomableScrollPane() {
+    public MenuItem getEnterFullScreenMenuItem() {
+        return enterFullScreenMenuItem;
+    }
+
+    public Menu getWindowMenu() {
+        return windowMenu;
+    }
+
+    public MenuItem getAboutMenuItem() {
+        return aboutMenuItem;
+    }
+
+    public MenuItem getCheckForUpdatesMenuItem() {
+        return checkForUpdatesMenuItem;
+    }
+
+    public ToolBar getToolBar() {
+        return toolBar;
+    }
+
+    public Button getOpenButton() {
+        return openButton;
+    }
+
+    public Button getSaveButton() {
+        return saveButton;
+    }
+
+    public Button getExportButton() {
+        return exportButton;
+    }
+
+    public Button getPrintButton() {
+        return printButton;
+    }
+
+    public FlowPane getStatusFlowPane() {
+        return statusFlowPane;
+    }
+
+    public Pane getMainPane() {
+        return mainPane;
+    }
+
+    public Label getSelectionLabel() {
+        return selectionLabel;
+    }
+
+    public Label getInfoLabel() {
+        return infoLabel;
+    }
+
+    public ZoomableScrollPane getScrollPane() {
         return zoomableScrollPane;
+    }
+
+    public TitledPane getFormatTitledPane() {
+        return formatTitledPane;
+    }
+
+    public BorderPane getFormatBorderPane() {
+        return formatBorderPane;
+    }
+
+    public MenuItem getAlignLeftMenuItem() {
+        return alignLeftMenuItem;
+    }
+
+    public MenuItem getAlignCenterMenuItem() {
+        return alignCenterMenuItem;
+    }
+
+    public MenuItem getAlignRightMenuItem() {
+        return alignRightMenuItem;
+    }
+
+    public MenuItem getAlignTopMenuItem() {
+        return alignTopMenuItem;
+    }
+
+    public MenuItem getAlignMiddleMenuItem() {
+        return alignMiddleMenuItem;
+    }
+
+    public MenuItem getAlignBottomMenuItem() {
+        return alignBottomMenuItem;
+    }
+
+    public MenuItem getDistributeHorizontallyMenuItem() {
+        return distributeHorizontallyMenuItem;
+    }
+
+    public MenuItem getDistributeVerticallyMenuItem() {
+        return distributeVerticallyMenuItem;
+    }
+
+    public MenuItem getLabelPositionLeftMenuItem() {
+        return labelPositionLeftMenuItem;
+    }
+
+    public MenuItem getLabelPositionRightMenuItem() {
+        return labelPositionRightMenuItem;
+    }
+
+    public MenuItem getLabelPositionAboveMenuItem() {
+        return labelPositionAboveMenuItem;
+    }
+
+    public MenuItem getLabelPositionBelowMenuItem() {
+        return labelPositionBelowMenuItem;
+    }
+
+    public MenuItem getStraightenEdgesMenuItem() {
+        return straightenEdgesMenuItem;
+    }
+
+    public MenuItem getAlignLeftButton() {
+        return alignLeftButton;
+    }
+
+    public MenuItem getAlignCenterButton() {
+        return alignCenterButton;
+    }
+
+    public MenuItem getAlignRightButton() {
+        return alignRightButton;
+    }
+
+    public MenuItem getAlignTopButton() {
+        return alignTopButton;
+    }
+
+    public MenuItem getAlignMiddleButton() {
+        return alignMiddleButton;
+    }
+
+    public MenuItem getAlignBottomButton() {
+        return alignBottomButton;
+    }
+
+    public MenuItem getDistributeHorizontallyButton() {
+        return distributeHorizontallyButton;
+    }
+
+    public MenuItem getDistributeVerticallyButton() {
+        return distributeVerticallyButton;
+    }
+
+    public MenuItem getLabelLeftButton() {
+        return labelLeftButton;
+    }
+
+    public MenuItem getLabelRightButton() {
+        return labelRightButton;
+    }
+
+    public MenuItem getLabelAboveButton() {
+        return labelAboveButton;
+    }
+
+    public MenuItem getLabelBelowButton() {
+        return labelBelowButton;
     }
 }

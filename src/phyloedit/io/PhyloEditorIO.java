@@ -1,4 +1,24 @@
 /*
+ * PhyloEditorIO.java Copyright (C) 2020 Daniel H. Huson
+ *
+ *  (Some files contain contributions from other authors, who are then mentioned separately.)
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+/*
  *  PhyloEditorIO.java Copyright (C) 2020 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
@@ -17,25 +37,29 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package phyloedit.actions;
+package phyloedit.io;
 
 import javafx.scene.control.Label;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.CubicCurve;
-import javafx.scene.shape.Shape;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import jloda.fx.shapes.NodeShape;
+import jloda.fx.util.FontUtils;
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
+import phyloedit.embed.RootedNetworkEmbedder;
 import phyloedit.window.EdgeView;
 import phyloedit.window.NetworkProperties;
-import phyloedit.window.PhyloEditor;
+import phyloedit.window.NodeView;
+import phyloedit.window.PhyloView;
 import splitstree5.core.datablocks.NetworkBlock;
 import splitstree5.core.datablocks.TaxaBlock;
 import splitstree5.io.nexus.NetworkNexusInput;
@@ -57,7 +81,7 @@ public class PhyloEditorIO {
      * @param selectedFile
      * @param editor
      */
-    public static void save(File selectedFile, PhyloEditor editor) {
+    public static void save(File selectedFile, PhyloView editor) {
         final TaxaBlock taxaBlock = new TaxaBlock();
 
         final Map<String, Node> label2node = NetworkProperties.getLabel2Node(editor.getGraph());
@@ -68,23 +92,43 @@ public class PhyloEditorIO {
         networkBlock.setNetworkType(NetworkBlock.Type.Other);
 
         for (Node v : graph.nodes()) {
-            final Shape shape = editor.getShape(v);
-            final Label label = editor.getLabel(v);
-            NetworkBlock.NodeData nodeData = networkBlock.getNodeData(v);
+            final NodeView nodeView = editor.getNodeView(v);
 
-            nodeData.put("x", String.format("%.2f", shape.getTranslateX()));
-            nodeData.put("y", String.format("%.2f", shape.getTranslateY()));
+            final NetworkBlock.NodeData nodeData = networkBlock.getNodeData(v);
+            nodeData.put("x", String.format("%.2f", nodeView.getTranslateX()));
+            nodeData.put("y", String.format("%.2f", nodeView.getTranslateY()));
+            nodeData.put("w", String.format("%.2f", nodeView.getWidth()));
+            nodeData.put("h", String.format("%.2f", nodeView.getHeight()));
+
+            nodeData.put("type", NodeShape.getCode(nodeView.getShape()));
+            if (!nodeView.getShape().getFill().equals(Color.WHITE))
+                nodeData.put("clr", nodeView.getShape().getFill().toString());
+            final Label label = nodeView.getLabel();
+            if (label.getText().length() > 0) {
+                nodeData.put("text", label.getText());
+                nodeData.put("lx", String.format("%.2f", label.getLayoutX()));
+                nodeData.put("ly", String.format("%.2f", label.getLayoutY()));
+
+                if (!label.getTextFill().equals(Color.BLACK))
+                    nodeData.put("lclr", label.getTextFill().toString());
+
+                if (!label.getFont().equals(PhyloView.DefaultFont))
+                    nodeData.put("font", label.getFont().getFamily() + "," + label.getFont().getStyle() + "," + label.getFont().getSize());
+            }
         }
 
         for (Edge e : graph.edges()) {
             final EdgeView edgeView = editor.getEdgeView(e);
             final CubicCurve curve = edgeView.getCurve();
             NetworkBlock.EdgeData edgeData = networkBlock.getEdgeData(e);
-            edgeData.put("type", "cubic");
+            edgeData.put("type", "CC");
             edgeData.put("c1x", String.format("%.2f", curve.getControlX1()));
             edgeData.put("c1y", String.format("%.2f", curve.getControlY1()));
             edgeData.put("c2x", String.format("%.2f", curve.getControlX2()));
             edgeData.put("c2y", String.format("%.2f", curve.getControlY2()));
+            edgeData.put("sw", String.format("%.2f", curve.getStrokeWidth()));
+            if (!curve.getStroke().equals(Color.BLACK))
+                edgeData.put("clr", curve.getStroke().toString());
         }
 
         final TaxaNexusOutput taxaOutput = new TaxaNexusOutput();
@@ -103,7 +147,7 @@ public class PhyloEditorIO {
         editor.setFileName(selectedFile.getPath());
     }
 
-    public static void open(Pane mainPane, PhyloEditor editor, File selectedFile) throws IOException {
+    public static void open(Pane mainPane, PhyloView editor, File selectedFile) throws IOException {
         final PhyloTree graph = editor.getGraph();
         graph.clear();
 
@@ -119,14 +163,57 @@ public class PhyloEditorIO {
         }
 
         for (Node v : graph.nodes()) {
-            final double x = Basic.parseDouble(networkBlock.getNodeData(v).get("x"));
-            final double y = Basic.parseDouble(networkBlock.getNodeData(v).get("y"));
-            editor.addNode(mainPane, x, y, v);
+            final NetworkBlock.NodeData nodeData = networkBlock.getNodeData(v);
+            final NodeView nodeView = editor.addNode(mainPane, Basic.parseDouble(nodeData.get("x")), Basic.parseDouble(nodeData.get("y")), v);
+
+            final String typeCode = nodeData.get("type");
+            if (typeCode != null) {
+                NodeShape nodeShape = Basic.valueOfMatchingSubsequence(NodeShape.class, typeCode);
+                if (nodeShape != null && nodeShape != editor.getNodeView(v).getNodeShape())
+                    nodeView.changeShape(nodeShape);
+                if (nodeShape == NodeShape.None) {
+                    nodeView.setWidth(1);
+                    nodeView.setHeight(1);
+                } else {
+                    final double w = Basic.parseDouble(nodeData.get("w"));
+                    final double h = Basic.parseDouble(nodeData.get("h"));
+                    if (w > 0)
+                        nodeView.setWidth(w);
+                    if (h > 0)
+                        nodeView.setHeight(h);
+                }
+            }
+            {
+                final String colorString = nodeData.get("clr");
+                if (colorString != null) {
+                    nodeView.getShape().setFill(Color.valueOf(colorString));
+                }
+            }
+
+            final String text = nodeData.get("text");
+            if (text != null) {
+                final Label label = nodeView.getLabel();
+                label.setText(text);
+
+                label.setLayoutX(Basic.parseDouble(nodeData.get("lx")));
+                label.setLayoutY(Basic.parseDouble(nodeData.get("ly")));
+
+                if (nodeData.get("font") != null) {
+                    final String[] tokens = Basic.split(nodeData.get("font"), ',');
+                    if (tokens.length == 3 && Basic.isDouble(tokens[2])) {
+                        label.setFont(FontUtils.font(tokens[0], tokens[1], Basic.parseDouble(tokens[2])));
+                    }
+                }
+                final String colorString = nodeData.get("lclr");
+                if (colorString != null) {
+                    label.setTextFill(Color.valueOf(colorString));
+                }
+            }
         }
 
         for (Edge e : graph.edges()) {
             final NetworkBlock.EdgeData edgeData = networkBlock.getEdgeData(e);
-            if (edgeData.get("type").equals("cubic")) {
+            if (edgeData.get("type").equals("CC")) {
                 editor.addEdge(e);
                 final EdgeView edgeView = editor.getEdgeView(e);
                 final double c1x = Basic.parseDouble(edgeData.get("c1x"));
@@ -134,10 +221,30 @@ public class PhyloEditorIO {
                 final double c2x = Basic.parseDouble(edgeData.get("c2x"));
                 final double c2y = Basic.parseDouble(edgeData.get("c2y"));
                 edgeView.setControlCoordinates(new double[]{c1x, c1y, c2x, c2y});
+                {
+                    final String colorString = edgeData.get("clr");
+                    if (colorString != null) {
+                        edgeView.getCurve().setStroke(Color.valueOf(colorString));
+                    }
+                }
+                final double sw = Basic.parseDouble(edgeData.get("sw"));
+                if (sw > 0)
+                    edgeView.getCurve().setStrokeWidth(sw);
             }
         }
+    }
 
-        ProgramProperties.put("OpenDir", selectedFile.getParent());
+    public static void importNewick(Pane mainPane, PhyloView editor, File selectedFile) throws IOException {
+
+        final PhyloTree tree = new PhyloTree();
+        try (BufferedReader r = new BufferedReader(new FileReader(selectedFile))) {
+            tree.read(r, true);
+        }
+
+        final PhyloTree graph = editor.getGraph();
+        graph.copy(tree);
+
+        RootedNetworkEmbedder.apply(mainPane, editor, RootedNetworkEmbedder.Orientation.leftRight);
     }
 
     /**
@@ -146,7 +253,7 @@ public class PhyloEditorIO {
      * @param owner
      * @param editor
      */
-    public static void exportNewick(final Stage owner, PhyloEditor editor) {
+    public static void exportNewick(final Stage owner, PhyloView editor) {
         final File previousDir = new File(ProgramProperties.get("ExportDir", ""));
         final FileChooser fileChooser = new FileChooser();
         if (previousDir.isDirectory())
