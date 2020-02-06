@@ -29,7 +29,7 @@
     <property name="buildModulesDir" value="../antbuild/modules"/>
 
     <path id="build.classpath">
-        <fileset dir="../../phyloedit/jars" includes="*.jar"/>
+        <fileset dir="../../phylosketch/jars" includes="*.jar"/>
         <fileset dir="${jlodaAntDir}" includes="jloda.jar"/>
         <fileset dir="${splitstree5AntDir}" includes="splitstree5.jar"/>
     </path>
@@ -37,7 +37,7 @@
     <path id="build.modulepath">
         <fileset dir="../../jloda/jars" includes="*.jar"/>
         <fileset dir="../../splitstree5/jars" includes="*.jar"/>
-        <fileset dir="../../phyloedit/jars" includes="*.jar"/>
+        <fileset dir="../../phylosketch/jars" includes="*.jar"/>
         <fileset dir="${jfxDir}" includes="*.jar"/>
         <fileset dir="../antbuild" includes="jloda.jar"/>
         <fileset dir="../antbuild" includes="splitstree5.jar"/>
@@ -46,16 +46,16 @@
     <path id="run.modulepath">
         <fileset dir="../../jloda/jars" includes="*.jar"/>
         <fileset dir="../../splitstree5/jars" includes="*.jar"/>
-        <fileset dir="../../phyloedit/jars" includes="*.jar"/>
+        <fileset dir="../../phylosketch/jars" includes="*.jar"/>
         <fileset dir="${jfxDir}" includes="*.jar"/>
         <fileset dir="../antbuild" includes="jloda.jar"/>
         <fileset dir="../antbuild" includes="splitstree5.jar"/>
-        <fileset dir="../antbuild" includes="phyloedit.jar"/>
+        <fileset dir="../antbuild" includes="phylosketch.jar"/>
     </path>
 
     <target name="init">
-        <mkdir dir="${buildSrcDir}/phyloedit"/>
-        <mkdir dir="${buildModulesDir}/phyloedit"/>
+        <mkdir dir="${buildSrcDir}/phylosketch"/>
+        <mkdir dir="${buildModulesDir}/phylosketch"/>
     </target>
 
     <target name="jloda" depends="init">
@@ -66,21 +66,21 @@
     </target>
 
     <target name="copy_sources" depends="splitstree5">
-        <copy todir="${buildSrcDir}/phyloedit">
-            <fileset dir="../../phyloedit/src"/>
+        <copy todir="${buildSrcDir}/phylosketch">
+            <fileset dir="../../phylosketch/src"/>
         </copy>
     </target>
 
     <target name="copy_resources" depends="copy_sources">
-        <copy todir="${buildModulesDir}/phyloedit">
-            <fileset dir="../../phyloedit/src" includes="**/*.fxml **/*.png **/*.gif **/*.css"/>
+        <copy todir="${buildModulesDir}/phylosketch">
+            <fileset dir="../../phylosketch/src" includes="**/*.fxml **/*.png **/*.gif **/*.css"/>
         </copy>
     </target>
 
     <target name="compile" depends="copy_resources">
         <javac includeantruntime="false"
-               srcdir="../antbuild/src/phyloedit"
-               destdir="${buildModulesDir}/phyloedit"
+               srcdir="../antbuild/src/phylosketch"
+               destdir="${buildModulesDir}/phylosketch"
                debug="on"
                modulepathref="build.modulepath"
         >
@@ -88,11 +88,11 @@
     </target>
 
     <target name="jar" depends="compile">
-        <jar jarfile="phyloedit.jar" basedir="${buildModulesDir}/phyloedit"/>
+        <jar jarfile="phylosketch.jar" basedir="${buildModulesDir}/phylosketch"/>
     </target>
 
     <target name="run" depends="jar">
-        <java classname="phyloedit.main.PhyloEdit" fork="true"
+        <java classname="phylosketch.main.PhyloSketch" fork="true"
               modulepathref="run.modulepath">
             <jvmarg value="-Xshare:off"/>
             <jvmarg value="-Dapple.laf.useScreenMenuBar=true"/>
@@ -100,14 +100,14 @@
             <jvmarg value="-Xmx1G"/>
             <jvmarg value="-Duser.language=en"/>
             <jvmarg value="-Duser.region=US"/>
-            <jvmarg value="--add-modules=phyloedit"/>
+            <jvmarg value="--add-modules=phylosketch"/>
         </java>
     </target>
 
     <target name="clean">
         <delete dir="${buildModulesDir}" includeEmptyDirs="true"/>
         <delete dir="${buildSrcDir}" includeEmptyDirs="true"/>
-        <delete file="phyloedit.jar"/>
+        <delete file="phylosketch.jar"/>
         <delete file="jloda.jar"/>
         <delete file="splitstree5.jar"/>
     </target>

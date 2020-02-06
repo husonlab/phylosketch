@@ -1,4 +1,4 @@
-module phyloedit {
+module phylosketch {
     requires transitive jloda;
     requires transitive splitstreefive;
 
@@ -10,17 +10,17 @@ module phyloedit {
     requires fx.platform.utils;
     requires com.install4j.runtime;
 
-    exports phyloedit.main;
-    exports phyloedit.window;
-    exports phyloedit.util;
-    exports phyloedit.commands;
+    exports phylosketch.main;
+    exports phylosketch.window;
+    exports phylosketch.util;
+    exports phylosketch.commands;
 
-    opens phyloedit.window;
-    opens phyloedit.resources.icons;
-    opens phyloedit.resources.images;
+    opens phylosketch.window;
+    opens phylosketch.resources.icons;
+    opens phylosketch.resources.images;
 
-    opens phyloedit.formattab;
-    opens phyloedit.formattab.fontselector;
+    opens phylosketch.formattab;
+    opens phylosketch.formattab.fontselector;
 
 
 }
