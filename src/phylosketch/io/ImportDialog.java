@@ -70,7 +70,7 @@ public class ImportDialog {
 
         final File selectedFile = fileChooser.showOpenDialog(owner);
         if (selectedFile != null) {
-            new PhyloEditorFileOpener().accept(selectedFile.getPath());
+            new PhyloSketchFileOpener().accept(selectedFile.getPath());
             ProgramProperties.put("OpenDir", selectedFile.getPath());
         }
     }

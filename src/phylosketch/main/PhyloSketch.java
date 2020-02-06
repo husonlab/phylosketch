@@ -20,6 +20,10 @@ import phylosketch.window.MainWindow;
 import java.io.File;
 import java.time.Duration;
 
+/**
+ * phylogenetic tree and network sketch program
+ * Daniel Huson, 1.2020
+ */
 public class PhyloSketch extends Application {
     /**
      * main
@@ -37,8 +41,8 @@ public class PhyloSketch extends Application {
         ProgramProperties.setProgramVersion(Version.SHORT_DESCRIPTION);
         ProgramProperties.setProgramLicence("Copyright (C) 2020 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.\n" +
                 "This is free software, licensed under the terms of the GNU General Public License, Version 3.\n" +
-                "Sources available at: https://github.com/husonlab/phyloedit\n" +
-                "Installers available at: http://software-ab.informatik.uni-tuebingen.de/download/phyloedit\n");
+                "Sources available at: https://github.com/husonlab/phylosketch\n" +
+                "Installers available at: http://software-ab.informatik.uni-tuebingen.de/download/phylosketch\n");
         SplashScreen.setLabelAnchor(new Point2D(230, 10));
         SplashScreen.setVersionString(ProgramProperties.getProgramVersion());
         SplashScreen.setImageResourceName("splash.png");

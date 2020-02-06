@@ -43,9 +43,11 @@ package phylosketch.util;
 import javafx.geometry.Point2D;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.CubicCurve;
 import jloda.graph.Edge;
+import phylosketch.commands.ChangeEdgeShapeCommand;
 import phylosketch.commands.SplitEdgeCommand;
 import phylosketch.window.EdgeView;
 import phylosketch.window.PhyloView;
@@ -64,10 +66,18 @@ public class EdgeContextMenu {
             final Point2D screenLocation = new Point2D(c.getScreenX(), c.getScreenY());
             Point2D locationLocation = pane.screenToLocal(screenLocation);
 
+            final MenuItem straightEdge = new MenuItem("Straight Edge");
+            straightEdge.setOnAction(z -> view.getUndoManager().doAndAdd(new ChangeEdgeShapeCommand(view, e, ChangeEdgeShapeCommand.EdgeShape.Straight)));
+            final MenuItem downRightEdge = new MenuItem("Down-Right Edge");
+            downRightEdge.setOnAction(z -> view.getUndoManager().doAndAdd(new ChangeEdgeShapeCommand(view, e, ChangeEdgeShapeCommand.EdgeShape.DownRight)));
+            final MenuItem rightDownEdge = new MenuItem("Right-Down Edge");
+            rightDownEdge.setOnAction(z -> view.getUndoManager().doAndAdd(new ChangeEdgeShapeCommand(view, e, ChangeEdgeShapeCommand.EdgeShape.RightDown)));
+
+
             final MenuItem split = new MenuItem("Split");
             split.setOnAction(s -> view.getUndoManager().doAndAdd(new SplitEdgeCommand(pane, view, e, locationLocation)));
             final ContextMenu menu = new ContextMenu();
-            menu.getItems().add(split);
+            menu.getItems().addAll(straightEdge, downRightEdge, rightDownEdge, new SeparatorMenuItem(), split);
             menu.show(pane, screenLocation.getX(), screenLocation.getY());
         });
     }

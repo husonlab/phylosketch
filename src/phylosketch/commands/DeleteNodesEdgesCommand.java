@@ -40,18 +40,20 @@
 package phylosketch.commands;
 
 import javafx.scene.layout.Pane;
-import jloda.fx.control.ItemSelectionModel;
+import javafx.scene.paint.Paint;
+import jloda.fx.shapes.NodeShape;
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
 import jloda.util.Basic;
 import phylosketch.window.EdgeView;
+import phylosketch.window.NodeView;
 import phylosketch.window.PhyloView;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * delete nodes command
@@ -61,59 +63,52 @@ public class DeleteNodesEdgesCommand extends UndoableRedoableCommand {
     private final Runnable undo;
     private final Runnable redo;
 
-    private final ArrayList<OldNodeData> oldNodeData = new ArrayList<>();
-
-    private final ArrayList<OldEdgeData> oldEdgeData = new ArrayList<>();
-
-    public DeleteNodesEdgesCommand(Pane pane, PhyloView editor) {
+    public DeleteNodesEdgesCommand(Pane pane, PhyloView view) {
         super("Delete");
 
-        final PhyloTree graph = editor.getGraph();
-        final ItemSelectionModel<Node> nodeSelection = editor.getNodeSelection();
-        final ItemSelectionModel<Edge> edgeSelection = editor.getEdgeSelection();
+        final PhyloTree graph = view.getGraph();
 
-        final Collection<Integer> nodeIds = nodeSelection.getSelectedItems().stream().map(Node::getId).collect(Collectors.toList());
-        final Collection<Integer> edgeIds = edgeSelection.getSelectedItems().stream().map(Edge::getId).collect(Collectors.toList());
+        final ArrayList<NodeData> nodeDataList = new ArrayList<>();
 
-        for (Node v : nodeSelection.getSelectedItems()) {
-            edgeIds.addAll(Basic.asList(v.adjacentEdges()).stream().map(Edge::getId).collect(Collectors.toList()));
+        final ArrayList<EdgeData> edgeDataList = new ArrayList<>();
+
+        final Set<Edge> edges = new HashSet<>(view.getEdgeSelection().getSelectedItems());
+
+        for (Node v : view.getNodeSelection().getSelectedItems()) {
+            nodeDataList.add(new NodeData(v.getId(), view.getNodeView(v)));
+            edges.addAll(Basic.asList(v.adjacentEdges()));
+        }
+
+        for (Edge e : edges) {
+            edgeDataList.add(new EdgeData(e.getId(), e.getSource().getId(), e.getTarget().getId(), view.getEdgeView(e)));
         }
 
         undo = () -> {
-            nodeSelection.clearSelection();
-            edgeSelection.clearSelection();
-            for (OldNodeData data : oldNodeData) {
-                Node v = graph.newNode(null, data.id);
-                editor.addNode(v, pane, data.x, data.y);
-                graph.setLabel(v, data.label);
-                editor.getLabel(v).setText(data.label);
-                nodeSelection.select(v);
+            view.getNodeSelection().clearSelection();
+            view.getEdgeSelection().clearSelection();
+            for (NodeData data : nodeDataList) {
+                final Node v = graph.newNode(null, data.id);
+                data.apply(view.addNode(v, pane, data.x, data.y));
+                view.getNodeSelection().select(v);
             }
-            for (OldEdgeData data : oldEdgeData) {
+            for (EdgeData data : edgeDataList) {
                 final Node v = graph.searchNodeId(data.sourceId);
                 final Node w = graph.searchNodeId(data.targetId);
-                final Edge e = graph.newEdge(v, w, null, data.edgeId);
-                editor.addEdge(e);
-                final EdgeView edgeView = editor.getEdgeView(e);
-                edgeView.setControlCoordinates(data.controlCoordinates);
-                edgeSelection.select(e);
+                final Edge e = graph.newEdge(v, w, null, data.id);
+                data.apply(view.addEdge(e));
+                view.getEdgeSelection().select(e);
             }
         };
 
         redo = () -> {
-            oldNodeData.clear();
-            oldEdgeData.clear();
-
-            for (int id : edgeIds) {
-                final Edge e = graph.searchEdgeId(id);
-                oldEdgeData.add(new OldEdgeData(e.getId(), e.getSource().getId(), e.getTarget().getId(), editor.getEdgeView(e).getControlCoordinates()));
-                editor.removeEdge(e);
+            for (EdgeData data : edgeDataList) {
+                final Edge e = graph.searchEdgeId(data.id);
+                view.removeEdge(e);
                 graph.deleteEdge(e);
             }
-            for (int id : nodeIds) {
-                final Node v = graph.searchNodeId(id);
-                oldNodeData.add(new OldNodeData(v.getId(), graph.getLabel(v), editor.getNodeView(v).getTranslateX(), editor.getNodeView(v).getTranslateY()));
-                editor.removeNode(v);
+            for (NodeData data : nodeDataList) {
+                final Node v = graph.searchNodeId(data.id);
+                view.removeNode(v);
                 graph.deleteNode(v);
             }
         };
@@ -130,31 +125,67 @@ public class DeleteNodesEdgesCommand extends UndoableRedoableCommand {
         redo.run();
     }
 
-    static class OldNodeData {
+    static class NodeData {
         final int id;
-        final String label;
         final double x;
         final double y;
+        final Paint fill;
+        final NodeShape nodeShape;
 
-        public OldNodeData(int id, String label, double x, double y) {
+        final String text;
+        final double lx;
+        final double ly;
+        final Paint textFill;
+
+
+        public NodeData(int id, NodeView nv) {
             this.id = id;
-            this.label = label;
-            this.x = x;
-            this.y = y;
+            this.x = nv.getTranslateX();
+            this.y = nv.getTranslateY();
+            this.fill = nv.getShape().getFill();
+            this.nodeShape = NodeShape.valueOf(nv.getShape());
+            this.text = nv.getLabel().getText();
+            this.lx = nv.getLabel().getLayoutX();
+            this.ly = nv.getLabel().getLayoutY();
+            this.textFill = nv.getLabel().getTextFill();
+        }
+
+        public void apply(NodeView nv) {
+            nv.setTranslateX(x);
+            nv.setTranslateY(y);
+            nv.changeShape(nodeShape);
+            nv.getShape().setFill(fill);
+            nv.getLabel().setText(text);
+            nv.getLabel().setLayoutX(lx);
+            nv.getLabel().setLayoutY(ly);
+            nv.getLabel().setTextFill(textFill);
         }
     }
 
-    static class OldEdgeData {
-        final int edgeId;
+    static class EdgeData {
+        final int id;
         final int sourceId;
         final int targetId;
+        final double strokeWidth;
+        final Paint stroke;
         final double[] controlCoordinates;
+        final boolean arrow;
 
-        public OldEdgeData(int edgeId, int sourceId, int targetId, double[] controlCoordinates) {
-            this.edgeId = edgeId;
+        public EdgeData(int id, int sourceId, int targetId, EdgeView edgeView) {
+            this.id = id;
             this.sourceId = sourceId;
             this.targetId = targetId;
-            this.controlCoordinates = controlCoordinates;
+            this.controlCoordinates = edgeView.getControlCoordinates();
+            this.strokeWidth = edgeView.getCurve().getStrokeWidth();
+            this.stroke = edgeView.getCurve().getStroke();
+            this.arrow = edgeView.getArrowHead().isVisible();
+        }
+
+        public void apply(EdgeView edgeView) {
+            edgeView.setControlCoordinates(controlCoordinates);
+            edgeView.getCurve().setStrokeWidth(strokeWidth);
+            edgeView.getCurve().setStroke(stroke);
+            edgeView.getArrowHead().setVisible(arrow);
         }
     }
 }

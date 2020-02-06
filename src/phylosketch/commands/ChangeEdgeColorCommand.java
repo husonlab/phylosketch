@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * undoable
+ * undoable edge color change
  * Daniel Huson, 2.2020
  */
 public class ChangeEdgeColorCommand extends UndoableRedoableCommand {

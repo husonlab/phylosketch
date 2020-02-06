@@ -35,6 +35,7 @@ import javafx.scene.shape.Shape;
 import jloda.fx.util.GeometryUtilsFX;
 import jloda.fx.util.MouseDragClosestNode;
 import jloda.graph.Edge;
+import jloda.util.Pair;
 import phylosketch.commands.EdgeShapeCommand;
 
 import java.util.function.Function;
@@ -51,18 +52,18 @@ public class EdgeView {
     /**
      * constructor
      *
-     * @param editor
+     * @param view
      * @param edge
      * @param aX
      * @param aY
      * @param bX
      * @param bY
      */
-    public EdgeView(PhyloView editor, Edge edge, ReadOnlyDoubleProperty aX, ReadOnlyDoubleProperty aY, ReadOnlyDoubleProperty bX, ReadOnlyDoubleProperty bY) {
+    public EdgeView(PhyloView view, Edge edge, ReadOnlyDoubleProperty aX, ReadOnlyDoubleProperty aY, ReadOnlyDoubleProperty bX, ReadOnlyDoubleProperty bY) {
         curve = new CubicCurve();
         curve.setFill(Color.TRANSPARENT);
         curve.setStroke(Color.BLACK);
-        curve.setStrokeWidth(2);
+        curve.setStrokeWidth(3);
         curve.setPickOnBounds(false);
 
         curve.startXProperty().bind(aX);
@@ -87,25 +88,24 @@ public class EdgeView {
         id = edge.getId();
 
         // reference current translating control
-        final Function<Circle, Node> translatingControl = (circle) -> {
-            final Edge e = editor.getGraph().searchEdgeId(id);
-            final EdgeView edgeView = editor.getEdge2view().get(e);
+        final Function<Circle, Pair<Edge, Integer>> translatingControl = (circle) -> {
+            final Edge e = view.getGraph().searchEdgeId(id);
             if (circle == circle1)
-                return edgeView.getCircle1();
+                return new Pair<>(e, 1);
             else
-                return edgeView.getCircle2();
+                return new Pair<>(e, 2);
         };
 
-        MouseDragClosestNode.setup(curve, editor.getNode2View().get(edge.getSource()).getShapeGroup(), circle1,
-                editor.getNode2View().get(edge.getTarget()).getShapeGroup(), circle2,
-                (circle, delta) -> editor.getUndoManager().add(new EdgeShapeCommand("Edge Shape", translatingControl.apply((Circle) circle), delta)));
+        MouseDragClosestNode.setup(curve, view.getNode2View().get(edge.getSource()).getShapeGroup(), circle1,
+                view.getNode2View().get(edge.getTarget()).getShapeGroup(), circle2,
+                (circle, delta) -> view.getUndoManager().add(new EdgeShapeCommand(view, translatingControl.apply((Circle) circle), delta)));
 
         curve.setOnMouseClicked(c -> {
             if (!c.isShiftDown()) {
-                editor.getNodeSelection().clearSelection();
-                editor.getEdgeSelection().clearAndSelect(edge);
+                view.getNodeSelection().clearSelection();
+                view.getEdgeSelection().clearAndSelect(edge);
             } else
-                editor.getEdgeSelection().toggleSelection(edge);
+                view.getEdgeSelection().toggleSelection(edge);
         });
 
         arrowHead = new Polyline(-5, -3, 5, 0, -5, 3);

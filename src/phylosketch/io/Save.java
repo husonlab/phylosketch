@@ -47,6 +47,10 @@ import phylosketch.window.MainWindow;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * save file
+ * Daniel Huson, 1.2020
+ */
 public class Save {
     /**
      * save file
@@ -56,7 +60,7 @@ public class Save {
      * @throws IOException
      */
     public static void apply(File file, MainWindow window) {
-        PhyloEditorIO.save(file, window.getView());
+        PhyloSketchIO.save(file, window.getView());
     }
 
     /**

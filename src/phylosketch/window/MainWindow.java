@@ -67,7 +67,7 @@ import jloda.fx.window.MainWindowManager;
 import jloda.util.Basic;
 import jloda.util.FileOpenManager;
 import jloda.util.ProgramProperties;
-import phylosketch.io.PhyloEditorFileOpener;
+import phylosketch.io.PhyloSketchFileOpener;
 
 import java.util.Arrays;
 
@@ -92,7 +92,7 @@ public class MainWindow implements IMainWindow {
 
         FileOpenManager.setExtensions(Arrays.asList(new FileChooser.ExtensionFilter("Nexus", "*.nexus", "*.nex"),
                 new FileChooser.ExtensionFilter("All", "*.*")));
-        FileOpenManager.setFileOpener(new PhyloEditorFileOpener());
+        FileOpenManager.setFileOpener(new PhyloSketchFileOpener());
     }
 
     @Override

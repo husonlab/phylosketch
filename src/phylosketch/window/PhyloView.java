@@ -65,6 +65,7 @@ import javafx.scene.Group;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.CubicCurve;
@@ -205,10 +206,10 @@ public class PhyloView {
         nodeView.getLabel().textProperty().addListener((c, o, n) -> graph.setLabel(v, n));
         graphNodeLabels.getChildren().add(nodeView.getLabel());
 
-        nodeView.getShapeGroup().setOnContextMenuRequested((c) -> {
+        nodeView.getShapeGroup().setOnContextMenuRequested(c -> {
             final MenuItem setLabel = new MenuItem("Set Label");
             setLabel.setOnAction((e) -> NodeLabelDialog.apply(window.getStage(), this, v));
-            new ContextMenu(setLabel).show(window.getStage(), c.getScreenX(), c.getScreenY());
+            new ContextMenu(setLabel, new SeparatorMenuItem()).show(window.getStage(), c.getScreenX(), c.getScreenY());
         });
         return nodeView;
     }
@@ -219,7 +220,9 @@ public class PhyloView {
 
     public void removeNode(Node v) {
         for (Edge e : v.adjacentEdges()) {
-            graphEdges.getChildren().removeAll(edge2view.get(e).getChildren());
+            final EdgeView edgeView = getEdgeView(e);
+            if (edgeView != null)
+                graphEdges.getChildren().removeAll(edgeView.getChildren());
         }
         final NodeView nodeView = node2view.get(v);
         if (nodeView != null) {
@@ -384,7 +387,6 @@ public class PhyloView {
                     final Node w = findNodeIfHit(c.getScreenX(), c.getScreenY());
                     undoManager.doAndAdd(new NewEdgeAndNodeCommand(pane, this, v, w, x, y));
                     nodeView.getShapeGroup().setCursor(Cursor.CROSSHAIR);
-
                 }
                 moved.set(false);
             }

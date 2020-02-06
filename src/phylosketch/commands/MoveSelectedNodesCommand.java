@@ -46,6 +46,7 @@ import jloda.graph.NodeEdge;
 import jloda.phylo.PhyloTree;
 import phylosketch.window.PhyloView;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -65,14 +66,16 @@ public class MoveSelectedNodesCommand extends UndoableRedoableCommand {
      * @param dy
      * @param editor
      * @param selectedItems
-     * @param oldEdgeControlCoordinates
-     * @param newEdgeControlCoordinates
+     * @param oldEdgeControlCoordinates0
+     * @param newEdgeControlCoordinates0
      */
     public MoveSelectedNodesCommand(double dx, double dy, PhyloView editor, ObservableList<Node> selectedItems,
-                                    Map<Integer, double[]> oldEdgeControlCoordinates, Map<Integer, double[]> newEdgeControlCoordinates) {
+                                    Map<Integer, double[]> oldEdgeControlCoordinates0, Map<Integer, double[]> newEdgeControlCoordinates0) {
         super("Move");
 
         final PhyloTree graph = editor.getGraph();
+        final Map<Integer, double[]> oldEdgeControlCoordinates = new HashMap<>(oldEdgeControlCoordinates0);
+        final Map<Integer, double[]> newEdgeControlCoordinates = new HashMap<>(newEdgeControlCoordinates0);
 
         final List<Integer> nodeData = selectedItems.stream().map(NodeEdge::getId).collect(Collectors.toList());
         final List<Integer> edgeData = graph.edgeStream().filter(e -> oldEdgeControlCoordinates.containsKey(e.getId()) && newEdgeControlCoordinates.containsKey(e.getId()))

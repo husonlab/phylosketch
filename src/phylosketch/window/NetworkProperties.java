@@ -102,27 +102,27 @@ public class NetworkProperties {
         statusFlowPane.getChildren().clear();
 
         final PhyloTree graph = (PhyloTree) graphFX.getGraph();
-        statusFlowPane.getChildren().add(new Text("nodes: " + graph.getNumberOfNodes()));
-        statusFlowPane.getChildren().add(new Text("edges: " + graph.getNumberOfEdges()));
+        statusFlowPane.getChildren().add(newText("nodes: " + graph.getNumberOfNodes()));
+        statusFlowPane.getChildren().add(newText("edges: " + graph.getNumberOfEdges()));
         final boolean isRootedDag = isRootedDAG(graph);
-        statusFlowPane.getChildren().add(new Text("rooted DAG: " + isRootedDag));
+        statusFlowPane.getChildren().add(newText("rooted DAG: " + isRootedDag));
         final boolean isLeafLabeled = isLeafLabeled(graph);
-        statusFlowPane.getChildren().add(new Text("leaf-labeled: " + isLeafLabeled));
+        statusFlowPane.getChildren().add(newText("leaf-labeled: " + isLeafLabeled));
         leafLabeledDAGProperty.set(isRootedDag && isLeafLabeled);
 
         if (getLabel2Node(graph).size() != Basic.size(getNode2Label(graph).values()))
-            statusFlowPane.getChildren().add(new Text("multi-labeled"));
+            statusFlowPane.getChildren().add(newText("multi-labeled"));
 
         if (isRootedDag && isLeafLabeled) {
             final EdgeSet matching = OffspringGraphMatching.compute(graph);
             if (OffspringGraphMatching.isTreeBased(graph, matching))
-                statusFlowPane.getChildren().add(new Text("tree-based: true"));
+                statusFlowPane.getChildren().add(newText("tree-based: true"));
             else
-                statusFlowPane.getChildren().add(new Text("tree-based: +" + OffspringGraphMatching.discrepancy(graph, matching)));
+                statusFlowPane.getChildren().add(newText("tree-based: +" + OffspringGraphMatching.discrepancy(graph, matching)));
 
-            statusFlowPane.getChildren().add(new Text("tree-child: " + isTreeChild(graph)));
+            statusFlowPane.getChildren().add(newText("tree-child: " + isTreeChild(graph)));
 
-            statusFlowPane.getChildren().add(new Text("temporal: " + isTemporal(graph)));
+            statusFlowPane.getChildren().add(newText("temporal: " + isTemporal(graph)));
         }
 
         for (Object object : statusFlowPane.getChildren()) {
@@ -296,5 +296,11 @@ public class NetworkProperties {
             contractedGraph.contractEdges(reticulateEdges);
             return isRootedDAG(contractedGraph);
         }
+    }
+
+    public static Text newText(String label) {
+        final Text text = new Text(label);
+        text.setStyle("-fx-font-size: 18;");
+        return text;
     }
 }

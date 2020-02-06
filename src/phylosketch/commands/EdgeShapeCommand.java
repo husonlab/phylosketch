@@ -40,8 +40,11 @@
 package phylosketch.commands;
 
 import javafx.geometry.Point2D;
-import javafx.scene.Node;
+import javafx.scene.shape.CubicCurve;
 import jloda.fx.undo.UndoableRedoableCommand;
+import jloda.graph.Edge;
+import jloda.util.Pair;
+import phylosketch.window.PhyloView;
 
 /**
  * translate a node command
@@ -51,15 +54,30 @@ public class EdgeShapeCommand extends UndoableRedoableCommand {
     private final Runnable undo;
     private final Runnable redo;
 
-    public EdgeShapeCommand(String label, Node node, Point2D delta) {
-        super(label);
+    public EdgeShapeCommand(PhyloView phyloView, Pair<Edge, Integer> edgeAndControlId, Point2D delta) {
+        super("Edge Shape");
+        final int id = edgeAndControlId.get1().getId();
+        final int controlId = edgeAndControlId.get2();
+
         undo = () -> {
-            node.setTranslateX(node.getTranslateX() - delta.getX());
-            node.setTranslateY(node.getTranslateY() - delta.getY());
+            final CubicCurve curve = phyloView.getCurve(phyloView.getGraph().searchEdgeId(id));
+            if (controlId == 1) {
+                curve.setControlX1(curve.getControlX1() - delta.getX());
+                curve.setControlY1(curve.getControlY1() - delta.getY());
+            } else {
+                curve.setControlX2(curve.getControlX2() - delta.getX());
+                curve.setControlY2(curve.getControlY2() - delta.getY());
+            }
         };
         redo = () -> {
-            node.setTranslateX(node.getTranslateX() + delta.getX());
-            node.setTranslateY(node.getTranslateY() + delta.getY());
+            final CubicCurve curve = phyloView.getCurve(phyloView.getGraph().searchEdgeId(id));
+            if (controlId == 1) {
+                curve.setControlX1(curve.getControlX1() + delta.getX());
+                curve.setControlY1(curve.getControlY1() + delta.getY());
+            } else {
+                curve.setControlX2(curve.getControlX2() + delta.getX());
+                curve.setControlY2(curve.getControlY2() + delta.getY());
+            }
         };
     }
 

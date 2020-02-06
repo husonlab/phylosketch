@@ -1,5 +1,5 @@
 /*
- * PhyloEditorIO.java Copyright (C) 2020 Daniel H. Huson
+ * PhyloSketchIO.java Copyright (C) 2020 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -19,7 +19,7 @@
  */
 
 /*
- *  PhyloEditorIO.java Copyright (C) 2020 Daniel H. Huson
+ *  PhyloSketchIO.java Copyright (C) 2020 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -74,7 +74,7 @@ import java.util.Map;
  * Phylogenetic netwok I/O
  * Daniel Huson, 1.2020
  */
-public class PhyloEditorIO {
+public class PhyloSketchIO {
     /**
      * save network with all coordinates
      *

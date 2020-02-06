@@ -75,7 +75,7 @@ public class NodeView {
             newShape.setStroke(Color.BLACK);
             newShape.setStrokeWidth(2);
         } else {
-            ((ISized) shape).setSize(((ISized) shape).getWidth(), ((ISized) shape).getHeight());
+            ((ISized) newShape).setSize(((ISized) shape).getWidth(), ((ISized) shape).getHeight());
             newShape.setFill(shape.getFill());
             newShape.setStroke(shape.getStroke());
             newShape.setStrokeWidth(shape.getStrokeWidth());

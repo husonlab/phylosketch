@@ -26,12 +26,16 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
+import javafx.scene.control.Labeled;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import jloda.fx.control.ItemSelectionModel;
+import jloda.fx.find.FindToolBar;
+import jloda.fx.find.GraphSearcher;
 import jloda.fx.undo.UndoManager;
 import jloda.fx.util.BasicFX;
 import jloda.fx.util.Print;
@@ -42,6 +46,7 @@ import jloda.fx.window.WindowGeometry;
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
+import jloda.util.Basic;
 import jloda.util.FileOpenManager;
 import jloda.util.ProgramProperties;
 import phylosketch.commands.*;
@@ -57,7 +62,9 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.time.Duration;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -75,10 +82,15 @@ public class ControlBindings {
         final UndoManager undoManager = view.getUndoManager();
         final Pane mainPane = controller.getMainPane();
 
+        final BooleanProperty hasBackgroundImage = new SimpleBooleanProperty(false);
+        controller.getMainPane().getChildren().addListener((InvalidationListener) c -> {
+            hasBackgroundImage.set(controller.getMainPane().getChildren().size() > 0 && controller.getMainPane().getChildren().get(0) instanceof ImageView);
+        });
+
         mainPane.getChildren().add(view.getWorld());
 
-        controller.getInfoLabel().visibleProperty().bind(view.getGraphFX().emptyProperty());
-        controller.getInfoLabel().setMouseTransparent(true);
+        controller.getInfoLabelsVBox().visibleProperty().bind(view.getGraphFX().emptyProperty());
+        controller.getInfoLabelsVBox().setMouseTransparent(true);
 
         mainPane.prefWidthProperty().bind(controller.getBorderPane().widthProperty());
         mainPane.prefHeightProperty().bind(controller.getBorderPane().heightProperty());
@@ -130,7 +142,6 @@ public class ControlBindings {
                 controller.getSelectionLabel().setText("");
         });
 
-
         controller.getNewMenuItem().setOnAction(e -> NewWindow.apply());
 
         controller.getOpenMenuItem().setOnAction(e -> OpenDialog.apply(window.getStage()));
@@ -143,7 +154,7 @@ public class ControlBindings {
         controller.getSaveButton().setOnAction(controller.getSaveAsMenuItem().getOnAction());
         controller.getSaveButton().disableProperty().bind(controller.getSaveAsMenuItem().disableProperty());
 
-        controller.getExportMenuItem().setOnAction(e -> PhyloEditorIO.exportNewick(window.getStage(), view));
+        controller.getExportMenuItem().setOnAction(e -> PhyloSketchIO.exportNewick(window.getStage(), view));
         controller.getExportMenuItem().disableProperty().bind(isLeafLabeledDAG.not());
         controller.getExportButton().setOnAction(controller.getExportMenuItem().getOnAction());
         controller.getExportButton().disableProperty().bind(controller.getExportMenuItem().disableProperty());
@@ -175,6 +186,21 @@ public class ControlBindings {
             }
         });
 
+        controller.getCopyMenuItem().setOnAction(e -> {
+            if (view.getNodeSelection().getSelectedItems().size() > 0) {
+                final List<String> labels = graph.nodeStream().map(view::getLabel).filter(a -> a.getText().length() > 0).map(Labeled::getText).collect(Collectors.toList());
+                final ClipboardContent clipboardContent = new ClipboardContent();
+                clipboardContent.putString(Basic.toString(labels, "\n"));
+                Clipboard.getSystemClipboard().setContent(clipboardContent);
+            } else if (graph.getNumberOfNodes() > 0) {
+                final Image snapshot = controller.getMainPane().snapshot(null, null);
+                final ClipboardContent clipboardContent = new ClipboardContent();
+                clipboardContent.putImage(snapshot);
+                Clipboard.getSystemClipboard().setContent(clipboardContent);
+            }
+        });
+        controller.getCopyMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
+
         controller.getUndoMenuItem().setOnAction(e -> undoManager.undo());
         controller.getUndoMenuItem().disableProperty().bind(undoManager.undoableProperty().not());
         controller.getUndoMenuItem().textProperty().bind(undoManager.undoNameProperty());
@@ -187,8 +213,17 @@ public class ControlBindings {
             final Clipboard cb = Clipboard.getSystemClipboard();
             if (cb.hasImage()) {
                 Image image = cb.getImage();
-                undoManager.doAndAdd(new PasteImageCommand(window.getStage(), controller, image));
+                undoManager.doAndAdd(new SetImageCommand(window.getStage(), controller, image));
             }
+        });
+
+        controller.getRemoveBackgroundImageMenuItem().setOnAction(e -> undoManager.doAndAdd(new SetImageCommand(window.getStage(), controller, null)));
+        controller.getRemoveBackgroundImageMenuItem().disableProperty().bind(hasBackgroundImage.not());
+
+        controller.getLoadBackgroundImageMenuItem().setOnAction(e -> {
+            final Image image = ImageDialog.apply(window.getStage());
+            if (image != null)
+                undoManager.doAndAdd(new SetImageCommand(window.getStage(), controller, image));
         });
 
         controller.getDeleteMenuItem().setOnAction(e ->
@@ -220,12 +255,26 @@ public class ControlBindings {
         });
         controller.getCopyNewickMenuItem().disableProperty().bind(isLeafLabeledDAG.not());
 
+        final FindToolBar graphFindToolBar = new FindToolBar(new GraphSearcher(window.getController().getScrollPane(), view.getGraph(), view.getNodeSelection(), view::getLabel, (v, t) -> undoManager.doAndAdd(new ChangeLabelCommand(view, v, t))));
+        controller.getTopVBox().getChildren().add(graphFindToolBar);
+        controller.getFindMenuItem().setOnAction(c -> graphFindToolBar.setShowFindToolBar(true));
+        controller.getFindMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
+        controller.getFindAgainMenuItem().setOnAction(c -> graphFindToolBar.findAgain());
+        controller.getFindAgainMenuItem().disableProperty().bind(graphFindToolBar.canFindAgainProperty().not());
+        controller.getReplaceMenuItem().setOnAction(c -> graphFindToolBar.setShowReplaceToolBar(true));
+        controller.getReplaceMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getLabelLeavesABCMenuItem().setOnAction(c -> undoManager.doAndAdd(new ChangeNodeLabelsCommand(view, LabelLeaves.labelLeavesABC(view))));
         controller.getLabelLeavesABCMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
+        controller.getLabelABCButton().setOnAction(controller.getLabelLeavesABCMenuItem().getOnAction());
+        controller.getLabelABCButton().disableProperty().bind(controller.getLabelLeavesABCMenuItem().disableProperty());
+
         controller.getLabelLeaves123MenuItem().setOnAction(c -> undoManager.doAndAdd(new ChangeNodeLabelsCommand(view, LabelLeaves.labelLeaves123(view))));
         controller.getLabelLeaves123MenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
+
+        controller.getLabel123Button().setOnAction(controller.getLabelLeaves123MenuItem().getOnAction());
+        controller.getLabel123Button().disableProperty().bind(controller.getLabelLeaves123MenuItem().disableProperty());
 
         controller.getLabelLeavesMenuItem().setOnAction(c -> LabelLeaves.labelLeaves(window.getStage(), view));
         controller.getLabelLeavesMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
@@ -460,5 +509,13 @@ public class ControlBindings {
 
         controller.getLabelRightButton().setOnAction(controller.getLabelPositionRightMenuItem().getOnAction());
         controller.getLabelRightButton().disableProperty().bind(controller.getLabelPositionRightMenuItem().disableProperty());
+
+
+        controller.getLabelPositionCenterMenuItem().setOnAction(c -> undoManager.doAndAdd(new PositionNodeLabelsCommand(view, nodeSelection, PositionNodeLabelsCommand.Position.Center)));
+        controller.getLabelPositionCenterMenuItem().disableProperty().bind(noneSelected);
+
+        controller.getLabelCenterButton().setOnAction(controller.getLabelPositionCenterMenuItem().getOnAction());
+        controller.getLabelCenterButton().disableProperty().bind(controller.getLabelPositionCenterMenuItem().disableProperty());
+
     }
 }

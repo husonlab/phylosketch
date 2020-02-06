@@ -1,5 +1,5 @@
 /*
- * PhyloEditorFileOpener.java Copyright (C) 2020 Daniel H. Huson
+ *  Copyright (C) 2018. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -15,11 +15,10 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 /*
- *  PhyloEditorFileOpener.java Copyright (C) 2020 Daniel H. Huson
+ *  Copyright (C) 2018. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -39,42 +38,37 @@
 
 package phylosketch.io;
 
-import jloda.fx.util.RecentFilesManager;
-import jloda.fx.window.MainWindowManager;
+import javafx.scene.image.Image;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import jloda.fx.window.NotificationManager;
-import jloda.util.Basic;
-import phylosketch.util.NewWindow;
-import phylosketch.window.MainWindow;
+import jloda.util.ProgramProperties;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Objects;
-import java.util.function.Consumer;
 
 /**
- * opens a file
- * Daniel Huson, 1.2020
+ * ask for an image
+ * Daniel Huson, 2.2020
  */
-public class PhyloEditorFileOpener implements Consumer<String> {
+public class ImageDialog {
+    public static Image apply(Stage owner) {
+        final File previousFile = new File(ProgramProperties.get("ImageFile", ""));
+        final FileChooser fileChooser = new FileChooser();
+        if (previousFile.getParentFile() != null)
+            fileChooser.setInitialDirectory(previousFile.getParentFile());
+        fileChooser.setInitialFileName(previousFile.getName());
+        fileChooser.setTitle("Open Image File");
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Image", "*.png", "*.gif", "*.tiff", "*.jpg", "*.jpeg"));
 
-    @Override
-    public void accept(String fileName) {
-        MainWindow window = (MainWindow) MainWindowManager.getInstance().getLastFocusedMainWindow();
-        if (window == null || !window.isEmpty())
-            window = NewWindow.apply();
-
-        try {
-            if (Objects.requireNonNull(Basic.getFirstLineFromFile(new File(fileName))).trim().toLowerCase().startsWith("#nexus"))
-                PhyloEditorIO.open(window.getController().getMainPane(), window.getView(), new File(fileName));
-            else
-                PhyloEditorIO.importNewick(window.getController().getMainPane(), window.getView(), new File(fileName));
-
-            window.getView().setFileName(fileName);
-            RecentFilesManager.getInstance().insertRecentFile(fileName);
-
-        } catch (IOException e) {
-            NotificationManager.showError("Open file failed: " + e.getMessage());
+        final File selectedFile = fileChooser.showOpenDialog(owner);
+        if (selectedFile != null) {
+            ProgramProperties.put("ImageFile", selectedFile);
+            try {
+                return new Image(selectedFile.toURI().toURL().toString());
+            } catch (Exception ex) {
+                NotificationManager.showError("Load background image failed: " + ex);
+            }
         }
-
+        return null;
     }
 }

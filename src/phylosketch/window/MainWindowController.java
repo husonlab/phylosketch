@@ -124,6 +124,15 @@ public class MainWindowController {
     private MenuItem deleteMenuItem;
 
     @FXML
+    private MenuItem findMenuItem;
+
+    @FXML
+    private MenuItem findAgainMenuItem;
+
+    @FXML
+    private MenuItem replaceMenuItem;
+
+    @FXML
     private MenuItem selectAllMenuItem;
 
     @FXML
@@ -198,6 +207,10 @@ public class MainWindowController {
     private MenuItem labelPositionRightMenuItem;
 
     @FXML
+    private MenuItem labelPositionCenterMenuItem;
+
+
+    @FXML
     private MenuItem labelPositionAboveMenuItem;
 
     @FXML
@@ -259,13 +272,19 @@ public class MainWindowController {
     private Button exportButton;
 
     @FXML
+    private MenuItem loadBackgroundImageMenuItem;
+
+    @FXML
+    private MenuItem removeBackgroundImageMenuItem;
+
+    @FXML
     private Button printButton;
 
     @FXML
     private TitledPane formatTitledPane;
 
     @FXML
-    private Label infoLabel;
+    private VBox infoLabelsVBox;
 
     @FXML
     private BorderPane formatBorderPane;
@@ -304,11 +323,20 @@ public class MainWindowController {
     private MenuItem labelRightButton;
 
     @FXML
+    private MenuItem labelCenterButton;
+
+
+    @FXML
     private MenuItem labelAboveButton;
 
     @FXML
     private MenuItem labelBelowButton;
 
+    @FXML
+    private Button labelABCButton;
+
+    @FXML
+    private Button label123Button;
 
     private ZoomableScrollPane zoomableScrollPane;
 
@@ -451,6 +479,17 @@ public class MainWindowController {
         return deleteMenuItem;
     }
 
+    public MenuItem getFindMenuItem() {
+        return findMenuItem;
+    }
+
+    public MenuItem getFindAgainMenuItem() {
+        return findAgainMenuItem;
+    }
+
+    public MenuItem getReplaceMenuItem() {
+        return replaceMenuItem;
+    }
 
     public MenuItem getSelectAllMenuItem() {
         return selectAllMenuItem;
@@ -584,8 +623,8 @@ public class MainWindowController {
         return selectionLabel;
     }
 
-    public Label getInfoLabel() {
-        return infoLabel;
+    public VBox getInfoLabelsVBox() {
+        return infoLabelsVBox;
     }
 
     public ZoomableScrollPane getScrollPane() {
@@ -640,6 +679,10 @@ public class MainWindowController {
         return labelPositionRightMenuItem;
     }
 
+    public MenuItem getLabelPositionCenterMenuItem() {
+        return labelPositionCenterMenuItem;
+    }
+
     public MenuItem getLabelPositionAboveMenuItem() {
         return labelPositionAboveMenuItem;
     }
@@ -663,6 +706,7 @@ public class MainWindowController {
     public MenuItem getAlignRightButton() {
         return alignRightButton;
     }
+
 
     public MenuItem getAlignTopButton() {
         return alignTopButton;
@@ -692,11 +736,31 @@ public class MainWindowController {
         return labelRightButton;
     }
 
+    public MenuItem getLabelCenterButton() {
+        return labelCenterButton;
+    }
+
     public MenuItem getLabelAboveButton() {
         return labelAboveButton;
     }
 
     public MenuItem getLabelBelowButton() {
         return labelBelowButton;
+    }
+
+    public MenuItem getLoadBackgroundImageMenuItem() {
+        return loadBackgroundImageMenuItem;
+    }
+
+    public MenuItem getRemoveBackgroundImageMenuItem() {
+        return removeBackgroundImageMenuItem;
+    }
+
+    public Button getLabelABCButton() {
+        return labelABCButton;
+    }
+
+    public Button getLabel123Button() {
+        return label123Button;
     }
 }

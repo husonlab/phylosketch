@@ -53,7 +53,7 @@ import java.util.Collection;
  * daniel huson, 2.2020
  */
 public class PositionNodeLabelsCommand extends UndoableRedoableCommand {
-    public enum Position {Above, Below, Left, Right}
+    public enum Position {Above, Below, Left, Right, Center}
 
     private final Runnable undo;
     private final Runnable redo;
@@ -82,6 +82,11 @@ public class PositionNodeLabelsCommand extends UndoableRedoableCommand {
                     dataList.add(new Data(v.getId(), nv.getLabel().getLayoutX(), (0.5 * nv.getWidth() + 5), nv.getLabel().getLayoutY(), -0.5 * nv.getLabel().getHeight()));
                     break;
                 }
+                case Center: {
+                    dataList.add(new Data(v.getId(), nv.getLabel().getLayoutX(), -0.5 * nv.getLabel().getWidth(), nv.getLabel().getLayoutY(), -0.5 * nv.getLabel().getHeight()));
+                    break;
+                }
+
             }
         });
 

@@ -1,5 +1,5 @@
 /*
- * PasteImageCommand.java Copyright (C) 2020 Daniel H. Huson
+ * SetImageCommand.java Copyright (C) 2020 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -19,7 +19,7 @@
  */
 
 /*
- *  PasteImageCommand.java Copyright (C) 2020 Daniel H. Huson
+ *  SetImageCommand.java Copyright (C) 2020 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -46,46 +46,57 @@ import jloda.fx.undo.UndoableRedoableCommand;
 import phylosketch.window.MainWindowController;
 
 /**
- * paste a background image
+ * set a background image
  * Daniel Huson, 1.2020
  */
-public class PasteImageCommand extends UndoableRedoableCommand {
+public class SetImageCommand extends UndoableRedoableCommand {
     private final Runnable undo;
     private final Runnable redo;
 
-    public PasteImageCommand(Stage stage, MainWindowController controller, Image image) {
-        super("Paste Image");
+    public SetImageCommand(Stage stage, MainWindowController controller, Image image) {
+        super(image != null ? "Set Background Image" : "Delete Background Image");
 
-        final ImageView prevView;
+        final ImageView oldImageView;
         if (controller.getMainPane().getChildren().get(0) instanceof ImageView)
-            prevView = (ImageView) controller.getMainPane().getChildren().get(0);
+            oldImageView = (ImageView) controller.getMainPane().getChildren().get(0);
         else
-            prevView = null;
+            oldImageView = null;
 
-        final ImageView newView = new ImageView(image);
-        newView.setOpacity(0.5);
-        newView.setPickOnBounds(true);
-        newView.setPreserveRatio(true);
-        newView.setMouseTransparent(true);
-
+        final ImageView newImageView;
+        if (image != null) {
+            newImageView = new ImageView(image);
+            newImageView.setOpacity(0.5);
+            newImageView.setPickOnBounds(true);
+            newImageView.setPreserveRatio(true);
+            newImageView.setMouseTransparent(true);
+        } else
+            newImageView = null;
 
         undo = () -> {
-            controller.getMainPane().getChildren().remove(newView);
-            newView.fitWidthProperty().unbind();
-            if (prevView != null) {
-                controller.getMainPane().getChildren().add(0, prevView);
-                prevView.fitWidthProperty().bind(controller.getToolBar().widthProperty().subtract(50));
+            if (newImageView != null) {
+                controller.getMainPane().getChildren().remove(newImageView);
+                newImageView.fitWidthProperty().unbind();
+                newImageView.fitHeightProperty().unbind();
+            }
+            if (oldImageView != null) {
+                controller.getMainPane().getChildren().add(0, oldImageView);
+                oldImageView.fitWidthProperty().bind(stage.widthProperty().subtract(100));
+                oldImageView.fitHeightProperty().bind(stage.heightProperty().subtract(100));
+
             }
         };
 
         redo = () -> {
-            if (prevView != null) {
-                controller.getMainPane().getChildren().remove(prevView);
-                prevView.fitWidthProperty().unbind();
+            if (oldImageView != null) {
+                controller.getMainPane().getChildren().remove(oldImageView);
+                oldImageView.fitWidthProperty().unbind();
+                oldImageView.fitHeightProperty().unbind();
             }
-            controller.getMainPane().getChildren().add(0, newView);
-            newView.fitWidthProperty().bind(controller.getToolBar().widthProperty().subtract(50));
-            //newView.setFitWidth(100);
+            if (newImageView != null) {
+                controller.getMainPane().getChildren().add(0, newImageView);
+                newImageView.fitWidthProperty().bind(stage.widthProperty().subtract(100));
+                newImageView.fitHeightProperty().bind(stage.heightProperty().subtract(100));
+            }
         };
     }
 
