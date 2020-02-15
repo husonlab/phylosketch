@@ -179,8 +179,8 @@ public class RootedNetworkEmbedder {
      */
     private static void computeYCoordinateOfInternalRec(Node v, NodeArray<List<Node>> node2LSAChildren, NodeDoubleArray yCoord) {
         if (v.getOutDegree() > 0) {
-            double first = Double.MIN_VALUE;
-            double last = Double.MIN_VALUE;
+            double first = Double.NEGATIVE_INFINITY;
+            double last = Double.NEGATIVE_INFINITY;
 
             for (Node w : node2LSAChildren.get(v)) {
                 double y = yCoord.getValue(w);
@@ -189,7 +189,7 @@ public class RootedNetworkEmbedder {
                     y = yCoord.getValue(w);
                 }
                 last = y;
-                if (first == Double.MIN_VALUE)
+                if (first == Double.NEGATIVE_INFINITY)
                     first = last;
             }
             yCoord.set(v, 0.5 * (last + first));
