@@ -1,7 +1,7 @@
 /*
- *  Copyright (C) 2018. Daniel H. Huson
+ * Version.java Copyright (C) 2020. Daniel H. Huson
  *
- *  (Some files contain contributions from other authors, who are then mentioned separately.)
+ * (Some code written by other authors, as named in code.)
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,13 +15,14 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 
 package phylosketch.main;
 
 public class Version {
     static public final String NAME = "PhyloSketch";
-    static public final String SHORT_DESCRIPTION = "PhyloSketch (version 0.0.1_alpha, built 4 Feb 2020)";
+    static public final String SHORT_DESCRIPTION = "PhyloSketch (version 0.0.2_alpha, built 6 Feb 2020)";
     static public final String VERSION = "0.0.1-alpha";
 
 }

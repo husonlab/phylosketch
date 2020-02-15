@@ -1,7 +1,7 @@
 /*
- *  Copyright (C) 2020. Daniel H. Huson
+ * ControlBindings.java Copyright (C) 2020. Daniel H. Huson
  *
- *  (Some files contain contributions from other authors, who are then mentioned separately.)
+ * (Some code written by other authors, as named in code.)
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,6 +15,7 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 
 package phylosketch.window;
@@ -426,8 +427,7 @@ public class ControlBindings {
         atMostOneSelected.bind(Bindings.size(nodeSelection).lessThanOrEqualTo(1));
 
         final BooleanProperty atMostTwoSelected = new SimpleBooleanProperty(false);
-        atMostOneSelected.bind(Bindings.size(nodeSelection).lessThanOrEqualTo(2));
-
+        atMostTwoSelected.bind(Bindings.size(nodeSelection).lessThanOrEqualTo(2));
 
         controller.getAlignTopMenuItem().setOnAction(c -> undoManager.doAndAdd(new AlignNodesCommand(view, nodeSelection, AlignNodesCommand.Alignment.Top)));
         controller.getAlignTopMenuItem().disableProperty().bind(atMostOneSelected);
