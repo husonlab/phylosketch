@@ -80,10 +80,18 @@ public class RootedNetworkEmbedder {
 
             final EdgeView edgeView = editor.addEdge(e);
             final CubicCurve curve = edgeView.getCurve();
-            curve.setControlX1(editor.getX(v));
-            curve.setControlY1(editor.getY(w));
-            curve.setControlX2(editor.getX(v));
-            curve.setControlY2(editor.getY(w));
+
+            if (editor.getX(v) == editor.getX(w) || editor.getY(v) == editor.getY(w)) {
+                curve.setControlX1(0.7 * editor.getX(v) + 0.3 * editor.getX(w));
+                curve.setControlX2(0.3 * editor.getX(v) + 0.7 * editor.getX(w));
+                curve.setControlY1(0.7 * editor.getY(v) + 0.3 * editor.getY(w));
+                curve.setControlY2(0.3 * editor.getY(v) + 0.7 * editor.getY(w));
+            } else {
+                curve.setControlX1(editor.getX(v));
+                curve.setControlY1(editor.getY(w));
+                curve.setControlX2(editor.getX(v));
+                curve.setControlY2(editor.getY(w));
+            }
         }
     }
 

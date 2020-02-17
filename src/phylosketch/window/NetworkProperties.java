@@ -47,6 +47,7 @@ import jloda.fx.graph.GraphFX;
 import jloda.graph.*;
 import jloda.phylo.PhyloTree;
 import jloda.util.Basic;
+import jloda.util.Single;
 import splitstree5.treebased.OffspringGraphMatching;
 
 import java.util.HashSet;
@@ -274,8 +275,9 @@ public class NetworkProperties {
         if (reticulateEdges.size() == 0)
             return true;
         else {
-            contractedGraph.contractEdges(reticulateEdges);
-            return isRootedDAG(contractedGraph);
+            final Single<Boolean> selfEdgeEncountered = new Single<>(false);
+            contractedGraph.contractEdges(reticulateEdges, selfEdgeEncountered);
+            return !selfEdgeEncountered.get() && isRootedDAG(contractedGraph);
         }
     }
 

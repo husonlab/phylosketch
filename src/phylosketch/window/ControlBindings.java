@@ -87,7 +87,7 @@ public class ControlBindings {
 
         scrollPane.setLockAspectRatio(false);
         scrollPane.setRequireShiftOrControlToZoom(true);
-        scrollPane.setPannable(true);
+        //scrollPane.setPannable(true);
 
         scrollPane.getContent().setStyle("-fx-background-color: white;");
 
