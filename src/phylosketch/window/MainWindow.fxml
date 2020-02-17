@@ -21,31 +21,238 @@
   -->
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.SeparatorMenuItem?>
-<?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.control.ToolBar?>
-<?import javafx.scene.control.Tooltip?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.input.KeyCodeCombination?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.input.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <AnchorPane prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="phylosketch.window.MainWindowController">
     <children>
-        <BorderPane fx:id="borderPane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <BorderPane fx:id="borderPane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
+                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <center>
+                <AnchorPane>
+                    <children>
+                        <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <center>
+                                <ScrollPane fx:id="scrollPane">
+                                    <content>
+                                        <Pane fx:id="contentPane" style="-fx-background-color: transparent;"/>
+                                    </content>
+                                </ScrollPane>
+                            </center>
+                            <top>
+                                <VBox fx:id="topVBox" BorderPane.alignment="CENTER">
+                                    <children>
+                                        <ToolBar fx:id="toolBar" prefHeight="35.0">
+                                            <items>
+                                                <Button fx:id="openButton" contentDisplay="GRAPHIC_ONLY"
+                                                        mnemonicParsing="false" text="Open">
+                                                    <graphic>
+                                                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                                                   preserveRatio="true">
+                                                            <image>
+                                                                <Image url="@/jloda/resources/icons/sun/Open16.gif"/>
+                                                            </image>
+                                                        </ImageView>
+                                                    </graphic>
+                                                    <tooltip>
+                                                        <Tooltip text="Open  file."/>
+                                                    </tooltip>
+                                                </Button>
+                                                <Separator maxHeight="-Infinity" minHeight="-Infinity"
+                                                           orientation="VERTICAL" prefHeight="16.0"/>
+                                                <Button fx:id="saveButton" contentDisplay="GRAPHIC_ONLY" layoutX="46.0"
+                                                        layoutY="11.0" mnemonicParsing="false" text="Save">
+                                                    <graphic>
+                                                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                                                   preserveRatio="true">
+                                                            <image>
+                                                                <Image url="@/jloda/resources/icons/sun/Save16.gif"/>
+                                                            </image>
+                                                        </ImageView>
+                                                    </graphic>
+                                                    <tooltip>
+                                                        <Tooltip text="Save to file."/>
+                                                    </tooltip>
+                                                </Button>
+                                                <Button fx:id="exportButton" contentDisplay="GRAPHIC_ONLY"
+                                                        layoutX="105.0" layoutY="11.0" mnemonicParsing="false"
+                                                        text="Export">
+                                                    <graphic>
+                                                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                                                   preserveRatio="true">
+                                                            <image>
+                                                                <Image url="@/jloda/resources/icons/sun/Export16.gif"/>
+                                                            </image>
+                                                        </ImageView>
+                                                    </graphic>
+                                                    <tooltip>
+                                                        <Tooltip text="Export in extended Newick  format."/>
+                                                    </tooltip>
+                                                </Button>
+                                                <Separator layoutX="63.0" layoutY="16.0" maxHeight="-Infinity"
+                                                           minHeight="-Infinity" orientation="VERTICAL"
+                                                           prefHeight="16.0"/>
+                                                <Button fx:id="printButton" contentDisplay="GRAPHIC_ONLY"
+                                                        layoutX="149.0" layoutY="11.0" mnemonicParsing="false"
+                                                        text="Print">
+                                                    <graphic>
+                                                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                                                   preserveRatio="true">
+                                                            <image>
+                                                                <Image url="@/jloda/resources/icons/sun/Print16.gif"/>
+                                                            </image>
+                                                        </ImageView>
+                                                    </graphic>
+                                                    <tooltip>
+                                                        <Tooltip text="Print image."/>
+                                                    </tooltip>
+                                                </Button>
+                                                <Separator layoutX="128.0" layoutY="16.0" maxHeight="-Infinity"
+                                                           minHeight="-Infinity" orientation="VERTICAL"
+                                                           prefHeight="16.0"/>
+                                                <MenuButton mnemonicParsing="false" text="Align">
+                                                    <items>
+                                                        <MenuItem fx:id="alignLeftButton" mnemonicParsing="false"
+                                                                  text="Left"/>
+                                                        <MenuItem fx:id="alignCenterButton" mnemonicParsing="false"
+                                                                  text="Center"/>
+                                                        <MenuItem fx:id="alignRightButton" mnemonicParsing="false"
+                                                                  text="Right"/>
+                                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                                        <MenuItem fx:id="alignTopButton" mnemonicParsing="false"
+                                                                  text="Top"/>
+                                                        <MenuItem fx:id="alignMiddleButton" mnemonicParsing="false"
+                                                                  text="Middle"/>
+                                                        <MenuItem fx:id="alignBottomButton" mnemonicParsing="false"
+                                                                  text="Bottom"/>
+                                                    </items>
+                                                    <tooltip>
+                                                        <Tooltip text="Align selected nodes (at least 2)."/>
+                                                    </tooltip>
+                                                </MenuButton>
+                                                <MenuButton layoutX="184.0" layoutY="14.0" mnemonicParsing="false"
+                                                            text="Distribute">
+                                                    <items>
+                                                        <MenuItem fx:id="distributeHorizontallyButton"
+                                                                  mnemonicParsing="false" text="Horizontally"/>
+                                                        <MenuItem fx:id="distributeVerticallyButton"
+                                                                  mnemonicParsing="false" text="Vertically"/>
+                                                    </items>
+                                                    <tooltip>
+                                                        <Tooltip
+                                                                text="Equally distributed selected nodes (at least 3)."/>
+                                                    </tooltip>
+                                                </MenuButton>
+                                                <MenuButton layoutX="252.0" layoutY="14.0" mnemonicParsing="false"
+                                                            text="Label Pos">
+                                                    <items>
+                                                        <MenuItem fx:id="labelLeftButton" mnemonicParsing="false"
+                                                                  text="Left"/>
+                                                        <MenuItem fx:id="labelRightButton" mnemonicParsing="false"
+                                                                  text="Right"/>
+                                                        <MenuItem fx:id="labelCenterButton" mnemonicParsing="false"
+                                                                  text="Center"/>
+                                                        <MenuItem fx:id="labelAboveButton" mnemonicParsing="false"
+                                                                  text="Above"/>
+                                                        <MenuItem fx:id="labelBelowButton" mnemonicParsing="false"
+                                                                  text="Below"/>
+                                                    </items>
+                                                    <tooltip>
+                                                        <Tooltip text="Set label position for selected nodes."/>
+                                                    </tooltip>
+                                                </MenuButton>
+                                                <Separator layoutX="174.0" layoutY="20.0" maxHeight="-Infinity"
+                                                           minHeight="-Infinity" orientation="VERTICAL"
+                                                           prefHeight="16.0"/>
+                                                <Button fx:id="labelABCButton" mnemonicParsing="false" text="ABC">
+                                                    <tooltip>
+                                                        <Tooltip text="Label all leaves A, B, C,..."/>
+                                                    </tooltip>
+                                                </Button>
+                                                <Button fx:id="label123Button" layoutX="448.0" layoutY="14.0"
+                                                        mnemonicParsing="false" text="123">
+                                                    <tooltip>
+                                                        <Tooltip text="Label all leaves 1, 2, 3,..."/>
+                                                    </tooltip>
+                                                </Button>
+                                            </items>
+                                            <padding>
+                                                <Insets left="110.0"/>
+                                            </padding>
+                                        </ToolBar>
+                                    </children>
+                                </VBox>
+                            </top>
+                        </BorderPane>
+                        <TitledPane fx:id="formatTitledPane" animated="false" maxHeight="2.0" maxWidth="-Infinity"
+                                    minHeight="2.0" minWidth="-Infinity" prefHeight="2.0" prefWidth="100.0"
+                                    text="Format" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="4.0">
+                            <tooltip>
+                                <Tooltip text="Open formatting panel."/>
+                            </tooltip>
+                        </TitledPane>
+                        <VBox fx:id="infoLabelsVBox" layoutX="60.0" layoutY="100.0" spacing="5.0"
+                              AnchorPane.leftAnchor="60.0" AnchorPane.topAnchor="100.0">
+                            <children>
+                                <Label text="- Double-click on window to create new node. ">
+                                    <font>
+                                        <Font size="14.0"/>
+                                    </font>
+                                </Label>
+                                <Label layoutX="10.0" layoutY="10.0" text="- Shift-drag on node to create new edge.">
+                                    <font>
+                                        <Font size="14.0"/>
+                                    </font>
+                                </Label>
+                                <Label layoutX="10.0" layoutY="33.0">
+                                    <font>
+                                        <Font size="14.0"/>
+                                    </font>
+                                </Label>
+                                <Label layoutX="10.0" layoutY="28.0" text="- Shift-drag on edge to change its shape.">
+                                    <font>
+                                        <Font size="14.0"/>
+                                    </font>
+                                </Label>
+                                <Label layoutX="10.0" layoutY="56.0"
+                                       text="- Press long on window and then drag for rubberband selection.">
+                                    <font>
+                                        <Font size="14.0"/>
+                                    </font>
+                                </Label>
+                                <Label layoutX="10.0" layoutY="79.0"
+                                       text="- Select multiple nodes and  use align or distribute items to improve layout.">
+                                    <font>
+                                        <Font size="14.0"/>
+                                    </font>
+                                </Label>
+                                <Label layoutX="10.0" layoutY="102.0" text="- Shift-scroll to zoom.">
+                                    <font>
+                                        <Font size="14.0"/>
+                                    </font>
+                                </Label>
+                                <Label layoutX="10.0" layoutY="56.0">
+                                    <font>
+                                        <Font size="14.0"/>
+                                    </font>
+                                </Label>
+                                <Label layoutX="10.0" layoutY="171.0"
+                                       text="- To capture a network, load as background image and trace over it.">
+                                    <font>
+                                        <Font size="14.0"/>
+                                    </font>
+                                </Label>
+                            </children>
+                        </VBox>
+                        <BorderPane fx:id="formatBorderPane"
+                                    style="-fx-background-color: #f4f4f4; -fx-border-color: lightgray;"
+                                    AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="38.0"/>
+                    </children>
+                </AnchorPane>
+            </center>
             <top>
                 <VBox BorderPane.alignment="CENTER">
                     <children>
@@ -55,7 +262,8 @@
                                     <items>
                                         <MenuItem fx:id="newMenuItem" mnemonicParsing="false" text="New...">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="N" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="N" control="UP" meta="UP" shift="UP"
+                                                                    shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
                                         <SeparatorMenuItem mnemonicParsing="false" />
@@ -325,185 +533,6 @@
                     </padding>
                 </FlowPane>
             </bottom>
-            <center>
-                <AnchorPane>
-                    <children>
-                        <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                            <center>
-                                <ScrollPane fx:id="scrollPane">
-                                    <content>
-                                        <Pane fx:id="mainPane" style="-fx-background-color: white;" />
-                                    </content>
-                                </ScrollPane>
-                            </center>
-                            <top>
-                                <VBox fx:id="topVBox" BorderPane.alignment="CENTER">
-                                    <children>
-                                        <ToolBar fx:id="toolBar" prefHeight="35.0">
-                                            <items>
-                                                <Button fx:id="openButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" text="Open">
-                                                    <graphic>
-                                                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                                            <image>
-                                                                <Image url="@/jloda/resources/icons/sun/Open16.gif" />
-                                                            </image>
-                                                        </ImageView>
-                                                    </graphic>
-                                                    <tooltip>
-                                                        <Tooltip text="Open  file." />
-                                                    </tooltip>
-                                                </Button>
-                                                <Separator maxHeight="-Infinity" minHeight="-Infinity" orientation="VERTICAL" prefHeight="16.0" />
-                                                <Button fx:id="saveButton" contentDisplay="GRAPHIC_ONLY" layoutX="46.0" layoutY="11.0" mnemonicParsing="false" text="Save">
-                                                    <graphic>
-                                                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                                            <image>
-                                                                <Image url="@/jloda/resources/icons/sun/Save16.gif" />
-                                                            </image>
-                                                        </ImageView>
-                                                    </graphic>
-                                                    <tooltip>
-                                                        <Tooltip text="Save to file." />
-                                                    </tooltip>
-                                                </Button>
-                                                <Button fx:id="exportButton" contentDisplay="GRAPHIC_ONLY" layoutX="105.0" layoutY="11.0" mnemonicParsing="false" text="Export">
-                                                    <graphic>
-                                                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                                            <image>
-                                                                <Image url="@/jloda/resources/icons/sun/Export16.gif" />
-                                                            </image>
-                                                        </ImageView>
-                                                    </graphic>
-                                                    <tooltip>
-                                                        <Tooltip text="Export in extended Newick  format." />
-                                                    </tooltip>
-                                                </Button>
-                                                <Separator layoutX="63.0" layoutY="16.0" maxHeight="-Infinity" minHeight="-Infinity" orientation="VERTICAL" prefHeight="16.0" />
-                                                <Button fx:id="printButton" contentDisplay="GRAPHIC_ONLY" layoutX="149.0" layoutY="11.0" mnemonicParsing="false" text="Print">
-                                                    <graphic>
-                                                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                                            <image>
-                                                                <Image url="@/jloda/resources/icons/sun/Print16.gif" />
-                                                            </image>
-                                                        </ImageView>
-                                                    </graphic>
-                                                    <tooltip>
-                                                        <Tooltip text="Print image." />
-                                                    </tooltip>
-                                                </Button>
-                                                <Separator layoutX="128.0" layoutY="16.0" maxHeight="-Infinity" minHeight="-Infinity" orientation="VERTICAL" prefHeight="16.0" />
-                                                <MenuButton mnemonicParsing="false" text="Align">
-                                                    <items>
-                                                        <MenuItem fx:id="alignLeftButton" mnemonicParsing="false" text="Left" />
-                                                        <MenuItem fx:id="alignCenterButton" mnemonicParsing="false" text="Center" />
-                                                        <MenuItem fx:id="alignRightButton" mnemonicParsing="false" text="Right" />
-                                                        <MenuItem fx:id="alignTopButton" mnemonicParsing="false" text="Top" />
-                                                        <MenuItem fx:id="alignMiddleButton" mnemonicParsing="false" text="Middle" />
-                                                        <MenuItem fx:id="alignBottomButton" mnemonicParsing="false" text="Bottom" />
-                                                    </items>
-                                                    <tooltip>
-                                                        <Tooltip text="Align selected nodes (at least 2)." />
-                                                    </tooltip>
-                                                </MenuButton>
-                                                <MenuButton layoutX="184.0" layoutY="14.0" mnemonicParsing="false" text="Distribute">
-                                                    <items>
-                                                        <MenuItem fx:id="distributeHorizontallyButton" mnemonicParsing="false" text="Horizontally" />
-                                                        <MenuItem fx:id="distributeVerticallyButton" mnemonicParsing="false" text="Vertically" />
-                                                    </items>
-                                                    <tooltip>
-                                                        <Tooltip text="Equally distributed selected nodes (at least 3)." />
-                                                    </tooltip>
-                                                </MenuButton>
-                                                <MenuButton layoutX="252.0" layoutY="14.0" mnemonicParsing="false" text="Label Pos">
-                                                    <items>
-                                                        <MenuItem fx:id="labelLeftButton" mnemonicParsing="false" text="Left" />
-                                                        <MenuItem fx:id="labelRightButton" mnemonicParsing="false" text="Right" />
-                                                        <MenuItem fx:id="labelCenterButton" mnemonicParsing="false" text="Center" />
-                                                        <MenuItem fx:id="labelAboveButton" mnemonicParsing="false" text="Above" />
-                                                        <MenuItem fx:id="labelBelowButton" mnemonicParsing="false" text="Below" />
-                                                    </items>
-                                                    <tooltip>
-                                                        <Tooltip text="Set label position for selected nodes." />
-                                                    </tooltip>
-                                                </MenuButton>
-                                                <Separator layoutX="174.0" layoutY="20.0" maxHeight="-Infinity" minHeight="-Infinity" orientation="VERTICAL" prefHeight="16.0" />
-                                                <Button fx:id="labelABCButton" mnemonicParsing="false" text="ABC">
-                                                    <tooltip>
-                                                        <Tooltip text="Label all leaves A, B, C,..." />
-                                                    </tooltip>
-                                                </Button>
-                                                <Button fx:id="label123Button" layoutX="448.0" layoutY="14.0" mnemonicParsing="false" text="123">
-                                                    <tooltip>
-                                                        <Tooltip text="Label all leaves 1, 2, 3,..." />
-                                                    </tooltip>
-                                                </Button>
-                                            </items>
-                                            <padding>
-                                                <Insets left="110.0" />
-                                            </padding>
-                                        </ToolBar>
-                                    </children>
-                                </VBox>
-                            </top>
-                        </BorderPane>
-                        <TitledPane fx:id="formatTitledPane" animated="false" maxHeight="2.0" maxWidth="-Infinity" minHeight="2.0" minWidth="-Infinity" prefHeight="2.0" prefWidth="100.0" text="Format" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="4.0">
-                            <tooltip>
-                                <Tooltip text="Open formatting panel." />
-                            </tooltip>
-                        </TitledPane>
-                        <VBox fx:id="infoLabelsVBox" layoutX="60.0" layoutY="100.0" spacing="5.0" AnchorPane.leftAnchor="60.0" AnchorPane.topAnchor="100.0">
-                            <children>
-                                <Label text="- Double-click on window to create new node. ">
-                                    <font>
-                                        <Font size="14.0" />
-                                    </font>
-                                </Label>
-                                <Label layoutX="10.0" layoutY="10.0" text="- Shift-drag on node to create new edge.">
-                                    <font>
-                                        <Font size="14.0" />
-                                    </font>
-                                </Label>
-                                <Label layoutX="10.0" layoutY="33.0">
-                                    <font>
-                                        <Font size="14.0" />
-                                    </font>
-                                </Label>
-                                <Label layoutX="10.0" layoutY="28.0" text="- Shift-drag on edge to change its shape.">
-                                    <font>
-                                        <Font size="14.0" />
-                                    </font>
-                                </Label>
-                                <Label layoutX="10.0" layoutY="56.0" text="- Press long on window and then drag for rubberband selection.">
-                                    <font>
-                                        <Font size="14.0" />
-                                    </font>
-                                </Label>
-                                <Label layoutX="10.0" layoutY="79.0" text="- Select multiple nodes and  use align or distribute items to improve layout.">
-                                    <font>
-                                        <Font size="14.0" />
-                                    </font>
-                                </Label>
-                                <Label layoutX="10.0" layoutY="102.0" text="- Shift-scroll to zoom.">
-                                    <font>
-                                        <Font size="14.0" />
-                                    </font>
-                                </Label>
-                                <Label layoutX="10.0" layoutY="56.0">
-                                    <font>
-                                        <Font size="14.0" />
-                                    </font>
-                                </Label>
-                                <Label layoutX="10.0" layoutY="171.0" text="- To capture a network, load as background image and trace over it.">
-                                    <font>
-                                        <Font size="14.0" />
-                                    </font>
-                                </Label>
-                            </children>
-                        </VBox>
-                        <BorderPane fx:id="formatBorderPane" style="-fx-background-color: #f4f4f4; -fx-border-color: lightgray;" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="38.0" />
-                    </children>
-                </AnchorPane>
-            </center>
         </BorderPane>
         <Label fx:id="selectionLabel" style="-fx-background-color: #f4f4f4;" text="Selection" textFill="GREY" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="30.0" />
     </children>

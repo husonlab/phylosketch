@@ -41,8 +41,8 @@ public class RubberBandSelectionHandler {
      * handles a rubber band selection
      */
     public static RubberBandSelection.Handler create(PhyloGraph graph, ItemSelectionModel<Node> nodeSelectionModel, ItemSelectionModel<Edge> edgeSelectionModel, Function<Node, javafx.scene.Node> node2node, Function<Edge, javafx.scene.Node> edge2node) {
-        final Set<Node> previouslySelectedNodes = new HashSet<>(nodeSelectionModel.getSelectedItems());
-        final Set<Edge> previouslySelectedEdges = new HashSet<>(edgeSelectionModel.getSelectedItems());
+        final Set<Node> previouslySelectedNodes = new HashSet<>(nodeSelectionModel.getSelectedItemsUnmodifiable());
+        final Set<Edge> previouslySelectedEdges = new HashSet<>(edgeSelectionModel.getSelectedItemsUnmodifiable());
 
 
         return (rectangle, extendSelection, ignored) -> {
@@ -67,9 +67,8 @@ public class RubberBandSelectionHandler {
                     }
                 }
             }
-            nodesToDeselect.forEach(nodeSelectionModel::clearSelection);
-            nodesToSelect.forEach(nodeSelectionModel::select);
-
+            nodeSelectionModel.clearSelectionAll(nodesToDeselect);
+            nodeSelectionModel.selectAll(nodesToSelect);
 
             final EdgeSet edgesToDeselect = new EdgeSet(graph);
             final EdgeSet edgesToSelect = new EdgeSet(graph);
@@ -82,8 +81,10 @@ public class RubberBandSelectionHandler {
                         edgesToSelect.add(e);
                 }
             }
-            edgesToDeselect.forEach(edgeSelectionModel::clearSelection);
-            edgesToSelect.forEach(edgeSelectionModel::select);
+
+            edgeSelectionModel.clearSelectionAll(edgesToDeselect);
+            edgeSelectionModel.selectAll(edgesToSelect);
+
         };
     }
 }

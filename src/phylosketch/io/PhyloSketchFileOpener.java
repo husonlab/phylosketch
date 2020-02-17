@@ -47,9 +47,9 @@ public class PhyloSketchFileOpener implements Consumer<String> {
 
         try {
             if (Objects.requireNonNull(Basic.getFirstLineFromFile(new File(fileName))).trim().toLowerCase().startsWith("#nexus"))
-                PhyloSketchIO.open(window.getController().getMainPane(), window.getView(), new File(fileName));
+                PhyloSketchIO.open(window.getController().getContentPane(), window.getView(), new File(fileName));
             else
-                PhyloSketchIO.importNewick(window.getController().getMainPane(), window.getView(), new File(fileName));
+                PhyloSketchIO.importNewick(window.getController().getContentPane(), window.getView(), new File(fileName));
 
             window.getView().setFileName(fileName);
             RecentFilesManager.getInstance().insertRecentFile(fileName);

@@ -35,6 +35,7 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import jloda.fx.control.ItemSelectionModel;
+import jloda.fx.control.ZoomableScrollPane;
 import jloda.fx.find.FindToolBar;
 import jloda.fx.find.GraphSearcher;
 import jloda.fx.undo.UndoManager;
@@ -81,26 +82,33 @@ public class ControlBindings {
         final ItemSelectionModel<Node> nodeSelection = view.getNodeSelection();
         final ItemSelectionModel<Edge> edgeSelection = view.getEdgeSelection();
         final UndoManager undoManager = view.getUndoManager();
-        final Pane mainPane = controller.getMainPane();
+
+        final ZoomableScrollPane scrollPane = controller.getScrollPane();
+
+        scrollPane.setLockAspectRatio(false);
+        scrollPane.setRequireShiftOrControlToZoom(true);
+        scrollPane.setPannable(true);
+
+        scrollPane.getContent().setStyle("-fx-background-color: white;");
+
+        final Pane contentPane = controller.getContentPane();
+        contentPane.getChildren().add(view.getWorld());
+
+        scrollPane.setUpdateScaleMethod(() -> ZoomCommand.zoom(scrollPane.getZoomFactorX(), scrollPane.getZoomFactorY(), contentPane, view));
+
+        contentPane.prefWidthProperty().bind(controller.getBorderPane().widthProperty());
+        contentPane.prefHeightProperty().bind(controller.getBorderPane().heightProperty());
 
         final BooleanProperty hasBackgroundImage = new SimpleBooleanProperty(false);
-        controller.getMainPane().getChildren().addListener((InvalidationListener) c -> {
-            hasBackgroundImage.set(controller.getMainPane().getChildren().size() > 0 && controller.getMainPane().getChildren().get(0) instanceof ImageView);
+        contentPane.getChildren().addListener((InvalidationListener) c -> {
+            hasBackgroundImage.set(contentPane.getChildren().size() > 0 && contentPane.getChildren().get(0) instanceof ImageView);
         });
-
-        mainPane.getChildren().add(view.getWorld());
 
         controller.getInfoLabelsVBox().visibleProperty().bind(view.getGraphFX().emptyProperty());
         controller.getInfoLabelsVBox().setMouseTransparent(true);
 
-        mainPane.prefWidthProperty().bind(controller.getBorderPane().widthProperty());
-        mainPane.prefHeightProperty().bind(controller.getBorderPane().heightProperty());
 
-        controller.getScrollPane().setLockAspectRatio(false);
-        controller.getScrollPane().setRequireShiftOrControlToZoom(true);
-        controller.getScrollPane().setUpdateScaleMethod(() -> ZoomCommand.zoom(controller.getScrollPane().getZoomFactorX(), controller.getScrollPane().getZoomFactorY(), mainPane, view));
-
-        new RubberBandSelection(mainPane, controller.getScrollPane(), view.getWorld(), RubberBandSelectionHandler.create(graph, nodeSelection,
+        new RubberBandSelection(contentPane, scrollPane, view.getWorld(), RubberBandSelectionHandler.create(graph, nodeSelection,
                 edgeSelection, v -> view.getNodeView(v).getShape(), view::getCurve));
 
         final BooleanProperty isLeafLabeledDAG = new SimpleBooleanProperty(false);
@@ -128,14 +136,14 @@ public class ControlBindings {
         });
 
         controller.getSelectionLabel().setText("");
-        nodeSelection.getSelectedItems().addListener((InvalidationListener) c -> {
+        nodeSelection.getSelectedItemsUnmodifiable().addListener((InvalidationListener) c -> {
             if (nodeSelection.size() > 0 || edgeSelection.size() > 0)
                 controller.getSelectionLabel().setText(String.format("Selected %d nodes and %d edges",
                         nodeSelection.size(), edgeSelection.size()));
             else
                 controller.getSelectionLabel().setText("");
         });
-        edgeSelection.getSelectedItems().addListener((InvalidationListener) c -> {
+        edgeSelection.getSelectedItemsUnmodifiable().addListener((InvalidationListener) c -> {
             if (nodeSelection.size() > 0 || edgeSelection.size() > 0)
                 controller.getSelectionLabel().setText(String.format("Selected %d node(s) and %d edge(s)",
                         nodeSelection.size(), edgeSelection.size()));
@@ -162,7 +170,7 @@ public class ControlBindings {
 
         controller.getPageSetupMenuItem().setOnAction((e) -> Print.showPageLayout(window.getStage()));
 
-        controller.getPrintMenuItem().setOnAction((e) -> Print.print(window.getStage(), mainPane));
+        controller.getPrintMenuItem().setOnAction((e) -> Print.print(window.getStage(), contentPane));
         controller.getPrintMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
         controller.getPrintButton().setOnAction(controller.getPrintMenuItem().getOnAction());
         controller.getPrintButton().disableProperty().bind(controller.getPrintMenuItem().disableProperty());
@@ -188,13 +196,13 @@ public class ControlBindings {
         });
 
         controller.getCopyMenuItem().setOnAction(e -> {
-            if (view.getNodeSelection().getSelectedItems().size() > 0) {
+            if (view.getNodeSelection().size() > 0) {
                 final List<String> labels = graph.nodeStream().map(view::getLabel).filter(a -> a.getText().length() > 0).map(Labeled::getText).collect(Collectors.toList());
                 final ClipboardContent clipboardContent = new ClipboardContent();
                 clipboardContent.putString(Basic.toString(labels, "\n"));
                 Clipboard.getSystemClipboard().setContent(clipboardContent);
             } else if (graph.getNumberOfNodes() > 0) {
-                final Image snapshot = controller.getMainPane().snapshot(null, null);
+                final Image snapshot = contentPane.snapshot(null, null);
                 final ClipboardContent clipboardContent = new ClipboardContent();
                 clipboardContent.putImage(snapshot);
                 Clipboard.getSystemClipboard().setContent(clipboardContent);
@@ -214,27 +222,30 @@ public class ControlBindings {
             final Clipboard cb = Clipboard.getSystemClipboard();
             if (cb.hasImage()) {
                 Image image = cb.getImage();
-                undoManager.doAndAdd(new SetImageCommand(window.getStage(), controller, image));
+                undoManager.doAndAdd(new SetImageCommand(window.getStage(), controller.getContentPane(), image));
             }
         });
 
-        controller.getRemoveBackgroundImageMenuItem().setOnAction(e -> undoManager.doAndAdd(new SetImageCommand(window.getStage(), controller, null)));
+        controller.getRemoveBackgroundImageMenuItem().setOnAction(e -> undoManager.doAndAdd(new SetImageCommand(window.getStage(), controller.getContentPane(), null)));
         controller.getRemoveBackgroundImageMenuItem().disableProperty().bind(hasBackgroundImage.not());
 
         controller.getLoadBackgroundImageMenuItem().setOnAction(e -> {
             final Image image = ImageDialog.apply(window.getStage());
             if (image != null)
-                undoManager.doAndAdd(new SetImageCommand(window.getStage(), controller, image));
+                undoManager.doAndAdd(new SetImageCommand(window.getStage(), controller.getContentPane(), image));
         });
 
         controller.getDeleteMenuItem().setOnAction(e ->
-                undoManager.doAndAdd(new DeleteNodesEdgesCommand(mainPane, view)));
+                undoManager.doAndAdd(new DeleteNodesEdgesCommand(contentPane, view)));
         controller.getDeleteMenuItem().disableProperty().bind(nodeSelection.sizeProperty().isEqualTo(0).and(edgeSelection.sizeProperty().isEqualTo(0)));
 
-        mainPane.setOnMousePressed((e) -> {
+        contentPane.setOnMousePressed((e) -> {
             if (e.getClickCount() == 2) {
-                final Point2D location = mainPane.sceneToLocal(e.getSceneX(), e.getSceneY());
-                undoManager.doAndAdd(new CreateNodeCommand(mainPane, view, location.getX(), location.getY()));
+                final Point2D location = contentPane.sceneToLocal(e.getSceneX(), e.getSceneY());
+                System.err.println("Location: " + location);
+                System.err.println("Location on screen: " + contentPane.localToScreen(location));
+
+                undoManager.doAndAdd(new CreateNodeCommand(contentPane, view, location.getX(), location.getY()));
             } else if (e.getClickCount() == 1 && !e.isShiftDown())
                 controller.getSelectNoneMenuItem().getOnAction().handle(null);
         });
@@ -280,19 +291,19 @@ public class ControlBindings {
         controller.getLabelLeavesMenuItem().setOnAction(c -> LabelLeaves.labelLeaves(window.getStage(), view));
         controller.getLabelLeavesMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
-        controller.getZoomInVerticallyMenuItem().setOnAction(e -> controller.getScrollPane().zoomBy(1, 1.1));
+        controller.getZoomInVerticallyMenuItem().setOnAction(e -> scrollPane.zoomBy(1, 1.1));
         controller.getZoomInVerticallyMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
-        controller.getZoomOutVerticallyMenuItem().setOnAction(e -> controller.getScrollPane().zoomBy(1, 1 / 1.1));
+        controller.getZoomOutVerticallyMenuItem().setOnAction(e -> scrollPane.zoomBy(1, 1 / 1.1));
         controller.getZoomOutVerticallyMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
-        controller.getZoomInHorizontallyMenuItem().setOnAction(e -> controller.getScrollPane().zoomBy(1.1, 1));
+        controller.getZoomInHorizontallyMenuItem().setOnAction(e -> scrollPane.zoomBy(1.1, 1));
         controller.getZoomInHorizontallyMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
-        controller.getZoomOutHorizontallyMenuItem().setOnAction(e -> controller.getScrollPane().zoomBy(1 / 1.1, 1));
+        controller.getZoomOutHorizontallyMenuItem().setOnAction(e -> scrollPane.zoomBy(1 / 1.1, 1));
         controller.getZoomOutHorizontallyMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getIncreaseFontSizeMenuItem().setOnAction(c -> {
             view.setFont(Font.font(view.getFont().getName(), view.getFont().getSize() + 2));
-            final Stream<Node> stream = (nodeSelection.size() > 0 ? nodeSelection.getSelectedItems().stream() : graph.nodeStream());
+            final Stream<Node> stream = (nodeSelection.size() > 0 ? nodeSelection.getSelectedItemsUnmodifiable().stream() : graph.nodeStream());
             stream.map(view::getLabel).forEach(a -> a.setFont(Font.font(a.getFont().getName(), a.getFont().getSize() + 2)));
         });
         controller.getIncreaseFontSizeMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
@@ -300,7 +311,7 @@ public class ControlBindings {
         controller.getDecreaseFontSizeMenuItem().setOnAction(c -> {
             if (view.getFont().getSize() - 2 >= 4) {
                 view.setFont(Font.font(view.getFont().getName(), view.getFont().getSize() - 2));
-                final Stream<Node> stream = (nodeSelection.size() > 0 ? nodeSelection.getSelectedItems().stream() : graph.nodeStream());
+                final Stream<Node> stream = (nodeSelection.size() > 0 ? nodeSelection.getSelectedItemsUnmodifiable().stream() : graph.nodeStream());
                 stream.filter(v -> view.getLabel(v).getFont().getSize() >= 6).map(view::getLabel)
                         .forEach(a -> a.setFont(Font.font(a.getFont().getName(), a.getFont().getSize() - 2)));
             }
@@ -313,8 +324,8 @@ public class ControlBindings {
         RecentFilesManager.getInstance().setFileOpener(FileOpenManager.getFileOpener());
         RecentFilesManager.getInstance().setupMenu(controller.getRecentMenu());
 
-        controller.getStraightenEdgesMenuItem().setOnAction(c -> undoManager.doAndAdd(new StraightenEdgesCommand(view, view.getEdgeSelection().getSelectedItems())));
-        controller.getStraightenEdgesMenuItem().disableProperty().bind(Bindings.isEmpty(view.getEdgeSelection().getSelectedItems()));
+        controller.getStraightenEdgesMenuItem().setOnAction(c -> undoManager.doAndAdd(new StraightenEdgesCommand(view, view.getEdgeSelection().getSelectedItemsUnmodifiable())));
+        controller.getStraightenEdgesMenuItem().disableProperty().bind(view.getEdgeSelection().emptyProperty());
 
         controller.getAboutMenuItem().setOnAction((e) -> SplashScreen.showSplash(Duration.ofMinutes(2)));
 
@@ -351,7 +362,7 @@ public class ControlBindings {
             nodeSelection.clearSelection();
             edgeSelection.clearSelection();
         });
-        controller.getSelectNoneMenuItem().disableProperty().bind(Bindings.isEmpty(nodeSelection.getSelectedItems()).and(Bindings.isEmpty(edgeSelection.getSelectedItems())));
+        controller.getSelectNoneMenuItem().disableProperty().bind(nodeSelection.emptyProperty().and(edgeSelection.emptyProperty()));
 
         controller.getSelectInvertMenuItem().setOnAction(e -> {
             graph.nodes().forEach(nodeSelection::toggleSelection);
@@ -377,7 +388,7 @@ public class ControlBindings {
         controller.getSelectTreeNodesMenuItem().disableProperty().bind(editor.getGraphFX().emptyProperty());
 
         controller.getSelectAllAboveMenuItem().setOnAction(c -> {
-            final Queue<Node> list = new LinkedList<>(nodeSelection.getSelectedItems());
+            final Queue<Node> list = new LinkedList<>(nodeSelection.getSelectedItemsUnmodifiable());
 
             while (list.size() > 0) {
                 Node v = list.remove();
@@ -391,10 +402,10 @@ public class ControlBindings {
                 }
             }
         });
-        controller.getSelectAllAboveMenuItem().disableProperty().bind(Bindings.isEmpty(nodeSelection.getSelectedItems()));
+        controller.getSelectAllAboveMenuItem().disableProperty().bind(nodeSelection.emptyProperty());
 
         controller.getSelectAllBelowMenuItem().setOnAction(c -> {
-            final Queue<Node> list = new LinkedList<>(nodeSelection.getSelectedItems());
+            final Queue<Node> list = new LinkedList<>(nodeSelection.getSelectedItemsUnmodifiable());
 
             while (list.size() > 0) {
                 Node v = list.remove();
@@ -408,7 +419,7 @@ public class ControlBindings {
                 }
             }
         });
-        controller.getSelectAllBelowMenuItem().disableProperty().bind(Bindings.isEmpty(nodeSelection.getSelectedItems()));
+        controller.getSelectAllBelowMenuItem().disableProperty().bind(nodeSelection.emptyProperty());
 
         controller.getSelectTreeEdgesMenuItem().setOnAction(c -> graph.edgeStream().filter(e -> e.getTarget().getInDegree() <= 1).forEach(edgeSelection::select));
         controller.getSelectReticulateEdgesMenuItem().disableProperty().bind(editor.getGraphFX().emptyProperty());
@@ -421,7 +432,7 @@ public class ControlBindings {
     public static void setupAlign(PhyloView view, MainWindowController controller) {
         final UndoManager undoManager = view.getUndoManager();
 
-        final ObservableList<Node> nodeSelection = view.getNodeSelection().getSelectedItems();
+        final ObservableList<Node> nodeSelection = view.getNodeSelection().getSelectedItemsUnmodifiable();
 
         final BooleanProperty atMostOneSelected = new SimpleBooleanProperty(false);
         atMostOneSelected.bind(Bindings.size(nodeSelection).lessThanOrEqualTo(1));
@@ -481,7 +492,7 @@ public class ControlBindings {
     public static void setupLabelPosition(PhyloView view, MainWindowController controller) {
         final UndoManager undoManager = view.getUndoManager();
 
-        final ObservableList<Node> nodeSelection = view.getNodeSelection().getSelectedItems();
+        final ObservableList<Node> nodeSelection = view.getNodeSelection().getSelectedItemsUnmodifiable();
 
         final BooleanProperty noneSelected = new SimpleBooleanProperty(false);
         noneSelected.bind(Bindings.size(nodeSelection).isEqualTo(0));

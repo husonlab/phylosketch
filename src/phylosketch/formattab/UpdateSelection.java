@@ -47,7 +47,7 @@ public class UpdateSelection {
             NodeShape nodeShape = null;
             boolean nodeShapeSame = true;
 
-            for (Node v : phyloView.getNodeSelection().getSelectedItems()) {
+            for (Node v : phyloView.getNodeSelection().getSelectedItemsUnmodifiable()) {
                 final NodeView nodeView = phyloView.getNodeView(v);
                 if (nodeColorSame) {
                     if (nodeColor == null)
@@ -117,7 +117,7 @@ public class UpdateSelection {
             Boolean arrow = null;
             boolean arrowSame = true;
 
-            for (Edge e : phyloView.getEdgeSelection().getSelectedItems()) {
+            for (Edge e : phyloView.getEdgeSelection().getSelectedItemsUnmodifiable()) {
                 final EdgeView edgeView = phyloView.getEdgeView(e);
                 if (colorSame) {
                     if (color == null) {

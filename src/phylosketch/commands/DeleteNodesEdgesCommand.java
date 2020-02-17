@@ -53,9 +53,9 @@ public class DeleteNodesEdgesCommand extends UndoableRedoableCommand {
 
         final ArrayList<EdgeData> edgeDataList = new ArrayList<>();
 
-        final Set<Edge> edges = new HashSet<>(view.getEdgeSelection().getSelectedItems());
+        final Set<Edge> edges = new HashSet<>(view.getEdgeSelection().getSelectedItemsUnmodifiable());
 
-        for (Node v : view.getNodeSelection().getSelectedItems()) {
+        for (Node v : view.getNodeSelection().getSelectedItemsUnmodifiable()) {
             nodeDataList.add(new NodeData(v.getId(), view.getNodeView(v)));
             edges.addAll(Basic.asList(v.adjacentEdges()));
         }

@@ -239,7 +239,7 @@ public class MainWindowController {
     private ScrollPane scrollPane;
 
     @FXML
-    private Pane mainPane;
+    private Pane contentPane;
 
     @FXML
     private ToolBar toolBar;
@@ -322,7 +322,6 @@ public class MainWindowController {
 
     private ZoomableScrollPane zoomableScrollPane;
 
-
     @FXML
     void initialize() {
         increaseFontSizeMenuItem.setAccelerator(new KeyCharacterCombination("+", KeyCombination.SHORTCUT_DOWN, KeyCombination.SHIFT_ANY));
@@ -365,12 +364,9 @@ public class MainWindowController {
         MainWindowManager.getInstance().changedProperty().addListener(invalidationListener);
         invalidationListener.invalidated(null);
 
-
-        final BorderPane parentPane = (BorderPane) scrollPane.getParent();
-
-        zoomableScrollPane = new ZoomableScrollPane(scrollPane.getContent());
         scrollPane.setContent(null);
-        parentPane.setCenter(zoomableScrollPane);
+        zoomableScrollPane = new ZoomableScrollPane(contentPane);
+        ((BorderPane) scrollPane.getParent()).setCenter(zoomableScrollPane);
     }
 
     public BorderPane getBorderPane() {
@@ -597,10 +593,6 @@ public class MainWindowController {
         return statusFlowPane;
     }
 
-    public Pane getMainPane() {
-        return mainPane;
-    }
-
     public Label getSelectionLabel() {
         return selectionLabel;
     }
@@ -744,5 +736,9 @@ public class MainWindowController {
 
     public Button getLabel123Button() {
         return label123Button;
+    }
+
+    public Pane getContentPane() {
+        return contentPane;
     }
 }

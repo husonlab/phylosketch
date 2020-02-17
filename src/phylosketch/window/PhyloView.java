@@ -97,7 +97,7 @@ public class PhyloView {
         node2view = new NodeArray<>(graph);
         edge2view = new EdgeArray<>(graph);
 
-        nodeSelection.getSelectedItems().addListener((ListChangeListener<Node>) (e) -> {
+        nodeSelection.getSelectedItemsUnmodifiable().addListener((ListChangeListener<Node>) (e) -> {
             while (e.next()) {
                 for (Node v : e.getAddedSubList()) {
                     try {
@@ -117,7 +117,7 @@ public class PhyloView {
             }
         });
 
-        edgeSelection.getSelectedItems().addListener((ListChangeListener<Edge>) (e) -> {
+        edgeSelection.getSelectedItemsUnmodifiable().addListener((ListChangeListener<Edge>) (e) -> {
             while (e.next()) {
                 for (Edge edge : e.getAddedSubList()) {
                     try {
@@ -144,13 +144,13 @@ public class PhyloView {
 
         graphFX.getNodeList().addListener((ListChangeListener<Node>) c -> {
             while (c.next()) {
-                nodeSelection.getSelectedItems().removeAll(c.getRemoved());
+                nodeSelection.clearSelectionAll(c.getRemoved());
             }
         });
 
         graphFX.getEdgeList().addListener((ListChangeListener<Edge>) c -> {
             while (c.next()) {
-                edgeSelection.getSelectedItems().removeAll(c.getRemoved());
+                edgeSelection.clearSelectionAll(c.getRemoved());
             }
         });
 
@@ -201,7 +201,7 @@ public class PhyloView {
         final EdgeView edgeView = new EdgeView(this, e, sourceView.translateXProperty(), sourceView.translateYProperty(), targetView.translateXProperty(), targetView.translateYProperty());
         edge2view.setValue(e, edgeView);
 
-        EdgeContextMenu.setup(window.getController().getMainPane(), this, e);
+        EdgeContextMenu.setup(window.getController().getContentPane(), this, e);
 
         graphEdges.getChildren().addAll(edgeView.getChildren());
         return edgeView;
@@ -266,17 +266,17 @@ public class PhyloView {
                 final double deltaX = (mouseX - previousMousePosition[0]);
                 final double deltaY = (mouseY - previousMousePosition[1]);
 
-                for (Node u : getNodeSelection().getSelectedItems()) {
+                for (Node u : getNodeSelection().getSelectedItemsUnmodifiable()) {
                     {
-                            final double deltaXReshapeEdge = (mouseX - previousMousePosition[0]);
-                            final double deltaYReshapeEdge = (mouseY - previousMousePosition[1]);
+                        final double deltaXReshapeEdge = (mouseX - previousMousePosition[0]);
+                        final double deltaYReshapeEdge = (mouseY - previousMousePosition[1]);
 
-                            for (Edge e : u.outEdges()) {
-                                final EdgeView edgeView = edge2view.get(e);
+                        for (Edge e : u.outEdges()) {
+                            final EdgeView edgeView = edge2view.get(e);
 
-                                if (!oldControlPointLocations.containsKey(e.getId())) {
-                                    oldControlPointLocations.put(e.getId(), edgeView.getControlCoordinates());
-                                }
+                            if (!oldControlPointLocations.containsKey(e.getId())) {
+                                oldControlPointLocations.put(e.getId(), edgeView.getControlCoordinates());
+                            }
                                 edgeView.startMoved(deltaXReshapeEdge, deltaYReshapeEdge);
                                 newControlPointLocations.put(e.getId(), edgeView.getControlCoordinates());
                             }
@@ -327,7 +327,7 @@ public class PhyloView {
                     edgeSelection.clearSelection();
                     nodeSelection.select(v);
                 } else {
-                    if (nodeSelection.getSelectedItems().contains(v))
+                    if (nodeSelection.isSelected(v))
                         nodeSelection.clearSelection(v);
                     else
                         nodeSelection.select(v);
@@ -338,7 +338,7 @@ public class PhyloView {
                     final double dx = previousMousePosition[0] - mouseDownPosition[0];
                     final double dy = previousMousePosition[1] - mouseDownPosition[1];
                     undoManager.add(new MoveSelectedNodesCommand(dx, dy, this,
-                            nodeSelection.getSelectedItems(), oldControlPointLocations, newControlPointLocations));
+                            nodeSelection.getSelectedItemsUnmodifiable(), oldControlPointLocations, newControlPointLocations));
 
                 } else if (what.get() == What.growEdge) {
                     if (target.get() != null)
@@ -384,7 +384,7 @@ public class PhyloView {
                     edgeSelection.clearSelection();
                     nodeSelection.select(v);
                 } else {
-                    if (nodeSelection.getSelectedItems().contains(v))
+                    if (nodeSelection.isSelected(v))
                         nodeSelection.clearSelection(v);
                     else
                         nodeSelection.select(v);

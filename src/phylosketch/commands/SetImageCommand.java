@@ -22,9 +22,9 @@ package phylosketch.commands;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import jloda.fx.undo.UndoableRedoableCommand;
-import phylosketch.window.MainWindowController;
 
 /**
  * set a background image
@@ -34,12 +34,12 @@ public class SetImageCommand extends UndoableRedoableCommand {
     private final Runnable undo;
     private final Runnable redo;
 
-    public SetImageCommand(Stage stage, MainWindowController controller, Image image) {
+    public SetImageCommand(Stage stage, Pane contentPane, Image image) {
         super(image != null ? "Set Background Image" : "Delete Background Image");
 
         final ImageView oldImageView;
-        if (controller.getMainPane().getChildren().get(0) instanceof ImageView)
-            oldImageView = (ImageView) controller.getMainPane().getChildren().get(0);
+        if (contentPane.getChildren().get(0) instanceof ImageView)
+            oldImageView = (ImageView) contentPane.getChildren().get(0);
         else
             oldImageView = null;
 
@@ -55,12 +55,12 @@ public class SetImageCommand extends UndoableRedoableCommand {
 
         undo = () -> {
             if (newImageView != null) {
-                controller.getMainPane().getChildren().remove(newImageView);
+                contentPane.getChildren().remove(newImageView);
                 newImageView.fitWidthProperty().unbind();
                 newImageView.fitHeightProperty().unbind();
             }
             if (oldImageView != null) {
-                controller.getMainPane().getChildren().add(0, oldImageView);
+                contentPane.getChildren().add(0, oldImageView);
                 oldImageView.fitWidthProperty().bind(stage.widthProperty().subtract(100));
                 oldImageView.fitHeightProperty().bind(stage.heightProperty().subtract(100));
 
@@ -69,12 +69,12 @@ public class SetImageCommand extends UndoableRedoableCommand {
 
         redo = () -> {
             if (oldImageView != null) {
-                controller.getMainPane().getChildren().remove(oldImageView);
+                contentPane.getChildren().remove(oldImageView);
                 oldImageView.fitWidthProperty().unbind();
                 oldImageView.fitHeightProperty().unbind();
             }
             if (newImageView != null) {
-                controller.getMainPane().getChildren().add(0, newImageView);
+                contentPane.getChildren().add(0, newImageView);
                 newImageView.fitWidthProperty().bind(stage.widthProperty().subtract(100));
                 newImageView.fitHeightProperty().bind(stage.heightProperty().subtract(100));
             }
