@@ -199,7 +199,16 @@ public class MainWindowController {
     private MenuItem labelPositionBelowMenuItem;
 
     @FXML
+    private MenuItem removeDiNodesMenuItem;
+
+    @FXML
+    private MenuItem addDiNodesMenuItem;
+
+    @FXML
     private MenuItem straightenEdgesMenuItem;
+
+    @FXML
+    private MenuItem reshapeEdgesMenuItem;
 
     @FXML
     private MenuItem increaseFontSizeMenuItem;
@@ -665,8 +674,20 @@ public class MainWindowController {
         return labelPositionBelowMenuItem;
     }
 
+    public MenuItem getRemoveDiNodesMenuItem() {
+        return removeDiNodesMenuItem;
+    }
+
+    public MenuItem getAddDiNodesMenuItem() {
+        return addDiNodesMenuItem;
+    }
+
     public MenuItem getStraightenEdgesMenuItem() {
         return straightenEdgesMenuItem;
+    }
+
+    public MenuItem getReshapeEdgesMenuItem() {
+        return reshapeEdgesMenuItem;
     }
 
     public MenuItem getAlignLeftButton() {

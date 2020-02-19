@@ -28,7 +28,7 @@ import jloda.util.Pair;
 import phylosketch.window.PhyloView;
 
 /**
- * translate a node command
+ * change edge shape command
  * Daniel Huson, 1.2020
  */
 public class EdgeShapeCommand extends UndoableRedoableCommand {

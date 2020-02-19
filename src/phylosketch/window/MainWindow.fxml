@@ -359,11 +359,7 @@
                                                 <KeyCodeCombination alt="UP" code="G" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                                             </accelerator>
                                         </MenuItem>
-                                        <MenuItem fx:id="replaceMenuItem" mnemonicParsing="false" text="Replace...">
-                                            <accelerator>
-                                                <KeyCodeCombination alt="UP" code="R" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
-                                            </accelerator>
-                                        </MenuItem>
+                                        <MenuItem fx:id="replaceMenuItem" mnemonicParsing="false" text="Replace..."/>
                                     </items>
                                 </Menu>
                                 <Menu mnemonicParsing="false" text="Select">
@@ -455,17 +451,46 @@
                                         </Menu>
                                         <Menu mnemonicParsing="false" text="Label Position">
                                             <items>
-                                                <MenuItem fx:id="labelPositionLeftMenuItem" mnemonicParsing="false" text="Left" />
-                                                <MenuItem fx:id="labelPositionRightMenuItem" mnemonicParsing="false" text="Right" />
-                                                <MenuItem fx:id="labelPositionCenterMenuItem" mnemonicParsing="false" text="Center" />
-                                                <MenuItem fx:id="labelPositionAboveMenuItem" mnemonicParsing="false" text="Above" />
-                                                <MenuItem fx:id="labelPositionBelowMenuItem" mnemonicParsing="false" text="Below" />
+                                                <MenuItem fx:id="labelPositionLeftMenuItem" mnemonicParsing="false"
+                                                          text="Left"/>
+                                                <MenuItem fx:id="labelPositionRightMenuItem" mnemonicParsing="false"
+                                                          text="Right"/>
+                                                <MenuItem fx:id="labelPositionCenterMenuItem" mnemonicParsing="false"
+                                                          text="Center"/>
+                                                <MenuItem fx:id="labelPositionAboveMenuItem" mnemonicParsing="false"
+                                                          text="Above"/>
+                                                <MenuItem fx:id="labelPositionBelowMenuItem" mnemonicParsing="false"
+                                                          text="Below"/>
                                             </items>
                                         </Menu>
-                                        <SeparatorMenuItem mnemonicParsing="false" />
-                                        <MenuItem fx:id="straightenEdgesMenuItem" mnemonicParsing="false" text="Straighten Edges">
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="removeDiNodesMenuItem" mnemonicParsing="false"
+                                                  text="Remove Di Nodes">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="E" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="D" control="UP" meta="UP" shift="UP"
+                                                                    shortcut="DOWN"/>
+                                            </accelerator>
+                                        </MenuItem>
+                                        <MenuItem fx:id="addDiNodesMenuItem" mnemonicParsing="false"
+                                                  text="Add Di Nodes">
+                                            <accelerator>
+                                                <KeyCodeCombination alt="UP" code="D" control="UP" meta="UP"
+                                                                    shift="DOWN" shortcut="DOWN"/>
+                                            </accelerator>
+                                        </MenuItem>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="straightenEdgesMenuItem" mnemonicParsing="false"
+                                                  text="Straighten Edges">
+                                            <accelerator>
+                                                <KeyCodeCombination alt="UP" code="E" control="UP" meta="UP" shift="UP"
+                                                                    shortcut="DOWN"/>
+                                            </accelerator>
+                                        </MenuItem>
+                                        <MenuItem fx:id="reshapeEdgesMenuItem" mnemonicParsing="false"
+                                                  text="Reshape Edges">
+                                            <accelerator>
+                                                <KeyCodeCombination alt="UP" code="R" control="UP" meta="UP" shift="UP"
+                                                                    shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
                                     </items>
@@ -504,11 +529,13 @@
                                             </accelerator>
                                         </MenuItem>
 
-                                        <SeparatorMenuItem mnemonicParsing="false" />
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
 
-                                        <MenuItem fx:id="enterFullScreenMenuItem" mnemonicParsing="false" text="Enter Fullscreen">
+                                        <MenuItem fx:id="enterFullScreenMenuItem" mnemonicParsing="false"
+                                                  text="Enter Fullscreen">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="UP" shift="UP" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="UP"
+                                                                    shift="UP" shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
                                     </items>

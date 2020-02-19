@@ -51,6 +51,7 @@ import phylosketch.util.NodeLabelDialog;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * editor
@@ -322,15 +323,17 @@ public class PhyloView {
 
         nodeView.getShapeGroup().setOnMouseReleased(c -> {
             if (!moved.get()) {
-                if (!c.isShiftDown()) {
-                    nodeSelection.clearSelection();
-                    edgeSelection.clearSelection();
-                    nodeSelection.select(v);
-                } else {
-                    if (nodeSelection.isSelected(v))
-                        nodeSelection.clearSelection(v);
-                    else
+                if (!c.isPopupTrigger()) {
+                    if (!c.isShiftDown()) {
+                        nodeSelection.clearSelection();
+                        edgeSelection.clearSelection();
                         nodeSelection.select(v);
+                    } else {
+                        if (nodeSelection.isSelected(v))
+                            nodeSelection.clearSelection(v);
+                        else
+                            nodeSelection.select(v);
+                    }
                 }
             } else {
                 if (what.get() == What.moveNode) {
@@ -379,15 +382,17 @@ public class PhyloView {
 
         nodeView.getLabel().setOnMouseReleased(c -> {
             if (!moved.get()) {
-                if (!c.isShiftDown()) {
-                    nodeSelection.clearSelection();
-                    edgeSelection.clearSelection();
-                    nodeSelection.select(v);
-                } else {
-                    if (nodeSelection.isSelected(v))
-                        nodeSelection.clearSelection(v);
-                    else
+                if (!c.isPopupTrigger()) {
+                    if (!c.isShiftDown()) {
+                        nodeSelection.clearSelection();
+                        edgeSelection.clearSelection();
                         nodeSelection.select(v);
+                    } else {
+                        if (nodeSelection.isSelected(v))
+                            nodeSelection.clearSelection(v);
+                        else
+                            nodeSelection.select(v);
+                    }
                 }
             } else {
                 final double mouseX = c.getSceneX();
@@ -410,6 +415,25 @@ public class PhyloView {
                 return v;
         }
         return null;
+    }
+
+    /**
+     * is the layout horizontal (rather than vertical)
+     *
+     * @return true, if horizontal
+     */
+    public boolean isLeftToRightLayout() {
+        final Optional<Double> minx = graph.nodeStream().filter(v -> v.getOutDegree() == 0).map(v -> getNodeView(v).getTranslateX()).min(Double::compare);
+        final Optional<Double> maxx = graph.nodeStream().filter(v -> v.getOutDegree() == 0).map(v -> getNodeView(v).getTranslateX()).max(Double::compare);
+        final Optional<Double> miny = graph.nodeStream().filter(v -> v.getOutDegree() == 0).map(v -> getNodeView(v).getTranslateY()).min(Double::compare);
+        final Optional<Double> maxy = graph.nodeStream().filter(v -> v.getOutDegree() == 0).map(v -> getNodeView(v).getTranslateY()).max(Double::compare);
+
+        if (minx.isPresent() && maxx.isPresent() && miny.isPresent() && maxy.isPresent()) {
+            double dx = maxx.get() - minx.get();
+            double dy = maxy.get() - miny.get();
+            return dx <= dy;
+        }
+        return false;
     }
 
     public Font getFont() {

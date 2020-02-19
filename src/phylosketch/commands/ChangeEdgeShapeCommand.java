@@ -25,44 +25,71 @@ import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Edge;
 import phylosketch.window.PhyloView;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 public class ChangeEdgeShapeCommand extends UndoableRedoableCommand {
-    public enum EdgeShape {Straight, DownRight, RightDown}
+    public enum EdgeShape {Straight, DownRight, RightDown, Reshape}
 
     final private Runnable undo;
     final private Runnable redo;
 
-    public ChangeEdgeShapeCommand(PhyloView view, Edge e, EdgeShape shape) {
+    public ChangeEdgeShapeCommand(PhyloView view, Collection<Edge> edges, EdgeShape shape) {
         super("Edge Shape");
 
-        final int id = e.getId();
-        final double[] oldCoordinates = view.getEdgeView(e).getControlCoordinates();
+        final boolean isLeftToRight = shape == EdgeShape.Reshape && view.isLeftToRightLayout();
 
-        final double[] newCoordinates;
-        final Point2D start = new Point2D(view.getX(e.getSource()), view.getY(e.getSource()));
-        final Point2D end = new Point2D(view.getX(e.getTarget()), view.getY(e.getTarget()));
+        final Map<Integer, double[]> id2oldCoordinates = new HashMap<>();
+        final Map<Integer, double[]> id2newCoordinates = new HashMap<>();
 
-        switch (shape) {
-            default:
-            case Straight: {
-                newCoordinates = new double[]{0.7 * start.getX() + 0.3 * end.getX(), 0.7 * start.getY() + 0.3 * end.getY(), 0.3 * start.getX() + 0.7 * end.getX(), 0.3 * start.getY() + 0.7 * end.getY()};
-                break;
+        for (Edge e : edges) {
+            final double[] oldCoordinates = view.getEdgeView(e).getControlCoordinates();
+
+            final double[] newCoordinates;
+            final Point2D start = new Point2D(view.getX(e.getSource()), view.getY(e.getSource()));
+            final Point2D end = new Point2D(view.getX(e.getTarget()), view.getY(e.getTarget()));
+
+            final EdgeShape shapeToUse;
+            if (shape == EdgeShape.Reshape) {
+                if (Math.abs(start.getX() - end.getX()) < 5 || Math.abs(start.getY() - end.getY()) < 5 || start.distance(end) < 25)
+                    shapeToUse = EdgeShape.Straight;
+                else if (isLeftToRight)
+                    shapeToUse = EdgeShape.DownRight;
+                else
+                    shapeToUse = EdgeShape.RightDown;
+            } else shapeToUse = shape;
+
+            switch (shapeToUse) {
+                default:
+                case Straight: {
+                    newCoordinates = new double[]{0.7 * start.getX() + 0.3 * end.getX(), 0.7 * start.getY() + 0.3 * end.getY(), 0.3 * start.getX() + 0.7 * end.getX(), 0.3 * start.getY() + 0.7 * end.getY()};
+                    break;
+                }
+                case RightDown: {
+                    newCoordinates = new double[]{end.getX(), start.getY(), end.getX(), start.getY()};
+                    break;
+                }
+                case DownRight: {
+                    newCoordinates = new double[]{start.getX(), end.getY(), start.getX(), end.getY()};
+                    break;
+                }
             }
-            case RightDown: {
-                newCoordinates = new double[]{end.getX(), start.getY(), end.getX(), start.getY()};
-                break;
-            }
-            case DownRight: {
-                newCoordinates = new double[]{start.getX(), end.getY(), start.getX(), end.getY()};
-                break;
-            }
+            id2oldCoordinates.put(e.getId(), oldCoordinates);
+            id2newCoordinates.put(e.getId(), newCoordinates);
+
         }
 
         undo = () -> {
-            view.getEdgeView(view.getGraph().searchEdgeId(id)).setControlCoordinates(oldCoordinates);
+            for (Integer id : id2oldCoordinates.keySet()) {
+                view.getEdgeView(view.getGraph().searchEdgeId(id)).setControlCoordinates(id2oldCoordinates.get(id));
+            }
         };
 
         redo = () -> {
-            view.getEdgeView(view.getGraph().searchEdgeId(id)).setControlCoordinates(newCoordinates);
+            for (Integer id : id2newCoordinates.keySet()) {
+                view.getEdgeView(view.getGraph().searchEdgeId(id)).setControlCoordinates(id2newCoordinates.get(id));
+            }
         };
     }
 

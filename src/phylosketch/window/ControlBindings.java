@@ -236,20 +236,16 @@ public class ControlBindings {
         });
 
         controller.getDeleteMenuItem().setOnAction(e ->
-                undoManager.doAndAdd(new DeleteNodesEdgesCommand(contentPane, view)));
+                undoManager.doAndAdd(new DeleteNodesEdgesCommand(contentPane, view, view.getNodeSelection().getSelectedItemsUnmodifiable(), view.getEdgeSelection().getSelectedItemsUnmodifiable())));
         controller.getDeleteMenuItem().disableProperty().bind(nodeSelection.sizeProperty().isEqualTo(0).and(edgeSelection.sizeProperty().isEqualTo(0)));
 
         contentPane.setOnMousePressed((e) -> {
             if (e.getClickCount() == 2) {
                 final Point2D location = contentPane.sceneToLocal(e.getSceneX(), e.getSceneY());
-                System.err.println("Location: " + location);
-                System.err.println("Location on screen: " + contentPane.localToScreen(location));
-
                 undoManager.doAndAdd(new CreateNodeCommand(contentPane, view, location.getX(), location.getY()));
             } else if (e.getClickCount() == 1 && !e.isShiftDown())
                 controller.getSelectNoneMenuItem().getOnAction().handle(null);
         });
-
 
         controller.getCopyNewickMenuItem().setOnAction(e -> {
             try (StringWriter w = new StringWriter()) {
@@ -324,8 +320,17 @@ public class ControlBindings {
         RecentFilesManager.getInstance().setFileOpener(FileOpenManager.getFileOpener());
         RecentFilesManager.getInstance().setupMenu(controller.getRecentMenu());
 
-        controller.getStraightenEdgesMenuItem().setOnAction(c -> undoManager.doAndAdd(new StraightenEdgesCommand(view, view.getEdgeSelection().getSelectedItemsUnmodifiable())));
+        controller.getRemoveDiNodesMenuItem().setOnAction(c -> undoManager.doAndAdd(new RemoveDiNodesCommand(controller.getContentPane(), view, view.getNodeSelection().getSelectedItemsUnmodifiable())));
+        controller.getRemoveDiNodesMenuItem().disableProperty().bind(view.getNodeSelection().emptyProperty());
+
+        controller.getAddDiNodesMenuItem().setOnAction(c -> undoManager.doAndAdd(SplitEdgeCommand.createAddDiNodesCommand(controller.getContentPane(), view, view.getEdgeSelection().getSelectedItemsUnmodifiable())));
+        controller.getAddDiNodesMenuItem().disableProperty().bind(view.getEdgeSelection().emptyProperty());
+
+        controller.getStraightenEdgesMenuItem().setOnAction(c -> undoManager.doAndAdd(new ChangeEdgeShapeCommand(view, view.getEdgeSelection().getSelectedItemsUnmodifiable(), ChangeEdgeShapeCommand.EdgeShape.Straight)));
         controller.getStraightenEdgesMenuItem().disableProperty().bind(view.getEdgeSelection().emptyProperty());
+
+        controller.getReshapeEdgesMenuItem().setOnAction(c -> undoManager.doAndAdd(new ChangeEdgeShapeCommand(view, view.getEdgeSelection().getSelectedItemsUnmodifiable(), ChangeEdgeShapeCommand.EdgeShape.Reshape)));
+        controller.getReshapeEdgesMenuItem().disableProperty().bind(view.getEdgeSelection().emptyProperty());
 
         controller.getAboutMenuItem().setOnAction((e) -> SplashScreen.showSplash(Duration.ofMinutes(2)));
 

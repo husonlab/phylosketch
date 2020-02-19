@@ -23,12 +23,15 @@ package phylosketch.commands;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
+import jloda.fx.undo.CompositeCommand;
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
 import phylosketch.window.EdgeView;
 import phylosketch.window.PhyloView;
+
+import java.util.Collection;
 
 /**
  * split edge command
@@ -103,11 +106,20 @@ public class SplitEdgeCommand extends UndoableRedoableCommand {
     @Override
     public void undo() {
         undo.run();
-
     }
 
     @Override
     public void redo() {
         redo.run();
+    }
+
+    public static CompositeCommand createAddDiNodesCommand(Pane pane, PhyloView view, Collection<Edge> edges) {
+        final CompositeCommand command = new CompositeCommand("Add Di Nodes");
+        for (Edge e : edges) {
+            final Point2D location = new Point2D(0.5 * (view.getX(e.getSource()) + view.getX(e.getTarget())),
+                    0.5 * (view.getY(e.getSource()) + view.getY(e.getTarget())));
+            command.add(new SplitEdgeCommand(pane, view, e, location));
+        }
+        return command;
     }
 }

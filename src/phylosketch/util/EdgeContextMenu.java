@@ -32,6 +32,9 @@ import phylosketch.commands.SplitEdgeCommand;
 import phylosketch.window.EdgeView;
 import phylosketch.window.PhyloView;
 
+import java.util.Collection;
+import java.util.Collections;
+
 /**
  * edge context menu
  * Daniel Huson, 2.020
@@ -45,19 +48,22 @@ public class EdgeContextMenu {
         curve.setOnContextMenuRequested(c -> {
             final Point2D screenLocation = new Point2D(c.getScreenX(), c.getScreenY());
             Point2D locationLocation = pane.screenToLocal(screenLocation);
+            final Collection<Edge> edges;
+            if (view.getEdgeSelection().isSelected(e))
+                edges = view.getEdgeSelection().getSelectedItemsUnmodifiable();
+            else
+                edges = Collections.singleton(e);
 
             final MenuItem straightEdge = new MenuItem("Straight Edge");
-            straightEdge.setOnAction(z -> view.getUndoManager().doAndAdd(new ChangeEdgeShapeCommand(view, e, ChangeEdgeShapeCommand.EdgeShape.Straight)));
-            final MenuItem downRightEdge = new MenuItem("Down-Right Edge");
-            downRightEdge.setOnAction(z -> view.getUndoManager().doAndAdd(new ChangeEdgeShapeCommand(view, e, ChangeEdgeShapeCommand.EdgeShape.DownRight)));
-            final MenuItem rightDownEdge = new MenuItem("Right-Down Edge");
-            rightDownEdge.setOnAction(z -> view.getUndoManager().doAndAdd(new ChangeEdgeShapeCommand(view, e, ChangeEdgeShapeCommand.EdgeShape.RightDown)));
+            straightEdge.setOnAction(z -> view.getUndoManager().doAndAdd(new ChangeEdgeShapeCommand(view, edges, ChangeEdgeShapeCommand.EdgeShape.Straight)));
 
+            final MenuItem reshapeEdge = new MenuItem("Reshape Edge");
+            reshapeEdge.setOnAction(z -> view.getUndoManager().doAndAdd(new ChangeEdgeShapeCommand(view, edges, ChangeEdgeShapeCommand.EdgeShape.Reshape)));
 
             final MenuItem split = new MenuItem("Split");
             split.setOnAction(s -> view.getUndoManager().doAndAdd(new SplitEdgeCommand(pane, view, e, locationLocation)));
             final ContextMenu menu = new ContextMenu();
-            menu.getItems().addAll(straightEdge, downRightEdge, rightDownEdge, new SeparatorMenuItem(), split);
+            menu.getItems().addAll(straightEdge, reshapeEdge, new SeparatorMenuItem(), new SeparatorMenuItem(), split);
             menu.show(pane, screenLocation.getX(), screenLocation.getY());
         });
     }

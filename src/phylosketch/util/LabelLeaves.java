@@ -23,11 +23,14 @@ package phylosketch.util;
 import javafx.stage.Stage;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
-import jloda.util.Triplet;
+import jloda.util.Pair;
 import phylosketch.commands.ChangeNodeLabelsCommand;
 import phylosketch.window.PhyloView;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -67,32 +70,17 @@ public class LabelLeaves {
         }
     }
 
-    private static List<Node> sortLeaves(PhyloView editor) {
-        final PhyloTree graph = editor.getGraph();
-        final List<Triplet<Node, Double, Double>> list = graph.getNodesAsSet().stream().filter(v -> v.getOutDegree() == 0)
-                .map(v -> new Triplet<>(v, editor.getNodeView(v).getTranslateX(), editor.getNodeView(v).getTranslateY())).collect(Collectors.toList());
+    private static List<Node> sortLeaves(PhyloView phyloView) {
+        final PhyloTree graph = phyloView.getGraph();
 
+        final List<Pair<Node, Double>> list;
+        if (phyloView.isLeftToRightLayout())
+            list = graph.nodeStream().filter(v -> v.getOutDegree() == 0).map(v -> new Pair<>(v, phyloView.getNodeView(v).getTranslateY())).collect(Collectors.toList());
+        else
+            list = graph.nodeStream().filter(v -> v.getOutDegree() == 0).map(v -> new Pair<>(v, phyloView.getNodeView(v).getTranslateX())).collect(Collectors.toList());
 
-        final Optional<Double> minx = list.stream().map(Triplet::getSecond).min(Double::compare);
-        final Optional<Double> maxx = list.stream().map(Triplet::getSecond).max(Double::compare);
-
-        final Optional<Double> miny = list.stream().map(Triplet::getThird).min(Double::compare);
-        final Optional<Double> maxy = list.stream().map(Triplet::getThird).max(Double::compare);
-
-        if (minx.isPresent()) {
-            double dx = maxx.get() - minx.get();
-            double dy = maxy.get() - miny.get();
-
-            if (dx >= dy) {
-                return list.stream().sorted(Comparator.comparingDouble(Triplet::getSecond)).map(Triplet::get1).collect(Collectors.toList());
-            } else {
-                return list.stream().sorted(Comparator.comparingDouble(Triplet::getThird)).map(Triplet::get1).collect(Collectors.toList());
-            }
-
-        } else
-            return new ArrayList<>();
+        return list.stream().sorted(Comparator.comparingDouble(Pair::getSecond)).map(Pair::getFirst).collect(Collectors.toList());
     }
-
 
     public static String getNextLabelABC(Set<String> seen) {
         int id = 0;

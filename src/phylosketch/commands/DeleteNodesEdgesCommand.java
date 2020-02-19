@@ -33,6 +33,7 @@ import phylosketch.window.NodeView;
 import phylosketch.window.PhyloView;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,7 +45,7 @@ public class DeleteNodesEdgesCommand extends UndoableRedoableCommand {
     private final Runnable undo;
     private final Runnable redo;
 
-    public DeleteNodesEdgesCommand(Pane pane, PhyloView view) {
+    public DeleteNodesEdgesCommand(Pane pane, PhyloView view, Collection<Node> nodes, Collection<Edge> edges) {
         super("Delete");
 
         final PhyloTree graph = view.getGraph();
@@ -53,20 +54,21 @@ public class DeleteNodesEdgesCommand extends UndoableRedoableCommand {
 
         final ArrayList<EdgeData> edgeDataList = new ArrayList<>();
 
-        final Set<Edge> edges = new HashSet<>(view.getEdgeSelection().getSelectedItemsUnmodifiable());
+        final Set<Edge> edgeSet = new HashSet<>(edges);
 
-        for (Node v : view.getNodeSelection().getSelectedItemsUnmodifiable()) {
+        for (Node v : nodes) {
             nodeDataList.add(new NodeData(v.getId(), view.getNodeView(v)));
-            edges.addAll(Basic.asList(v.adjacentEdges()));
+            edgeSet.addAll(Basic.asList(v.adjacentEdges()));
         }
 
-        for (Edge e : edges) {
+        for (Edge e : edgeSet) {
             edgeDataList.add(new EdgeData(e.getId(), e.getSource().getId(), e.getTarget().getId(), view.getEdgeView(e)));
         }
 
         undo = () -> {
             view.getNodeSelection().clearSelection();
             view.getEdgeSelection().clearSelection();
+
             for (NodeData data : nodeDataList) {
                 final Node v = graph.newNode(null, data.id);
                 data.apply(view.addNode(v, pane, data.x, data.y));

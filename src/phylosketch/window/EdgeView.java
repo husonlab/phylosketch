@@ -19,6 +19,7 @@
  */
 
 package phylosketch.window;
+
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.collections.FXCollections;
@@ -30,7 +31,7 @@ import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.CubicCurve;
-import javafx.scene.shape.Polyline;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Shape;
 import jloda.fx.util.GeometryUtilsFX;
 import jloda.fx.util.MouseDragClosestNode;
@@ -108,7 +109,7 @@ public class EdgeView {
                 view.getEdgeSelection().toggleSelection(edge);
         });
 
-        arrowHead = new Polyline(-5, -3, 5, 0, -5, 3);
+        arrowHead = new Polygon(-3, -3, 5, 0, -3, 3);
         arrowHead.setStrokeWidth(curve.getStrokeWidth());
         arrowHead.setFill(curve.getFill());
         arrowHead.setStroke(curve.getStroke());
