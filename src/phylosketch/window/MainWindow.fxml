@@ -391,6 +391,7 @@
                                             </accelerator>
                                         </MenuItem>
                                         <SeparatorMenuItem mnemonicParsing="false" />
+                                        <MenuItem fx:id="selectRootsMenuItem" mnemonicParsing="false" text="Roots"/>
                                         <MenuItem fx:id="selectLeavesMenuItem" mnemonicParsing="false" text="Leaves">
                                             <accelerator>
                                                 <KeyCodeCombination alt="UP" code="L" control="UP" meta="UP" shift="UP" shortcut="DOWN" />

@@ -128,6 +128,10 @@ public class MainWindowController {
 
     @FXML
     private MenuItem selectReticulateEdgesMenuItem;
+
+    @FXML
+    private MenuItem selectRootsMenuItem;
+
     @FXML
     private MenuItem selectLeavesMenuItem;
 
@@ -496,6 +500,10 @@ public class MainWindowController {
 
     public MenuItem getSelectReticulateEdgesMenuItem() {
         return selectReticulateEdgesMenuItem;
+    }
+
+    public MenuItem getSelectRootsMenuItem() {
+        return selectRootsMenuItem;
     }
 
     public MenuItem getSelectLeavesMenuItem() {

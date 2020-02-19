@@ -246,14 +246,15 @@ public class PhyloSketchIO {
         File selectedFile = fileChooser.showSaveDialog(owner);
         if (selectedFile != null) {
             try (BufferedWriter w = new BufferedWriter(new FileWriter(selectedFile))) {
-                final Node root = NetworkProperties.findRoot(editor.getGraph());
-                if (root != null) {
+                for (Node root : NetworkProperties.findRoots(editor.getGraph())) {
                     editor.getGraph().setRoot(root);
                     editor.getGraph().write(w, false);
-                    final ClipboardContent clipboardContent = new ClipboardContent();
-                    clipboardContent.putString(w.toString() + ";");
-                    Clipboard.getSystemClipboard().setContent(clipboardContent);
+                    w.write(";\n");
                 }
+                final ClipboardContent clipboardContent = new ClipboardContent();
+                clipboardContent.putString(w.toString());
+                Clipboard.getSystemClipboard().setContent(clipboardContent);
+
                 ProgramProperties.put("ExportDir", selectedFile.getParent());
             } catch (IOException ignored) {
             }

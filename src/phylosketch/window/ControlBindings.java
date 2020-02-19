@@ -249,14 +249,14 @@ public class ControlBindings {
 
         controller.getCopyNewickMenuItem().setOnAction(e -> {
             try (StringWriter w = new StringWriter()) {
-                final Node root = NetworkProperties.findRoot(graph);
-                if (root != null) {
+                for (Node root : NetworkProperties.findRoots(graph)) {
                     graph.setRoot(root);
                     graph.write(w, false);
-                    final ClipboardContent clipboardContent = new ClipboardContent();
-                    clipboardContent.putString(w.toString() + ";");
-                    Clipboard.getSystemClipboard().setContent(clipboardContent);
+                    w.write(";\n");
                 }
+                final ClipboardContent clipboardContent = new ClipboardContent();
+                clipboardContent.putString(w.toString());
+                Clipboard.getSystemClipboard().setContent(clipboardContent);
             } catch (IOException ignored) {
             }
 
@@ -375,8 +375,10 @@ public class ControlBindings {
         });
         controller.getSelectInvertMenuItem().disableProperty().bind(editor.getGraphFX().emptyProperty());
 
-        controller.getSelectLeavesMenuItem().setOnAction(e -> graph.nodeStream().filter(v -> v.getOutDegree() == 0).forEach(nodeSelection::select));
+        controller.getSelectRootsMenuItem().setOnAction(e -> graph.nodeStream().filter(v -> v.getInDegree() == 0).forEach(nodeSelection::select));
+        controller.getSelectRootsMenuItem().disableProperty().bind(editor.getGraphFX().emptyProperty());
 
+        controller.getSelectLeavesMenuItem().setOnAction(e -> graph.nodeStream().filter(v -> v.getOutDegree() == 0).forEach(nodeSelection::select));
         controller.getSelectLeavesMenuItem().disableProperty().bind(editor.getGraphFX().emptyProperty());
 
         controller.getSelectReticulateNodesMenuitem().setOnAction(e -> graph.nodeStream().filter(v -> v.getInDegree() > 1).forEach(nodeSelection::select));

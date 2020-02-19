@@ -63,7 +63,7 @@ public class EdgeContextMenu {
             final MenuItem split = new MenuItem("Split");
             split.setOnAction(s -> view.getUndoManager().doAndAdd(new SplitEdgeCommand(pane, view, e, locationLocation)));
             final ContextMenu menu = new ContextMenu();
-            menu.getItems().addAll(straightEdge, reshapeEdge, new SeparatorMenuItem(), new SeparatorMenuItem(), split);
+            menu.getItems().addAll(straightEdge, reshapeEdge, new SeparatorMenuItem(), split);
             menu.show(pane, screenLocation.getX(), screenLocation.getY());
         });
     }

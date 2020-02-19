@@ -18,24 +18,7 @@
  *
  */
 
-package phylosketch.window;/*
- *  NetworkProperties.java Copyright (C) 2020 Daniel H. Huson
- *
- *  (Some files contain contributions from other authors, who are then mentioned separately.)
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+package phylosketch.window;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
@@ -50,10 +33,7 @@ import jloda.util.Basic;
 import jloda.util.Single;
 import splitstree5.treebased.OffspringGraphMatching;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -87,16 +67,22 @@ public class NetworkProperties {
         final PhyloTree graph = (PhyloTree) graphFX.getGraph();
         statusFlowPane.getChildren().add(newText("nodes: " + graph.getNumberOfNodes()));
         statusFlowPane.getChildren().add(newText("edges: " + graph.getNumberOfEdges()));
-        final boolean isRootedDag = isRootedDAG(graph);
-        statusFlowPane.getChildren().add(newText("rooted DAG: " + isRootedDag));
+        final int numberOfRoots = findRoots(graph).size();
+        if (numberOfRoots == 1)
+            statusFlowPane.getChildren().add(newText("rooted"));
+        else if (numberOfRoots > 1)
+            statusFlowPane.getChildren().add(newText("multi-rooted"));
+
+        final boolean isDAG = isNonEmptyDAG(graph);
+        statusFlowPane.getChildren().add(newText("DAG: " + isDAG));
         final boolean isLeafLabeled = isLeafLabeled(graph);
         statusFlowPane.getChildren().add(newText("leaf-labeled: " + isLeafLabeled));
-        leafLabeledDAGProperty.set(isRootedDag && isLeafLabeled);
+        leafLabeledDAGProperty.set(isDAG && isLeafLabeled);
 
         if (getLabel2Node(graph).size() != Basic.size(getNode2Label(graph).values()))
             statusFlowPane.getChildren().add(newText("multi-labeled"));
 
-        if (isRootedDag && isLeafLabeled) {
+        if (isDAG && isLeafLabeled) {
             final EdgeSet matching = OffspringGraphMatching.compute(graph);
             if (OffspringGraphMatching.isTreeBased(graph, matching))
                 statusFlowPane.getChildren().add(newText("tree-based: true"));
@@ -115,8 +101,8 @@ public class NetworkProperties {
         }
     }
 
-    public static boolean isRootedDAG(Graph graph) {
-        if (findRoot(graph) == null)
+    public static boolean isNonEmptyDAG(Graph graph) {
+        if (graph.getNumberOfNodes() == 0)
             return false;
         final Graph g = new Graph();
         g.copy(graph);
@@ -137,19 +123,12 @@ public class NetworkProperties {
     }
 
     public static boolean isLeafLabeled(Graph graph) {
-        for (Node v : graph.nodes()) {
-            if (v.getOutDegree() == 0 && (graph.getLabel(v) == null || (graph.getLabel(v).length() == 0)))
-                return false;
-        }
-        return true;
+        final Optional<Node> unlabeled = graph.nodeStream().filter(v -> v.getOutDegree() == 0 && (graph.getLabel(v) == null || (graph.getLabel(v).length() == 0))).findAny();
+        return unlabeled.isEmpty();
     }
 
-    public static Node findRoot(Graph graph) {
-        for (Node v : graph.nodes()) {
-            if (v.getInDegree() == 0)
-                return v;
-        }
-        return null;
+    public static List<Node> findRoots(Graph graph) {
+        return graph.nodeStream().filter(v -> v.getInDegree() == 0).collect(Collectors.toList());
     }
 
     public static Map<String, Node> getLabel2Node(Graph graph) {
@@ -198,9 +177,8 @@ public class NetworkProperties {
     public static NodeSet allStableInternal(PhyloTree graph) {
         final NodeSet result = new NodeSet(graph);
 
-        if (isRootedDAG(graph)) {
-            final Node root = findRoot(graph);
-            if (root != null)
+        if (isNonEmptyDAG(graph)) {
+            for (Node root : findRoots(graph))
                 allStableInternalRec(root, new HashSet<>(), new HashSet<>(), result);
         }
         return result;
@@ -214,9 +192,8 @@ public class NetworkProperties {
      */
     public static NodeSet allVisibleReticulations(PhyloTree graph) {
         final NodeSet result = new NodeSet(graph);
-        if (isRootedDAG(graph)) {
-            final Node root = findRoot(graph);
-            if (root != null)
+        if (isNonEmptyDAG(graph)) {
+            for (Node root : findRoots(graph))
                 allVisibleReticulationsRec(root, allStableInternal(graph), result);
         }
         result.setAll(result.stream().filter(v -> v.getInDegree() > 1).collect(Collectors.toList()));
@@ -277,7 +254,7 @@ public class NetworkProperties {
         else {
             final Single<Boolean> selfEdgeEncountered = new Single<>(false);
             contractedGraph.contractEdges(reticulateEdges, selfEdgeEncountered);
-            return !selfEdgeEncountered.get() && isRootedDAG(contractedGraph);
+            return !selfEdgeEncountered.get() && isNonEmptyDAG(contractedGraph);
         }
     }
 

@@ -120,6 +120,9 @@ public class EdgeView {
 
         final InvalidationListener invalidationListener = (e) -> {
             final double angle = GeometryUtilsFX.computeAngle(new Point2D(curve.getEndX() - curve.getControlX2(), curve.getEndY() - curve.getControlY2()));
+            arrowHead.setLayoutX(-0.5 * arrowHead.getStrokeWidth());
+            //arrowHead.setLayoutY(-arrowHead.getStrokeWidth());
+
             arrowHead.setRotationAxis(new Point3D(0, 0, 1));
             arrowHead.setRotate(angle);
             final Point2D location = GeometryUtilsFX.translateByAngle(new Point2D(curve.getEndX(), curve.getEndY()), angle, -15);
