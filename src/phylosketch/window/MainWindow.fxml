@@ -399,26 +399,37 @@
                                         </MenuItem>
                                         <MenuItem fx:id="selectTreeNodesMenuItem" mnemonicParsing="false" text="Tree Nodes">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="T" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="T" control="UP" meta="UP" shift="UP"
+                                                                    shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
-                                        <MenuItem fx:id="selectReticulateNodesMenuitem" mnemonicParsing="false" text="Reticulate Nodes">
+                                        <MenuItem fx:id="selectReticulateNodesMenuitem" mnemonicParsing="false"
+                                                  text="Reticulate Nodes">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="R" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="R" control="UP" meta="UP"
+                                                                    shift="DOWN" shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
-                                        <SeparatorMenuItem mnemonicParsing="false" />
-                                        <MenuItem fx:id="selectVisibleNodesMenuItem" mnemonicParsing="false" text="Visible Reticulations" />
-                                        <MenuItem fx:id="selectStableNodesMenuItem" mnemonicParsing="false" text="Stable Nodes" />
-                                        <SeparatorMenuItem mnemonicParsing="false" />
-                                        <MenuItem fx:id="selectAllBelowMenuItem" mnemonicParsing="false" text="All Below">
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="selectVisibleNodesMenuItem" mnemonicParsing="false"
+                                                  text="Visible Nodes"/>
+                                        <MenuItem fx:id="selectVisibleReticulationsMenuItem" mnemonicParsing="false"
+                                                  text="Visible Reticulations"/>
+                                        <MenuItem fx:id="selectStableNodesMenuItem" mnemonicParsing="false"
+                                                  text="Stable Nodes"/>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="selectAllBelowMenuItem" mnemonicParsing="false"
+                                                  text="All Below">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="B" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="B" control="UP" meta="UP" shift="UP"
+                                                                    shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
-                                        <MenuItem fx:id="selectAllAboveMenuItem" mnemonicParsing="false" text="All Above">
+                                        <MenuItem fx:id="selectAllAboveMenuItem" mnemonicParsing="false"
+                                                  text="All Above">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="B" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="B" control="UP" meta="UP"
+                                                                    shift="DOWN" shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
                                     </items>

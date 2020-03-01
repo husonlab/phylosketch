@@ -145,6 +145,9 @@ public class MainWindowController {
     private MenuItem selectVisibleNodesMenuItem;
 
     @FXML
+    private MenuItem selectVisibleReticulationsMenuItem;
+
+    @FXML
     private MenuItem selectStableNodesMenuItem;
 
     @FXML
@@ -520,6 +523,10 @@ public class MainWindowController {
 
     public MenuItem getSelectVisibleNodesMenuItem() {
         return selectVisibleNodesMenuItem;
+    }
+
+    public MenuItem getSelectVisibleReticulationsMenuItem() {
+        return selectVisibleReticulationsMenuItem;
     }
 
     public MenuItem getSelectStableNodesMenuItem() {

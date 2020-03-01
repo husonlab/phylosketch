@@ -22,7 +22,7 @@ package phylosketch.main;
 
 public class Version {
     static public final String NAME = "PhyloSketch";
-    static public final String SHORT_DESCRIPTION = "PhyloSketch (version 0.0.4_alpha, built 19 Feb 2020)";
+    static public final String SHORT_DESCRIPTION = "PhyloSketch (version 0.0.5_alpha, built 19 Feb 2020)";
     static public final String VERSION = "0.0.1-alpha";
 
 }

@@ -66,32 +66,52 @@ public class NetworkProperties {
 
         final PhyloTree graph = (PhyloTree) graphFX.getGraph();
         statusFlowPane.getChildren().add(newText("nodes: " + graph.getNumberOfNodes()));
-        statusFlowPane.getChildren().add(newText("edges: " + graph.getNumberOfEdges()));
-        final int numberOfRoots = findRoots(graph).size();
-        if (numberOfRoots == 1)
-            statusFlowPane.getChildren().add(newText("rooted"));
-        else if (numberOfRoots > 1)
-            statusFlowPane.getChildren().add(newText("multi-rooted"));
 
-        final boolean isDAG = isNonEmptyDAG(graph);
-        statusFlowPane.getChildren().add(newText("DAG: " + isDAG));
-        final boolean isLeafLabeled = isLeafLabeled(graph);
-        statusFlowPane.getChildren().add(newText("leaf-labeled: " + isLeafLabeled));
-        leafLabeledDAGProperty.set(isDAG && isLeafLabeled);
+        final int numberOfRoots = (int) graph.nodeStream().filter(v -> v.getInDegree() == 0).count();
+        statusFlowPane.getChildren().add(newText("(roots: " + numberOfRoots));
 
-        if (getLabel2Node(graph).size() != Basic.size(getNode2Label(graph).values()))
-            statusFlowPane.getChildren().add(newText("multi-labeled"));
+        final int numberOfReticulations = (int) graph.nodeStream().filter(v -> v.getInDegree() > 1).count();
+        statusFlowPane.getChildren().add(newText("reticulates: " + numberOfReticulations));
 
-        if (isDAG && isLeafLabeled) {
-            final EdgeSet matching = OffspringGraphMatching.compute(graph);
-            if (OffspringGraphMatching.isTreeBased(graph, matching))
-                statusFlowPane.getChildren().add(newText("tree-based: true"));
+        final int numberOfLeaves = (int) graph.nodeStream().filter(v -> v.getOutDegree() == 0).count();
+        statusFlowPane.getChildren().add(newText("leaves: " + numberOfLeaves + ")"));
+
+        statusFlowPane.getChildren().add(newText("edges: " + graph.getNumberOfEdges() + "  "));
+
+        final int numberOfUnlabeledLeaves = (int) graph.nodeStream().filter(v -> v.getOutDegree() == 0 && graph.getLabel(v) == null).count();
+        if (numberOfLeaves > 0) {
+            if (numberOfUnlabeledLeaves == 0)
+                statusFlowPane.getChildren().add(newText("leaf-labeled,"));
             else
-                statusFlowPane.getChildren().add(newText("tree-based: +" + OffspringGraphMatching.discrepancy(graph, matching)));
+                statusFlowPane.getChildren().add(newText("unlabeled leaves: " + numberOfUnlabeledLeaves + ","));
 
-            statusFlowPane.getChildren().add(newText("tree-child: " + isTreeChild(graph)));
+            if (getLabel2Node(graph).size() != Basic.size(getNode2Label(graph).values()))
+                statusFlowPane.getChildren().add(newText("multi-labeled"));
 
-            statusFlowPane.getChildren().add(newText("temporal: " + isTemporal(graph)));
+            final boolean isDAG = isNonEmptyDAG(graph);
+            leafLabeledDAGProperty.set(isDAG && numberOfUnlabeledLeaves == 0);
+
+            if (isNonEmptyForest(graph)) {
+                statusFlowPane.getChildren().add(newText("tree"));
+            } else if (isDAG) {
+                if (numberOfUnlabeledLeaves == 0) {
+                    final EdgeSet matching = OffspringGraphMatching.compute(graph);
+                    if (OffspringGraphMatching.isTreeBased(graph, matching))
+                        statusFlowPane.getChildren().add(newText("tree-based,"));
+                    else
+                        statusFlowPane.getChildren().add(newText("tree-based-distance: " + OffspringGraphMatching.discrepancy(graph, matching) + ","));
+
+                    if (isTreeChild(graph))
+                        statusFlowPane.getChildren().add(newText("tree-child,"));
+
+                    if (isTemporal(graph))
+                        statusFlowPane.getChildren().add(newText("temporal,"));
+                }
+                statusFlowPane.getChildren().add(newText("DAG"));
+
+            } else
+                statusFlowPane.getChildren().add(newText("graph"));
+
         }
 
         for (Object object : statusFlowPane.getChildren()) {
@@ -99,6 +119,23 @@ public class NetworkProperties {
                 ((Shape) object).prefWidth(30);
             }
         }
+    }
+
+    public static boolean isNonEmptyForest(Graph graph) {
+        if (graph.getNumberOfNodes() == 0)
+            return false;
+        final NodeSet visited = new NodeSet(graph);
+
+        final Queue<Node> queue = new LinkedList<>(findRoots(graph));
+        while (queue.size() > 0) {
+            final Node w = queue.remove();
+            if (visited.contains(w))
+                return false;
+            else
+                visited.add(w);
+            queue.addAll(Basic.asList(w.children()));
+        }
+        return true;
     }
 
     public static boolean isNonEmptyDAG(Graph graph) {
@@ -190,22 +227,21 @@ public class NetworkProperties {
      * @param graph
      * @return
      */
-    public static NodeSet allVisibleReticulations(PhyloTree graph) {
+    public static NodeSet allVisibleNodes(PhyloTree graph) {
         final NodeSet result = new NodeSet(graph);
         if (isNonEmptyDAG(graph)) {
             for (Node root : findRoots(graph))
-                allVisibleReticulationsRec(root, allStableInternal(graph), result);
+                allVisibleNodesRec(root, allStableInternal(graph), result);
         }
-        result.setAll(result.stream().filter(v -> v.getInDegree() > 1).collect(Collectors.toList()));
         return result;
     }
 
-    private static void allVisibleReticulationsRec(Node v, NodeSet stableNodes, NodeSet result) {
+    private static void allVisibleNodesRec(Node v, NodeSet stableNodes, NodeSet result) {
         if (stableNodes.contains(v))
             result.add(v);
 
         for (Node w : v.children()) {
-            allVisibleReticulationsRec(w, stableNodes, result);
+            allVisibleNodesRec(w, stableNodes, result);
 
             if (w.getInDegree() == 1 && (result.contains(w) || w.getOutDegree() == 0)) {
                 result.add(v);

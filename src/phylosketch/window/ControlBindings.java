@@ -387,8 +387,11 @@ public class ControlBindings {
         controller.getSelectStableNodesMenuItem().setOnAction(e -> NetworkProperties.allStableInternal(graph).forEach(nodeSelection::select));
         controller.getSelectStableNodesMenuItem().disableProperty().bind(editor.getGraphFX().emptyProperty());
 
-        controller.getSelectVisibleNodesMenuItem().setOnAction(e -> NetworkProperties.allVisibleReticulations(graph).forEach(nodeSelection::select));
+        controller.getSelectVisibleNodesMenuItem().setOnAction(e -> NetworkProperties.allVisibleNodes(graph).forEach(nodeSelection::select));
         controller.getSelectVisibleNodesMenuItem().disableProperty().bind(editor.getGraphFX().emptyProperty());
+
+        controller.getSelectVisibleReticulationsMenuItem().setOnAction(e -> NetworkProperties.allVisibleNodes(graph).stream().filter(v -> v.getInDegree() > 1).forEach(nodeSelection::select));
+        controller.getSelectVisibleReticulationsMenuItem().disableProperty().bind(editor.getGraphFX().emptyProperty());
 
         controller.getSelectTreeNodesMenuItem().setOnAction(e -> graph.nodeStream().filter(v -> v.getInDegree() <= 1 && v.getOutDegree() > 0).forEach(nodeSelection::select));
 
