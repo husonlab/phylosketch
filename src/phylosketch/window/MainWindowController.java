@@ -166,6 +166,11 @@ public class MainWindowController {
     private MenuItem labelLeavesMenuItem;
 
     @FXML
+    private MenuItem labelInternalABCMenuItem;
+
+    @FXML
+    private MenuItem labelInternal123MenuItem;
+    @FXML
     private MenuItem alignLeftMenuItem;
 
     @FXML
@@ -551,6 +556,14 @@ public class MainWindowController {
 
     public MenuItem getLabelLeavesMenuItem() {
         return labelLeavesMenuItem;
+    }
+
+    public MenuItem getLabelInternalABCMenuItem() {
+        return labelInternalABCMenuItem;
+    }
+
+    public MenuItem getLabelInternal123MenuItem() {
+        return labelInternal123MenuItem;
     }
 
     public MenuItem getIncreaseFontSizeMenuItem() {

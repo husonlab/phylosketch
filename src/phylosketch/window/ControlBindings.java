@@ -287,6 +287,12 @@ public class ControlBindings {
         controller.getLabelLeavesMenuItem().setOnAction(c -> LabelLeaves.labelLeaves(window.getStage(), view));
         controller.getLabelLeavesMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
+        controller.getLabelInternalABCMenuItem().setOnAction(c -> undoManager.doAndAdd(new ChangeNodeLabelsCommand(view, LabelLeaves.labelInternalABC(view))));
+        controller.getLabelInternalABCMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
+
+        controller.getLabelInternal123MenuItem().setOnAction(c -> undoManager.doAndAdd(new ChangeNodeLabelsCommand(view, LabelLeaves.labelInternal123(view))));
+        controller.getLabelInternal123MenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
+
         controller.getZoomInVerticallyMenuItem().setOnAction(e -> scrollPane.zoomBy(1, 1.1));
         controller.getZoomInVerticallyMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
         controller.getZoomOutVerticallyMenuItem().setOnAction(e -> scrollPane.zoomBy(1, 1 / 1.1));

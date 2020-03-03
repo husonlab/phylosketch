@@ -397,7 +397,8 @@
                                                 <KeyCodeCombination alt="UP" code="L" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                                             </accelerator>
                                         </MenuItem>
-                                        <MenuItem fx:id="selectTreeNodesMenuItem" mnemonicParsing="false" text="Tree Nodes">
+                                        <MenuItem fx:id="selectTreeNodesMenuItem" mnemonicParsing="false"
+                                                  text="Tree Nodes">
                                             <accelerator>
                                                 <KeyCodeCombination alt="UP" code="T" control="UP" meta="UP" shift="UP"
                                                                     shortcut="DOWN"/>
@@ -436,23 +437,37 @@
                                 </Menu>
                                 <Menu mnemonicParsing="false" text="Options">
                                     <items>
-                                        <MenuItem fx:id="labelLeavesABCMenuItem" mnemonicParsing="false" text="Label Leaves A,B,C..." />
-                                        <MenuItem fx:id="labelLeaves123MenuItem" mnemonicParsing="false" text="Label Leaves 1,2,3..." />
-                                        <SeparatorMenuItem mnemonicParsing="false" />
-                                        <MenuItem fx:id="labelLeavesMenuItem" mnemonicParsing="false" text="Label Leaves...">
+                                        <MenuItem fx:id="labelLeavesABCMenuItem" mnemonicParsing="false"
+                                                  text="Label Leaves A,B,C..."/>
+                                        <MenuItem fx:id="labelLeaves123MenuItem" mnemonicParsing="false"
+                                                  text="Label Leaves 1,2,3..."/>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="labelLeavesMenuItem" mnemonicParsing="false"
+                                                  text="Label Leaves...">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="L" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="L" control="UP" meta="UP"
+                                                                    shift="DOWN" shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
-                                        <SeparatorMenuItem mnemonicParsing="false" />
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="labelInternalABCMenuItem" mnemonicParsing="false"
+                                                  text="Label Internal Nodes A,B,C..."/>
+                                        <MenuItem fx:id="labelInternal123MenuItem" mnemonicParsing="false"
+                                                  text="Label Internal Nodes 1,2,3..."/>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
                                         <Menu mnemonicParsing="false" text="Align">
                                             <items>
-                                                <MenuItem fx:id="alignLeftMenuItem" mnemonicParsing="false" text="Left" />
-                                                <MenuItem fx:id="alignCenterMenuItem" mnemonicParsing="false" text="Center" />
-                                                <MenuItem fx:id="alignRightMenuItem" mnemonicParsing="false" text="Right" />
-                                                <MenuItem fx:id="alignTopMenuItem" mnemonicParsing="false" text="Top" />
-                                                <MenuItem fx:id="alignMiddleMenuItem" mnemonicParsing="false" text="Middle" />
-                                                <MenuItem fx:id="alignBottomMenuItem" mnemonicParsing="false" text="Bottom" />
+                                                <MenuItem fx:id="alignLeftMenuItem" mnemonicParsing="false"
+                                                          text="Left"/>
+                                                <MenuItem fx:id="alignCenterMenuItem" mnemonicParsing="false"
+                                                          text="Center"/>
+                                                <MenuItem fx:id="alignRightMenuItem" mnemonicParsing="false"
+                                                          text="Right"/>
+                                                <MenuItem fx:id="alignTopMenuItem" mnemonicParsing="false" text="Top"/>
+                                                <MenuItem fx:id="alignMiddleMenuItem" mnemonicParsing="false"
+                                                          text="Middle"/>
+                                                <MenuItem fx:id="alignBottomMenuItem" mnemonicParsing="false"
+                                                          text="Bottom"/>
                                             </items>
                                         </Menu>
                                         <Menu mnemonicParsing="false" text="Distribute">
