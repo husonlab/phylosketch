@@ -252,7 +252,6 @@ public class MainWindowController {
     @FXML
     private MenuItem checkForUpdatesMenuItem;
 
-
     @FXML
     private FlowPane statusFlowPane;
 
@@ -328,7 +327,6 @@ public class MainWindowController {
     @FXML
     private MenuItem labelCenterButton;
 
-
     @FXML
     private MenuItem labelAboveButton;
 
@@ -340,6 +338,9 @@ public class MainWindowController {
 
     @FXML
     private Button label123Button;
+
+    @FXML
+    private MenuItem normalizationMenuItem;
 
     private ZoomableScrollPane zoomableScrollPane;
 
@@ -789,5 +790,9 @@ public class MainWindowController {
 
     public Pane getContentPane() {
         return contentPane;
+    }
+
+    public MenuItem getNormalizationMenuItem() {
+        return normalizationMenuItem;
     }
 }

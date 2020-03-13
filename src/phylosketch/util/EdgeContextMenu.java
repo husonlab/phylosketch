@@ -50,7 +50,7 @@ public class EdgeContextMenu {
             Point2D locationLocation = pane.screenToLocal(screenLocation);
             final Collection<Edge> edges;
             if (view.getEdgeSelection().isSelected(e))
-                edges = view.getEdgeSelection().getSelectedItemsUnmodifiable();
+                edges = view.getEdgeSelection().getSelectedItems();
             else
                 edges = Collections.singleton(e);
 

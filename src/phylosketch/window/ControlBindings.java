@@ -51,6 +51,7 @@ import jloda.phylo.PhyloTree;
 import jloda.util.Basic;
 import jloda.util.FileOpenManager;
 import jloda.util.ProgramProperties;
+import phylosketch.algorithms.Normalize;
 import phylosketch.commands.*;
 import phylosketch.formattab.FormatTab;
 import phylosketch.io.*;
@@ -136,14 +137,14 @@ public class ControlBindings {
         });
 
         controller.getSelectionLabel().setText("");
-        nodeSelection.getSelectedItemsUnmodifiable().addListener((InvalidationListener) c -> {
+        nodeSelection.getSelectedItems().addListener((InvalidationListener) c -> {
             if (nodeSelection.size() > 0 || edgeSelection.size() > 0)
                 controller.getSelectionLabel().setText(String.format("Selected %d nodes and %d edges",
                         nodeSelection.size(), edgeSelection.size()));
             else
                 controller.getSelectionLabel().setText("");
         });
-        edgeSelection.getSelectedItemsUnmodifiable().addListener((InvalidationListener) c -> {
+        edgeSelection.getSelectedItems().addListener((InvalidationListener) c -> {
             if (nodeSelection.size() > 0 || edgeSelection.size() > 0)
                 controller.getSelectionLabel().setText(String.format("Selected %d node(s) and %d edge(s)",
                         nodeSelection.size(), edgeSelection.size()));
@@ -226,6 +227,10 @@ public class ControlBindings {
             }
         });
 
+
+        controller.getNormalizationMenuItem().setOnAction(c -> Normalize.runNormalize(window));
+        controller.getNormalizationMenuItem().disableProperty().bind(isLeafLabeledDAG.not());
+
         controller.getRemoveBackgroundImageMenuItem().setOnAction(e -> undoManager.doAndAdd(new SetImageCommand(window.getStage(), controller.getContentPane(), null)));
         controller.getRemoveBackgroundImageMenuItem().disableProperty().bind(hasBackgroundImage.not());
 
@@ -236,7 +241,7 @@ public class ControlBindings {
         });
 
         controller.getDeleteMenuItem().setOnAction(e ->
-                undoManager.doAndAdd(new DeleteNodesEdgesCommand(contentPane, view, view.getNodeSelection().getSelectedItemsUnmodifiable(), view.getEdgeSelection().getSelectedItemsUnmodifiable())));
+                undoManager.doAndAdd(new DeleteNodesEdgesCommand(contentPane, view, view.getNodeSelection().getSelectedItems(), view.getEdgeSelection().getSelectedItems())));
         controller.getDeleteMenuItem().disableProperty().bind(nodeSelection.sizeProperty().isEqualTo(0).and(edgeSelection.sizeProperty().isEqualTo(0)));
 
         contentPane.setOnMousePressed((e) -> {
@@ -305,7 +310,7 @@ public class ControlBindings {
 
         controller.getIncreaseFontSizeMenuItem().setOnAction(c -> {
             view.setFont(Font.font(view.getFont().getName(), view.getFont().getSize() + 2));
-            final Stream<Node> stream = (nodeSelection.size() > 0 ? nodeSelection.getSelectedItemsUnmodifiable().stream() : graph.nodeStream());
+            final Stream<Node> stream = (nodeSelection.size() > 0 ? nodeSelection.getSelectedItems().stream() : graph.nodeStream());
             stream.map(view::getLabel).forEach(a -> a.setFont(Font.font(a.getFont().getName(), a.getFont().getSize() + 2)));
         });
         controller.getIncreaseFontSizeMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
@@ -313,7 +318,7 @@ public class ControlBindings {
         controller.getDecreaseFontSizeMenuItem().setOnAction(c -> {
             if (view.getFont().getSize() - 2 >= 4) {
                 view.setFont(Font.font(view.getFont().getName(), view.getFont().getSize() - 2));
-                final Stream<Node> stream = (nodeSelection.size() > 0 ? nodeSelection.getSelectedItemsUnmodifiable().stream() : graph.nodeStream());
+                final Stream<Node> stream = (nodeSelection.size() > 0 ? nodeSelection.getSelectedItems().stream() : graph.nodeStream());
                 stream.filter(v -> view.getLabel(v).getFont().getSize() >= 6).map(view::getLabel)
                         .forEach(a -> a.setFont(Font.font(a.getFont().getName(), a.getFont().getSize() - 2)));
             }
@@ -326,16 +331,16 @@ public class ControlBindings {
         RecentFilesManager.getInstance().setFileOpener(FileOpenManager.getFileOpener());
         RecentFilesManager.getInstance().setupMenu(controller.getRecentMenu());
 
-        controller.getRemoveDiNodesMenuItem().setOnAction(c -> undoManager.doAndAdd(new RemoveDiNodesCommand(controller.getContentPane(), view, view.getNodeSelection().getSelectedItemsUnmodifiable())));
+        controller.getRemoveDiNodesMenuItem().setOnAction(c -> undoManager.doAndAdd(new RemoveDiNodesCommand(controller.getContentPane(), view, view.getNodeSelection().getSelectedItems())));
         controller.getRemoveDiNodesMenuItem().disableProperty().bind(view.getNodeSelection().emptyProperty());
 
-        controller.getAddDiNodesMenuItem().setOnAction(c -> undoManager.doAndAdd(SplitEdgeCommand.createAddDiNodesCommand(controller.getContentPane(), view, view.getEdgeSelection().getSelectedItemsUnmodifiable())));
+        controller.getAddDiNodesMenuItem().setOnAction(c -> undoManager.doAndAdd(SplitEdgeCommand.createAddDiNodesCommand(controller.getContentPane(), view, view.getEdgeSelection().getSelectedItems())));
         controller.getAddDiNodesMenuItem().disableProperty().bind(view.getEdgeSelection().emptyProperty());
 
-        controller.getStraightenEdgesMenuItem().setOnAction(c -> undoManager.doAndAdd(new ChangeEdgeShapeCommand(view, view.getEdgeSelection().getSelectedItemsUnmodifiable(), ChangeEdgeShapeCommand.EdgeShape.Straight)));
+        controller.getStraightenEdgesMenuItem().setOnAction(c -> undoManager.doAndAdd(new ChangeEdgeShapeCommand(view, view.getEdgeSelection().getSelectedItems(), ChangeEdgeShapeCommand.EdgeShape.Straight)));
         controller.getStraightenEdgesMenuItem().disableProperty().bind(view.getEdgeSelection().emptyProperty());
 
-        controller.getReshapeEdgesMenuItem().setOnAction(c -> undoManager.doAndAdd(new ChangeEdgeShapeCommand(view, view.getEdgeSelection().getSelectedItemsUnmodifiable(), ChangeEdgeShapeCommand.EdgeShape.Reshape)));
+        controller.getReshapeEdgesMenuItem().setOnAction(c -> undoManager.doAndAdd(new ChangeEdgeShapeCommand(view, view.getEdgeSelection().getSelectedItems(), ChangeEdgeShapeCommand.EdgeShape.Reshape)));
         controller.getReshapeEdgesMenuItem().disableProperty().bind(view.getEdgeSelection().emptyProperty());
 
         controller.getAboutMenuItem().setOnAction((e) -> SplashScreen.showSplash(Duration.ofMinutes(2)));
@@ -404,7 +409,7 @@ public class ControlBindings {
         controller.getSelectTreeNodesMenuItem().disableProperty().bind(editor.getGraphFX().emptyProperty());
 
         controller.getSelectAllAboveMenuItem().setOnAction(c -> {
-            final Queue<Node> list = new LinkedList<>(nodeSelection.getSelectedItemsUnmodifiable());
+            final Queue<Node> list = new LinkedList<>(nodeSelection.getSelectedItems());
 
             while (list.size() > 0) {
                 Node v = list.remove();
@@ -421,7 +426,7 @@ public class ControlBindings {
         controller.getSelectAllAboveMenuItem().disableProperty().bind(nodeSelection.emptyProperty());
 
         controller.getSelectAllBelowMenuItem().setOnAction(c -> {
-            final Queue<Node> list = new LinkedList<>(nodeSelection.getSelectedItemsUnmodifiable());
+            final Queue<Node> list = new LinkedList<>(nodeSelection.getSelectedItems());
 
             while (list.size() > 0) {
                 Node v = list.remove();
@@ -442,13 +447,12 @@ public class ControlBindings {
 
         controller.getSelectReticulateEdgesMenuItem().setOnAction(c -> graph.edgeStream().filter(e -> e.getTarget().getInDegree() > 1).forEach(edgeSelection::select));
         controller.getSelectReticulateEdgesMenuItem().disableProperty().bind(editor.getGraphFX().emptyProperty());
-
     }
 
     public static void setupAlign(PhyloView view, MainWindowController controller) {
         final UndoManager undoManager = view.getUndoManager();
 
-        final ObservableList<Node> nodeSelection = view.getNodeSelection().getSelectedItemsUnmodifiable();
+        final ObservableList<Node> nodeSelection = view.getNodeSelection().getSelectedItems();
 
         final BooleanProperty atMostOneSelected = new SimpleBooleanProperty(false);
         atMostOneSelected.bind(Bindings.size(nodeSelection).lessThanOrEqualTo(1));
@@ -508,7 +512,7 @@ public class ControlBindings {
     public static void setupLabelPosition(PhyloView view, MainWindowController controller) {
         final UndoManager undoManager = view.getUndoManager();
 
-        final ObservableList<Node> nodeSelection = view.getNodeSelection().getSelectedItemsUnmodifiable();
+        final ObservableList<Node> nodeSelection = view.getNodeSelection().getSelectedItems();
 
         final BooleanProperty noneSelected = new SimpleBooleanProperty(false);
         noneSelected.bind(Bindings.size(nodeSelection).isEqualTo(0));

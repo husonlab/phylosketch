@@ -522,16 +522,24 @@
                                         </MenuItem>
                                     </items>
                                 </Menu>
+                                <Menu mnemonicParsing="false" text="Algorithms">
+                                    <items>
+                                        <MenuItem fx:id="normalizationMenuItem" mnemonicParsing="false"
+                                                  text="Compute Normalization..."/>
+                                    </items>
+                                </Menu>
                                 <Menu mnemonicParsing="false" text="View">
                                     <items>
                                         <MenuItem fx:id="increaseFontSizeMenuItem" text="Increase Font Size">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="PLUS" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="PLUS" control="UP" meta="UP"
+                                                                    shift="UP" shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
                                         <MenuItem fx:id="decreaseFontSizeMenuItem" text="Decrease Font Size">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="MINUS" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="MINUS" control="UP" meta="UP"
+                                                                    shift="UP" shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
                                         <SeparatorMenuItem mnemonicParsing="false" />

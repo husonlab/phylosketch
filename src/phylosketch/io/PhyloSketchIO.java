@@ -215,17 +215,17 @@ public class PhyloSketchIO {
         }
     }
 
-    public static void importNewick(Pane contentPane, PhyloView editor, File selectedFile) throws IOException {
+    public static void importNewick(Pane contentPane, PhyloView view, File selectedFile) throws IOException {
 
         final PhyloTree tree = new PhyloTree();
         try (BufferedReader r = new BufferedReader(new FileReader(selectedFile))) {
             tree.read(r, true);
         }
 
-        final PhyloTree graph = editor.getGraph();
+        final PhyloTree graph = view.getGraph();
         graph.copy(tree);
 
-        RootedNetworkEmbedder.apply(contentPane, editor, RootedNetworkEmbedder.Orientation.leftRight);
+        RootedNetworkEmbedder.apply(contentPane, view, RootedNetworkEmbedder.Orientation.leftRight);
     }
 
     /**

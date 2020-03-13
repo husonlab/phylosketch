@@ -98,7 +98,7 @@ public class PhyloView {
         node2view = new NodeArray<>(graph);
         edge2view = new EdgeArray<>(graph);
 
-        nodeSelection.getSelectedItemsUnmodifiable().addListener((ListChangeListener<Node>) (e) -> {
+        nodeSelection.getSelectedItems().addListener((ListChangeListener<Node>) (e) -> {
             while (e.next()) {
                 for (Node v : e.getAddedSubList()) {
                     try {
@@ -118,7 +118,7 @@ public class PhyloView {
             }
         });
 
-        edgeSelection.getSelectedItemsUnmodifiable().addListener((ListChangeListener<Edge>) (e) -> {
+        edgeSelection.getSelectedItems().addListener((ListChangeListener<Edge>) (e) -> {
             while (e.next()) {
                 for (Edge edge : e.getAddedSubList()) {
                     try {
@@ -145,13 +145,13 @@ public class PhyloView {
 
         graphFX.getNodeList().addListener((ListChangeListener<Node>) c -> {
             while (c.next()) {
-                nodeSelection.clearSelectionAll(c.getRemoved());
+                nodeSelection.clearSelection(c.getRemoved());
             }
         });
 
         graphFX.getEdgeList().addListener((ListChangeListener<Edge>) c -> {
             while (c.next()) {
-                edgeSelection.clearSelectionAll(c.getRemoved());
+                edgeSelection.clearSelection(c.getRemoved());
             }
         });
 
@@ -267,7 +267,7 @@ public class PhyloView {
                 final double deltaX = (mouseX - previousMousePosition[0]);
                 final double deltaY = (mouseY - previousMousePosition[1]);
 
-                for (Node u : getNodeSelection().getSelectedItemsUnmodifiable()) {
+                for (Node u : getNodeSelection().getSelectedItems()) {
                     {
                         final double deltaXReshapeEdge = (mouseX - previousMousePosition[0]);
                         final double deltaYReshapeEdge = (mouseY - previousMousePosition[1]);
@@ -341,7 +341,7 @@ public class PhyloView {
                     final double dx = previousMousePosition[0] - mouseDownPosition[0];
                     final double dy = previousMousePosition[1] - mouseDownPosition[1];
                     undoManager.add(new MoveSelectedNodesCommand(dx, dy, this,
-                            nodeSelection.getSelectedItemsUnmodifiable(), oldControlPointLocations, newControlPointLocations));
+                            nodeSelection.getSelectedItems(), oldControlPointLocations, newControlPointLocations));
 
                 } else if (what.get() == What.growEdge) {
                     if (target.get() != null)

@@ -104,58 +104,58 @@ public class FormatTab extends StackPane {
 
         controller.getFontSelector().valueProperty().addListener((c, o, n) -> {
             if (updating.get() == 0) {
-                phyloView.getUndoManager().doAndAdd(new ChangeFontCommand(phyloView, nodeSelection.getSelectedItemsUnmodifiable(), controller.getFontSelector().getFontValue()));
+                phyloView.getUndoManager().doAndAdd(new ChangeFontCommand(phyloView, nodeSelection.getSelectedItems(), controller.getFontSelector().getFontValue()));
             }
         });
 
         controller.getNodeShapeComboBox().valueProperty().addListener((c, o, n) -> {
             if (updating.get() == 0)
-                phyloView.getUndoManager().doAndAdd(new ChangeNodeShapeCommand(phyloView, nodeSelection.getSelectedItemsUnmodifiable(), n));
+                phyloView.getUndoManager().doAndAdd(new ChangeNodeShapeCommand(phyloView, nodeSelection.getSelectedItems(), n));
 
         });
         controller.getNodeShapeComboBox().disableProperty().bind(nodeSelection.emptyProperty());
 
         controller.getNodeHeightComboBox().valueProperty().addListener((c, o, n) -> {
             if (updating.get() == 0)
-                phyloView.getUndoManager().doAndAdd(new ChangeNodeHeightCommand(phyloView, nodeSelection.getSelectedItemsUnmodifiable(), n));
+                phyloView.getUndoManager().doAndAdd(new ChangeNodeHeightCommand(phyloView, nodeSelection.getSelectedItems(), n));
         });
         controller.getNodeHeightComboBox().disableProperty().bind(nodeSelection.emptyProperty());
 
         controller.getNodeWidthComboBox().valueProperty().addListener((c, o, n) -> {
             if (updating.get() == 0)
-                phyloView.getUndoManager().doAndAdd(new ChangeNodeWidthCommand(phyloView, nodeSelection.getSelectedItemsUnmodifiable(), n));
+                phyloView.getUndoManager().doAndAdd(new ChangeNodeWidthCommand(phyloView, nodeSelection.getSelectedItems(), n));
         });
         controller.getNodeWidthComboBox().disableProperty().bind(nodeSelection.emptyProperty());
 
         controller.getNodeColorPicker().valueProperty().addListener((c, o, n) -> {
             if (updating.get() == 0)
-                phyloView.getUndoManager().doAndAdd(new ChangeNodeColorCommand(phyloView, nodeSelection.getSelectedItemsUnmodifiable(), n));
+                phyloView.getUndoManager().doAndAdd(new ChangeNodeColorCommand(phyloView, nodeSelection.getSelectedItems(), n));
 
         });
         controller.getNodeColorPicker().disableProperty().bind(nodeSelection.emptyProperty());
 
         controller.getLabelColorPicker().valueProperty().addListener((c, o, n) -> {
             if (updating.get() == 0)
-                phyloView.getUndoManager().doAndAdd(new ChangeLabelColorCommand(phyloView, nodeSelection.getSelectedItemsUnmodifiable(), n));
+                phyloView.getUndoManager().doAndAdd(new ChangeLabelColorCommand(phyloView, nodeSelection.getSelectedItems(), n));
         });
         controller.getLabelColorPicker().disableProperty().bind(nodeSelection.emptyProperty());
 
         controller.getEdgeWidthComboBox().valueProperty().addListener((c, o, n) ->
         {
             if (updating.get() == 0)
-                phyloView.getUndoManager().doAndAdd(new ChangeEdgeWidthCommand(phyloView, edgeSelection.getSelectedItemsUnmodifiable(), n));
+                phyloView.getUndoManager().doAndAdd(new ChangeEdgeWidthCommand(phyloView, edgeSelection.getSelectedItems(), n));
         });
         controller.getEdgeWidthComboBox().disableProperty().bind(edgeSelection.emptyProperty());
 
         controller.getEdgeColorPicker().valueProperty().addListener((c, o, n) -> {
             if (updating.get() == 0)
-                phyloView.getUndoManager().doAndAdd(new ChangeEdgeColorCommand(phyloView, edgeSelection.getSelectedItemsUnmodifiable(), n));
+                phyloView.getUndoManager().doAndAdd(new ChangeEdgeColorCommand(phyloView, edgeSelection.getSelectedItems(), n));
         });
         controller.getEdgeColorPicker().disableProperty().bind(edgeSelection.emptyProperty());
 
         controller.getEdgeStyleCBox().valueProperty().addListener((c, o, n) -> {
             if (updating.get() == 0)
-                phyloView.getUndoManager().doAndAdd(new ChangeEdgeStyleCommand(phyloView, edgeSelection.getSelectedItemsUnmodifiable(), n.equals("Arrow")));
+                phyloView.getUndoManager().doAndAdd(new ChangeEdgeStyleCommand(phyloView, edgeSelection.getSelectedItems(), n.equals("Arrow")));
         });
         controller.getEdgeStyleCBox().disableProperty().bind(edgeSelection.emptyProperty());
     }

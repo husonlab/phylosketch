@@ -36,9 +36,9 @@ import java.util.*;
 public class RootedNetworkEmbedder {
     public enum Orientation {leftRight, down, up, rightLeft}
 
-    public static void apply(Pane mainPane, PhyloView editor, Orientation orientation) {
+    public static void apply(Pane mainPane, PhyloView view, Orientation orientation) {
 
-        final PhyloTree graph = editor.getGraph();
+        final PhyloTree graph = view.getGraph();
 
         final NodeArray<Node> reticulation2LSA = new NodeArray<>(graph);
         final NodeArray<List<Node>> node2LSAChildren = new NodeArray<>(graph);
@@ -51,8 +51,8 @@ public class RootedNetworkEmbedder {
             final int maxLevel = Basic.max(levels.values());
             NodeDoubleArray yCoord = computeYCoordinates(graph, node2LSAChildren, graph.getRoot());
 
-            computeCoordinatesCladogramRec(mainPane, editor, graph.getRoot(), node2LSAChildren, yCoord, maxLevel, levels);
-            computeEdges(editor);
+            computeCoordinatesCladogramRec(mainPane, view, graph.getRoot(), node2LSAChildren, yCoord, maxLevel, levels);
+            computeEdges(view);
         }
     }
 
@@ -61,36 +61,36 @@ public class RootedNetworkEmbedder {
      *
      * @param v Node
      */
-    private static void computeCoordinatesCladogramRec(Pane mainPane, PhyloView editor, Node v, NodeArray<List<Node>> node2LSAChildren, NodeDoubleArray yCoord, int maxLevel, NodeIntegerArray levels) {
-        editor.addNode(v, mainPane, 50 * (maxLevel + 1 - levels.getValue(v)), 50 * yCoord.getValue(v));
+    private static void computeCoordinatesCladogramRec(Pane mainPane, PhyloView view, Node v, NodeArray<List<Node>> node2LSAChildren, NodeDoubleArray yCoord, int maxLevel, NodeIntegerArray levels) {
+        view.addNode(v, mainPane, 50 * (maxLevel + 1 - levels.getValue(v)), 50 * yCoord.getValue(v));
         for (Node w : node2LSAChildren.get(v)) {
-            computeCoordinatesCladogramRec(mainPane, editor, w, node2LSAChildren, yCoord, maxLevel, levels);
+            computeCoordinatesCladogramRec(mainPane, view, w, node2LSAChildren, yCoord, maxLevel, levels);
         }
     }
 
     /**
      * compute edges
      *
-     * @param editor
+     * @param view
      */
-    private static void computeEdges(PhyloView editor) {
-        for (Edge e : editor.getGraph().edges()) {
+    private static void computeEdges(PhyloView view) {
+        for (Edge e : view.getGraph().edges()) {
             final Node v = e.getSource();
             final Node w = e.getTarget();
 
-            final EdgeView edgeView = editor.addEdge(e);
+            final EdgeView edgeView = view.addEdge(e);
             final CubicCurve curve = edgeView.getCurve();
 
-            if (editor.getX(v) == editor.getX(w) || editor.getY(v) == editor.getY(w)) {
-                curve.setControlX1(0.7 * editor.getX(v) + 0.3 * editor.getX(w));
-                curve.setControlX2(0.3 * editor.getX(v) + 0.7 * editor.getX(w));
-                curve.setControlY1(0.7 * editor.getY(v) + 0.3 * editor.getY(w));
-                curve.setControlY2(0.3 * editor.getY(v) + 0.7 * editor.getY(w));
+            if (view.getX(v) == view.getX(w) || view.getY(v) == view.getY(w)) {
+                curve.setControlX1(0.7 * view.getX(v) + 0.3 * view.getX(w));
+                curve.setControlX2(0.3 * view.getX(v) + 0.7 * view.getX(w));
+                curve.setControlY1(0.7 * view.getY(v) + 0.3 * view.getY(w));
+                curve.setControlY2(0.3 * view.getY(v) + 0.7 * view.getY(w));
             } else {
-                curve.setControlX1(editor.getX(v));
-                curve.setControlY1(editor.getY(w));
-                curve.setControlX2(editor.getX(v));
-                curve.setControlY2(editor.getY(w));
+                curve.setControlX1(view.getX(v));
+                curve.setControlY1(view.getY(w));
+                curve.setControlX2(view.getX(v));
+                curve.setControlY2(view.getY(w));
             }
         }
     }
