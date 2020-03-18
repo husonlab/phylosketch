@@ -59,10 +59,12 @@ public class PhyloSketch extends Application {
 
         ProgramProperties.setProgramName(Version.NAME);
         ProgramProperties.setProgramVersion(Version.SHORT_DESCRIPTION);
+        ProgramProperties.setProgramURL("http://software-ab.informatik.uni-tuebingen.de/download/phylosketch/");
+
         ProgramProperties.setProgramLicence("Copyright (C) 2020 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.\n" +
                 "This is free software, licensed under the terms of the GNU General Public License, Version 3.\n" +
                 "Sources available at: https://github.com/husonlab/phylosketch\n" +
-                "Installers available at: http://software-ab.informatik.uni-tuebingen.de/download/phylosketch\n");
+                "Installers available at: " + ProgramProperties.getProgramURL() + "\n");
         SplashScreen.setLabelAnchor(new Point2D(230, 10));
         SplashScreen.setVersionString(ProgramProperties.getProgramVersion());
         SplashScreen.setImageResourceName("splash.png");

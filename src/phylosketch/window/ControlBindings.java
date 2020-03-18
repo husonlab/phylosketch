@@ -58,8 +58,8 @@ import phylosketch.io.*;
 import phylosketch.util.LabelLeaves;
 import phylosketch.util.NewWindow;
 import phylosketch.util.RubberBandSelectionHandler;
-import splitstree5.gui.utils.CheckForUpdate;
 import splitstree5.gui.utils.RubberBandSelection;
+import splitstree5.main.CheckForUpdate;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -345,7 +345,7 @@ public class ControlBindings {
 
         controller.getAboutMenuItem().setOnAction((e) -> SplashScreen.showSplash(Duration.ofMinutes(2)));
 
-        controller.getCheckForUpdatesMenuItem().setOnAction((e) -> CheckForUpdate.apply());
+        controller.getCheckForUpdatesMenuItem().setOnAction((e) -> CheckForUpdate.apply(ProgramProperties.getProgramURL()));
         MainWindowManager.getInstance().changedProperty().addListener((c, o, n) -> controller.getCheckForUpdatesMenuItem().disableProperty().set(MainWindowManager.getInstance().size() > 1
                 || (MainWindowManager.getInstance().size() == 1 && !MainWindowManager.getInstance().getMainWindow(0).isEmpty())));
 
