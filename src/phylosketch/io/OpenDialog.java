@@ -51,7 +51,7 @@ public class OpenDialog {
         final File selectedFile = fileChooser.showOpenDialog(owner);
         if (selectedFile != null) {
             new PhyloSketchFileOpener().accept(selectedFile.getPath());
-            ProgramProperties.put("OpenDir", selectedFile.getPath());
+            ProgramProperties.put("OpenDir", selectedFile.getParent());
         }
     }
 }
