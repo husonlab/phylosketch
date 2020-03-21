@@ -45,6 +45,7 @@ public class OpenDialog {
             fileChooser.setInitialDirectory(previousDir);
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("PhyloSketch nexus", "*.nexus", "*.nex"),
                 new FileChooser.ExtensionFilter("Extended Newick", "*.newick", "*.new", "*.tree", "*.tre"),
+                new FileChooser.ExtensionFilter("NeXML", "*.xml"),
                 TextFileFilter.getInstance());
         fileChooser.setTitle("Open File");
 

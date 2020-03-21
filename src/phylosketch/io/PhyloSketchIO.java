@@ -36,6 +36,7 @@ import jloda.phylo.PhyloTree;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
+import org.xml.sax.SAXException;
 import phylosketch.embed.RootedNetworkEmbedder;
 import phylosketch.window.EdgeView;
 import phylosketch.window.NetworkProperties;
@@ -43,11 +44,15 @@ import phylosketch.window.NodeView;
 import phylosketch.window.PhyloView;
 import splitstree5.core.datablocks.NetworkBlock;
 import splitstree5.core.datablocks.TaxaBlock;
+import splitstree5.io.imports.NeXML.handlers.NexmlTreesHandler;
 import splitstree5.io.nexus.NetworkNexusInput;
 import splitstree5.io.nexus.NetworkNexusOutput;
 import splitstree5.io.nexus.TaxaNexusInput;
 import splitstree5.io.nexus.TaxaNexusOutput;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import java.io.*;
 import java.util.Map;
 
@@ -259,5 +264,38 @@ public class PhyloSketchIO {
             } catch (IOException ignored) {
             }
         }
+    }
+
+    /**
+     * Import NeXML tree
+     *
+     * @param contentPane
+     * @param view
+     * @param selectedFile
+     * @throws IOException
+     */
+    public static void importNeXML(Pane contentPane, PhyloView view, File selectedFile) throws IOException {
+
+        PhyloTree tree = new PhyloTree();
+
+        try {
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            SAXParser saxParser;
+            saxParser = factory.newSAXParser();
+            NexmlTreesHandler handler = new NexmlTreesHandler();
+            saxParser.parse(selectedFile, handler);
+
+            //for (PhyloTree t : handler.getTrees())
+                //trees.getTrees().add(t);
+            tree = handler.getTrees().get(0);
+
+        } catch (ParserConfigurationException | SAXException e) {
+            e.printStackTrace();
+        }
+
+        final PhyloTree graph = view.getGraph();
+        graph.copy(tree);
+
+        RootedNetworkEmbedder.apply(contentPane, view, RootedNetworkEmbedder.Orientation.leftRight);
     }
 }
