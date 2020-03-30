@@ -36,6 +36,7 @@ import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
 import jloda.util.UsageException;
 import phylosketch.window.MainWindow;
+import splitstree5.main.CheckForUpdate;
 
 import java.io.File;
 import java.time.Duration;
@@ -59,12 +60,14 @@ public class PhyloSketch extends Application {
 
         ProgramProperties.setProgramName(Version.NAME);
         ProgramProperties.setProgramVersion(Version.SHORT_DESCRIPTION);
-        ProgramProperties.setProgramURL("http://software-ab.informatik.uni-tuebingen.de/download/phylosketch/");
 
         ProgramProperties.setProgramLicence("Copyright (C) 2020 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.\n" +
                 "This is free software, licensed under the terms of the GNU General Public License, Version 3.\n" +
-                "Sources available at: https://github.com/husonlab/phylosketch\n" +
-                "Installers available at: " + ProgramProperties.getProgramURL() + "\n");
+                "Sources available at: https://github.com/husonlab/phylosketch\n");
+
+        CheckForUpdate.programURL = "http://software-ab.informatik.uni-tuebingen.de/download/phylosketch";
+        CheckForUpdate.applicationId = "1691242391";
+
         SplashScreen.setLabelAnchor(new Point2D(230, 10));
         SplashScreen.setVersionString(ProgramProperties.getProgramVersion());
         SplashScreen.setImageResourceName("splash.png");

@@ -280,6 +280,9 @@ public class MainWindowController {
     private MenuItem removeBackgroundImageMenuItem;
 
     @FXML
+    private MenuItem deleteLabelsMenuItem;
+
+    @FXML
     private Button printButton;
 
     @FXML
@@ -778,6 +781,10 @@ public class MainWindowController {
 
     public MenuItem getRemoveBackgroundImageMenuItem() {
         return removeBackgroundImageMenuItem;
+    }
+
+    public MenuItem getDeleteLabelsMenuItem() {
+        return deleteLabelsMenuItem;
     }
 
     public Button getLabelABCButton() {

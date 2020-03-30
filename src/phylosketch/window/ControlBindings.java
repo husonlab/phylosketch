@@ -242,7 +242,12 @@ public class ControlBindings {
 
         controller.getDeleteMenuItem().setOnAction(e ->
                 undoManager.doAndAdd(new DeleteNodesEdgesCommand(contentPane, view, view.getNodeSelection().getSelectedItems(), view.getEdgeSelection().getSelectedItems())));
-        controller.getDeleteMenuItem().disableProperty().bind(nodeSelection.sizeProperty().isEqualTo(0).and(edgeSelection.sizeProperty().isEqualTo(0)));
+        controller.getDeleteMenuItem().disableProperty().bind(nodeSelection.emptyProperty().and(edgeSelection.emptyProperty()));
+
+        controller.getDeleteLabelsMenuItem().setOnAction(e -> {
+            nodeSelection.getSelectedItems().forEach(v -> view.getNodeView(v).getLabel().setText(null));
+        });
+        controller.getDeleteLabelsMenuItem().disableProperty().bind(nodeSelection.emptyProperty());
 
         contentPane.setOnMousePressed((e) -> {
             if (e.getClickCount() == 2) {
@@ -345,7 +350,7 @@ public class ControlBindings {
 
         controller.getAboutMenuItem().setOnAction((e) -> SplashScreen.showSplash(Duration.ofMinutes(2)));
 
-        controller.getCheckForUpdatesMenuItem().setOnAction((e) -> CheckForUpdate.apply(ProgramProperties.getProgramURL()));
+        controller.getCheckForUpdatesMenuItem().setOnAction((e) -> CheckForUpdate.apply());
         MainWindowManager.getInstance().changedProperty().addListener((c, o, n) -> controller.getCheckForUpdatesMenuItem().disableProperty().set(MainWindowManager.getInstance().size() > 1
                 || (MainWindowManager.getInstance().size() == 1 && !MainWindowManager.getInstance().getMainWindow(0).isEmpty())));
 

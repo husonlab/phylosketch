@@ -35,10 +35,7 @@ import phylosketch.window.MainWindow;
 import phylosketch.window.NetworkProperties;
 import phylosketch.window.PhyloView;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -49,18 +46,20 @@ public class Normalize {
     static public void apply(PhyloView phyloView, PhyloTree target, NodeArray<Point2D> coordinates) {
         final PhyloTree source = phyloView.getGraph();
 
-        final Set<Node> visibleAndLabeled = Basic.asSet(NetworkProperties.allVisibleNodes(source));
-        visibleAndLabeled.addAll(source.nodeStream().filter(v -> source.getLabel(v) != null).collect(Collectors.toList()));
+        final Set<Node> visibleAndLeaves = Basic.asSet(NetworkProperties.allVisibleNodes(source));
+        visibleAndLeaves.addAll(source.nodeStream().filter(v -> v.getOutDegree() == 0).collect(Collectors.toList()));
 
         final NodeArray<Node> src2tar = new NodeArray<>(source);
         final NodeArray<Node> tar2src = new NodeArray<>(target);
+
+        final List<String> srcNodeLabels = source.nodeStream().map(source::getLabel).filter(s -> s != null && s.length() > 0).collect(Collectors.toList());
 
         final Optional<Node> sourceRoot = source.nodeStream().filter(v -> v.getInDegree() == 0).findAny();
         if (sourceRoot.isEmpty())
             return;
 
         // setup new nodes:
-        for (Node s : visibleAndLabeled) {
+        for (Node s : visibleAndLeaves) {
             final Node t = target.newNode();
             src2tar.put(s, t);
             tar2src.put(t, s);
@@ -72,10 +71,10 @@ public class Normalize {
 
         final NodeArray<Collection<Node>> visibleBelow = new NodeArray<>(source);
 
-        allBelowRec(sourceRoot.get(), visibleAndLabeled, visibleBelow);
+        allBelowRec(sourceRoot.get(), visibleAndLeaves, visibleBelow);
 
         // create full graph:
-        for (Node vs : visibleAndLabeled) {
+        for (Node vs : visibleAndLeaves) {
             final Node vt = src2tar.get(vs);
             for (Node ws : visibleBelow.get(vs)) {
                 final Node wt = src2tar.get(ws);
@@ -99,11 +98,16 @@ public class Normalize {
 
         // remove digons:
 
-        final Set<Node> nodesToRemove = target.nodeStream().filter(v -> v.getInDegree() == 1 && v.getOutDegree() == 1 && target.getLabel(v) == null).collect(Collectors.toSet());
+        final Set<Node> nodesToRemove = target.nodeStream().filter(v -> v.getInDegree() == 1 && v.getOutDegree() == 1).collect(Collectors.toSet());
 
         for (Node v : nodesToRemove) {
             target.delDivertex(v);
         }
+
+        final Set<String> targetNodeLabels = target.nodeStream().map(target::getLabel).filter(s -> s != null && s.length() > 0).collect(Collectors.toSet());
+        final long lost = srcNodeLabels.stream().filter(s -> !targetNodeLabels.contains(s)).count();
+        if (lost > 0)
+            NotificationManager.showWarning("Number of labeled internal nodes removed: " + lost);
     }
 
     /**

@@ -347,6 +347,8 @@
                                                 <KeyCodeCombination alt="UP" code="BACK_SPACE" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                                             </accelerator>
                                         </MenuItem>
+                                        <MenuItem fx:id="deleteLabelsMenuItem" mnemonicParsing="false"
+                                                  text="Delete Labels"/>
                                         <MenuItem fx:id="removeBackgroundImageMenuItem" mnemonicParsing="false" text="Delete Background Image" />
                                         <SeparatorMenuItem mnemonicParsing="false" />
                                         <MenuItem fx:id="findMenuItem" mnemonicParsing="false" text="Find...">

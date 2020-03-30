@@ -22,7 +22,11 @@ package phylosketch.window;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ListChangeListener;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
@@ -30,6 +34,7 @@ import jloda.fx.graph.GraphFX;
 import jloda.graph.*;
 import jloda.phylo.PhyloTree;
 import jloda.util.Basic;
+import jloda.util.ProgramProperties;
 import jloda.util.Single;
 import splitstree5.treebased.OffspringGraphMatching;
 
@@ -41,6 +46,8 @@ import java.util.stream.Collectors;
  * Daniel Huson, 1.2020
  */
 public class NetworkProperties {
+    private final static IntegerProperty fontSize = new SimpleIntegerProperty(-1);
+
     /**
      * setup network properties
      *
@@ -49,6 +56,8 @@ public class NetworkProperties {
      * @param <G>
      */
     public static <G extends Graph> void setup(FlowPane statusFlowPane, GraphFX<G> graphFX, BooleanProperty leafLabeledDAGProperty) {
+        if (fontSize.get() < 2)
+            fontSize.set(ProgramProperties.get("StatusPaneFontSize", 14));
 
         graphFX.getNodeList().addListener((InvalidationListener) z -> update(statusFlowPane, graphFX, leafLabeledDAGProperty));
         graphFX.getEdgeList().addListener((InvalidationListener) z -> update(statusFlowPane, graphFX, leafLabeledDAGProperty));
@@ -58,6 +67,27 @@ public class NetworkProperties {
                     graphFX.nodeLabelProperty(v).addListener(c -> update(statusFlowPane, graphFX, leafLabeledDAGProperty));
                 }
             }
+        });
+
+        statusFlowPane.setOnContextMenuRequested(e -> {
+            final MenuItem increaseFontSizeButton = new MenuItem("Increase Font Size");
+            increaseFontSizeButton.setOnAction(z -> {
+                fontSize.set(fontSize.get() + 2);
+                statusFlowPane.getChildren().stream().filter(c -> c instanceof Text).map(c -> (Text) c).forEach(c -> c.setStyle(String.format("-fx-font-size: %d;", fontSize.get())));
+                ProgramProperties.put("StatusPaneFontSize", fontSize.get());
+
+
+            });
+            final MenuItem decreaseFontSizeButton = new MenuItem("Decrease Font Size");
+            decreaseFontSizeButton.setOnAction(z -> {
+                fontSize.set(fontSize.get() - 2);
+                statusFlowPane.getChildren().stream().filter(c -> c instanceof Text).map(c -> (Text) c).forEach(c -> c.setStyle(String.format("-fx-font-size: %d;", fontSize.get())));
+                ProgramProperties.put("StatusPaneFontSize", fontSize.get());
+            });
+            decreaseFontSizeButton.disableProperty().bind(fontSize.lessThanOrEqualTo(2));
+
+            final ContextMenu contextMenu = new ContextMenu(increaseFontSizeButton, decreaseFontSizeButton);
+            contextMenu.show(statusFlowPane, e.getScreenX(), e.getScreenY());
         });
     }
 
@@ -296,7 +326,7 @@ public class NetworkProperties {
 
     public static Text newText(String label) {
         final Text text = new Text(label);
-        text.setStyle("-fx-font-size: 18;");
+        text.setStyle(String.format("-fx-font-size: %d;", fontSize.get()));
         return text;
     }
 }
