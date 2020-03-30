@@ -45,9 +45,12 @@ public class PhyloSketchFileOpener implements Consumer<String> {
         if (window == null || !window.isEmpty())
             window = NewWindow.apply();
 
+        String firstLine = Objects.requireNonNull(Basic.getFirstLineFromFile(new File(fileName))).trim().toLowerCase();
         try {
-            if (Objects.requireNonNull(Basic.getFirstLineFromFile(new File(fileName))).trim().toLowerCase().startsWith("#nexus"))
+            if (firstLine.startsWith("#nexus"))
                 PhyloSketchIO.open(window.getController().getContentPane(), window.getView(), new File(fileName));
+            else if (firstLine.startsWith("<nex:nexml") || firstLine.startsWith("<?xml version="))
+                PhyloSketchIO.importNeXML(window.getController().getContentPane(), window.getView(), new File(fileName));
             else
                 PhyloSketchIO.importNewick(window.getController().getContentPane(), window.getView(), new File(fileName));
 
