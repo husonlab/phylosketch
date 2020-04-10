@@ -274,6 +274,31 @@ public class MainWindowController {
     private Button exportButton;
 
     @FXML
+    private MenuItem rotateGraphClockwiseButton;
+
+    @FXML
+    private MenuItem rotateGraphAnticlockwiseButton;
+
+    @FXML
+    private MenuItem rotateLabelsClockwiseButton;
+
+    @FXML
+    private MenuItem rotateLabelsAnticlockwiseButton;
+
+
+    @FXML
+    private MenuItem rotateGraphClockwiseMenuItem;
+
+    @FXML
+    private MenuItem rotateGraphAnticlockwiseMenuItem;
+
+    @FXML
+    private MenuItem rotateLabelsClockwiseMenuItem;
+
+    @FXML
+    private MenuItem rotateLabelsAnticlockwiseMenuItem;
+
+    @FXML
     private MenuItem loadBackgroundImageMenuItem;
 
     @FXML
@@ -801,5 +826,37 @@ public class MainWindowController {
 
     public MenuItem getNormalizationMenuItem() {
         return normalizationMenuItem;
+    }
+
+    public MenuItem getRotateGraphClockwiseMenuItem() {
+        return rotateGraphClockwiseMenuItem;
+    }
+
+    public MenuItem getRotateGraphAnticlockwiseMenuItem() {
+        return rotateGraphAnticlockwiseMenuItem;
+    }
+
+    public MenuItem getRotateLabelsClockwiseMenuItem() {
+        return rotateLabelsClockwiseMenuItem;
+    }
+
+    public MenuItem getRotateLabelsAnticlockwiseMenuItem() {
+        return rotateLabelsAnticlockwiseMenuItem;
+    }
+
+    public MenuItem getRotateGraphClockwiseButton() {
+        return rotateGraphClockwiseButton;
+    }
+
+    public MenuItem getRotateGraphAnticlockwiseButton() {
+        return rotateGraphAnticlockwiseButton;
+    }
+
+    public MenuItem getRotateLabelsClockwiseButton() {
+        return rotateLabelsClockwiseButton;
+    }
+
+    public MenuItem getRotateLabelsAnticlockwiseButton() {
+        return rotateLabelsAnticlockwiseButton;
     }
 }

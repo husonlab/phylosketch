@@ -56,7 +56,6 @@ public class PhyloSketchFileOpener implements Consumer<String> {
 
             window.getView().setFileName(fileName);
             RecentFilesManager.getInstance().insertRecentFile(fileName);
-
         } catch (IOException e) {
             NotificationManager.showError("Open file failed: " + e.getMessage());
         }

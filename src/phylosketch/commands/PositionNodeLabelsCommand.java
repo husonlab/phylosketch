@@ -20,13 +20,16 @@
 
 package phylosketch.commands;
 
+import javafx.scene.control.Label;
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Node;
+import jloda.util.Basic;
 import phylosketch.window.NodeView;
 import phylosketch.window.PhyloView;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * change label positions
@@ -38,35 +41,77 @@ public class PositionNodeLabelsCommand extends UndoableRedoableCommand {
     private final Runnable undo;
     private final Runnable redo;
 
-    public PositionNodeLabelsCommand(PhyloView view, Collection<Node> nodes, Position position) {
+    /**
+     * change node positions
+     *
+     * @param view
+     * @param position
+     */
+    public PositionNodeLabelsCommand(PhyloView view, Position position) {
         super("Label Position");
+
+        final Stream<Node> nodes;
+        if (view.getNodeSelection().size() > 0)
+            nodes = view.getNodeSelection().getSelectedItems().stream();
+        else
+            nodes = view.getGraph().nodeStream();
 
         final ArrayList<Data> dataList = new ArrayList<>();
 
         nodes.forEach(v -> {
-            final NodeView nv = view.getNodeView(v);
-            switch (position) {
-                case Above: {
-                    dataList.add(new Data(v.getId(), nv.getLabel().getLayoutX(), -0.5 * nv.getLabel().getWidth(), nv.getLabel().getLayoutY(), -(0.5 * nv.getHeight() + nv.getLabel().getHeight() + 5)));
-                    break;
-                }
-                case Below: {
-                    dataList.add(new Data(v.getId(), nv.getLabel().getLayoutX(), -0.5 * nv.getLabel().getWidth(), nv.getLabel().getLayoutY(), +(0.5 * nv.getHeight() + 5)));
-                    break;
-                }
-                case Left: {
-                    dataList.add(new Data(v.getId(), nv.getLabel().getLayoutX(), -(0.5 * nv.getWidth() + nv.getLabel().getWidth() + 5), nv.getLabel().getLayoutY(), -0.5 * nv.getLabel().getHeight()));
-                    break;
-                }
-                case Right: {
-                    dataList.add(new Data(v.getId(), nv.getLabel().getLayoutX(), (0.5 * nv.getWidth() + 5), nv.getLabel().getLayoutY(), -0.5 * nv.getLabel().getHeight()));
-                    break;
-                }
-                case Center: {
-                    dataList.add(new Data(v.getId(), nv.getLabel().getLayoutX(), -0.5 * nv.getLabel().getWidth(), nv.getLabel().getLayoutY(), -0.5 * nv.getLabel().getHeight()));
-                    break;
-                }
+            final double nodeWidth = view.getNodeView(v).getWidth();
+            final double nodeHeight = view.getNodeView(v).getHeight();
+            final Label label = view.getNodeView(v).getLabel();
+            
+            final boolean horizontalLabel = !(Basic.equals(label.getRotate(), 90, 0.00001) || Basic.equals(label.getRotate(), 270, 0.00001));
 
+            if (horizontalLabel) {
+
+                switch (position) {
+                    case Above: {
+                        dataList.add(new Data(v.getId(), label.getLayoutX(), -0.5 * label.getWidth(), label.getLayoutY(), -(0.5 * label.getHeight() + label.getHeight() + 5)));
+                        break;
+                    }
+                    case Below: {
+                        dataList.add(new Data(v.getId(), label.getLayoutX(), -0.5 * label.getWidth(), label.getLayoutY(), +(0.5 * nodeHeight + 5)));
+                        break;
+                    }
+                    case Left: {
+                        dataList.add(new Data(v.getId(), label.getLayoutX(), -(0.5 * nodeWidth + label.getWidth() + 5), label.getLayoutY(), -0.5 * label.getHeight()));
+                        break;
+                    }
+                    case Right: {
+                        dataList.add(new Data(v.getId(), label.getLayoutX(), (0.5 * nodeWidth + 5), label.getLayoutY(), -0.5 * label.getHeight()));
+                        break;
+                    }
+                    case Center: {
+                        dataList.add(new Data(v.getId(), label.getLayoutX(), -0.5 * label.getWidth(), label.getLayoutY(), -0.5 * label.getHeight()));
+                        break;
+                    }
+                }
+            } else {
+                switch (position) {
+                    case Above: {
+                        dataList.add(new Data(v.getId(), label.getLayoutX(), -0.5 * label.getWidth(), label.getLayoutY(), -(8 + nodeHeight + 0.5 * label.getWidth())));
+                        break;
+                    }
+                    case Below: {
+                        dataList.add(new Data(v.getId(), label.getLayoutX(), -0.5 * label.getWidth(), label.getLayoutY(), 5 + 0.5 * label.getWidth()));
+                        break;
+                    }
+                    case Left: {
+                        dataList.add(new Data(v.getId(), label.getLayoutX(), -(0.5 * nodeWidth + label.getWidth() + 8) + 0.5 * label.getWidth(), label.getLayoutY(), -0.5 * label.getHeight()));
+                        break;
+                    }
+                    case Right: {
+                        dataList.add(new Data(v.getId(), label.getLayoutX(), 0.5 * nodeWidth + 8 - 0.5 * label.getWidth(), label.getLayoutY(), -0.5 * label.getHeight()));
+                        break;
+                    }
+                    case Center: {
+                        dataList.add(new Data(v.getId(), label.getLayoutX(), -0.5 * label.getWidth(), label.getLayoutY(), -0.5 * label.getHeight()));
+                        break;
+                    }
+                }
             }
         });
 
@@ -85,8 +130,6 @@ public class PositionNodeLabelsCommand extends UndoableRedoableCommand {
                 nv.getLabel().setLayoutY(data.newY);
             }
         };
-
-
     }
 
     @Override
@@ -113,6 +156,22 @@ public class PositionNodeLabelsCommand extends UndoableRedoableCommand {
             this.oldY = oldY;
             this.newY = newY;
         }
-    }
 
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Data)) return false;
+            Data data = (Data) o;
+            return id == data.id &&
+                    Double.compare(data.oldX, oldX) == 0 &&
+                    Double.compare(data.newX, newX) == 0 &&
+                    Double.compare(data.oldY, oldY) == 0 &&
+                    Double.compare(data.newY, newY) == 0;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id, oldX, newX, oldY, newY);
+        }
+    }
 }

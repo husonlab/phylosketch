@@ -108,7 +108,6 @@ public class ControlBindings {
         controller.getInfoLabelsVBox().visibleProperty().bind(view.getGraphFX().emptyProperty());
         controller.getInfoLabelsVBox().setMouseTransparent(true);
 
-
         new RubberBandSelection(contentPane, scrollPane, view.getWorld(), RubberBandSelectionHandler.create(graph, nodeSelection,
                 edgeSelection, v -> view.getNodeView(v).getShape(), view::getCurve));
 
@@ -227,7 +226,6 @@ public class ControlBindings {
             }
         });
 
-
         controller.getNormalizationMenuItem().setOnAction(c -> Normalize.runNormalize(window));
         controller.getNormalizationMenuItem().disableProperty().bind(isLeafLabeledDAG.not());
 
@@ -281,6 +279,30 @@ public class ControlBindings {
         controller.getFindAgainMenuItem().disableProperty().bind(graphFindToolBar.canFindAgainProperty().not());
         controller.getReplaceMenuItem().setOnAction(c -> graphFindToolBar.setShowReplaceToolBar(true));
         controller.getReplaceMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
+
+        controller.getRotateGraphClockwiseMenuItem().setOnAction(c -> undoManager.doAndAdd(new RotateGraphCommand(view, true)));
+        controller.getRotateGraphClockwiseMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
+
+        controller.getRotateGraphAnticlockwiseMenuItem().setOnAction(c -> undoManager.doAndAdd(new RotateGraphCommand(view, false)));
+        controller.getRotateGraphAnticlockwiseMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
+
+        controller.getRotateLabelsClockwiseMenuItem().setOnAction(c -> undoManager.doAndAdd(new RotateLabelsCommand(view, true)));
+        controller.getRotateLabelsClockwiseMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
+
+        controller.getRotateLabelsAnticlockwiseMenuItem().setOnAction(c -> undoManager.doAndAdd(new RotateLabelsCommand(view, false)));
+        controller.getRotateLabelsAnticlockwiseMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
+
+        controller.getRotateGraphClockwiseButton().setOnAction(controller.getRotateGraphClockwiseMenuItem().getOnAction());
+        controller.getRotateGraphClockwiseButton().disableProperty().bind(view.getGraphFX().emptyProperty());
+
+        controller.getRotateGraphAnticlockwiseButton().setOnAction(controller.getRotateGraphAnticlockwiseMenuItem().getOnAction());
+        controller.getRotateGraphAnticlockwiseButton().disableProperty().bind(view.getGraphFX().emptyProperty());
+
+        controller.getRotateLabelsClockwiseButton().setOnAction(controller.getRotateLabelsClockwiseMenuItem().getOnAction());
+        controller.getRotateLabelsClockwiseButton().disableProperty().bind(view.getGraphFX().emptyProperty());
+
+        controller.getRotateLabelsAnticlockwiseButton().setOnAction(controller.getRotateLabelsAnticlockwiseMenuItem().getOnAction());
+        controller.getRotateLabelsAnticlockwiseButton().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getLabelLeavesABCMenuItem().setOnAction(c -> undoManager.doAndAdd(new ChangeNodeLabelsCommand(view, LabelLeaves.labelLeavesABC(view))));
         controller.getLabelLeavesABCMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
@@ -367,17 +389,17 @@ public class ControlBindings {
 
     }
 
-    public static void setupSelect(PhyloView editor, MainWindowController controller) {
-        final PhyloTree graph = editor.getGraph();
+    public static void setupSelect(PhyloView view, MainWindowController controller) {
+        final PhyloTree graph = view.getGraph();
 
-        final ItemSelectionModel<Node> nodeSelection = editor.getNodeSelection();
-        final ItemSelectionModel<Edge> edgeSelection = editor.getEdgeSelection();
+        final ItemSelectionModel<Node> nodeSelection = view.getNodeSelection();
+        final ItemSelectionModel<Edge> edgeSelection = view.getEdgeSelection();
 
         controller.getSelectAllMenuItem().setOnAction(e -> {
             graph.nodes().forEach(nodeSelection::select);
             graph.edges().forEach(edgeSelection::select);
         });
-        controller.getSelectAllMenuItem().disableProperty().bind(editor.getGraphFX().emptyProperty());
+        controller.getSelectAllMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getSelectNoneMenuItem().setOnAction(e -> {
             nodeSelection.clearSelection();
@@ -389,29 +411,29 @@ public class ControlBindings {
             graph.nodes().forEach(nodeSelection::toggleSelection);
             graph.edges().forEach(edgeSelection::toggleSelection);
         });
-        controller.getSelectInvertMenuItem().disableProperty().bind(editor.getGraphFX().emptyProperty());
+        controller.getSelectInvertMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getSelectRootsMenuItem().setOnAction(e -> graph.nodeStream().filter(v -> v.getInDegree() == 0).forEach(nodeSelection::select));
-        controller.getSelectRootsMenuItem().disableProperty().bind(editor.getGraphFX().emptyProperty());
+        controller.getSelectRootsMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getSelectLeavesMenuItem().setOnAction(e -> graph.nodeStream().filter(v -> v.getOutDegree() == 0).forEach(nodeSelection::select));
-        controller.getSelectLeavesMenuItem().disableProperty().bind(editor.getGraphFX().emptyProperty());
+        controller.getSelectLeavesMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getSelectReticulateNodesMenuitem().setOnAction(e -> graph.nodeStream().filter(v -> v.getInDegree() > 1).forEach(nodeSelection::select));
-        controller.getSelectReticulateNodesMenuitem().disableProperty().bind(editor.getGraphFX().emptyProperty());
+        controller.getSelectReticulateNodesMenuitem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getSelectStableNodesMenuItem().setOnAction(e -> NetworkProperties.allStableInternal(graph).forEach(nodeSelection::select));
-        controller.getSelectStableNodesMenuItem().disableProperty().bind(editor.getGraphFX().emptyProperty());
+        controller.getSelectStableNodesMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getSelectVisibleNodesMenuItem().setOnAction(e -> NetworkProperties.allVisibleNodes(graph).forEach(nodeSelection::select));
-        controller.getSelectVisibleNodesMenuItem().disableProperty().bind(editor.getGraphFX().emptyProperty());
+        controller.getSelectVisibleNodesMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getSelectVisibleReticulationsMenuItem().setOnAction(e -> NetworkProperties.allVisibleNodes(graph).stream().filter(v -> v.getInDegree() > 1).forEach(nodeSelection::select));
-        controller.getSelectVisibleReticulationsMenuItem().disableProperty().bind(editor.getGraphFX().emptyProperty());
+        controller.getSelectVisibleReticulationsMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getSelectTreeNodesMenuItem().setOnAction(e -> graph.nodeStream().filter(v -> v.getInDegree() <= 1 && v.getOutDegree() > 0).forEach(nodeSelection::select));
 
-        controller.getSelectTreeNodesMenuItem().disableProperty().bind(editor.getGraphFX().emptyProperty());
+        controller.getSelectTreeNodesMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getSelectAllAboveMenuItem().setOnAction(c -> {
             final Queue<Node> list = new LinkedList<>(nodeSelection.getSelectedItems());
@@ -448,10 +470,10 @@ public class ControlBindings {
         controller.getSelectAllBelowMenuItem().disableProperty().bind(nodeSelection.emptyProperty());
 
         controller.getSelectTreeEdgesMenuItem().setOnAction(c -> graph.edgeStream().filter(e -> e.getTarget().getInDegree() <= 1).forEach(edgeSelection::select));
-        controller.getSelectReticulateEdgesMenuItem().disableProperty().bind(editor.getGraphFX().emptyProperty());
+        controller.getSelectReticulateEdgesMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getSelectReticulateEdgesMenuItem().setOnAction(c -> graph.edgeStream().filter(e -> e.getTarget().getInDegree() > 1).forEach(edgeSelection::select));
-        controller.getSelectReticulateEdgesMenuItem().disableProperty().bind(editor.getGraphFX().emptyProperty());
+        controller.getSelectReticulateEdgesMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
     }
 
     public static void setupAlign(PhyloView view, MainWindowController controller) {
@@ -522,36 +544,36 @@ public class ControlBindings {
         final BooleanProperty noneSelected = new SimpleBooleanProperty(false);
         noneSelected.bind(Bindings.size(nodeSelection).isEqualTo(0));
 
-        controller.getLabelPositionAboveMenuItem().setOnAction(c -> undoManager.doAndAdd(new PositionNodeLabelsCommand(view, nodeSelection, PositionNodeLabelsCommand.Position.Above)));
-        controller.getLabelPositionAboveMenuItem().disableProperty().bind(noneSelected);
+        controller.getLabelPositionAboveMenuItem().setOnAction(c -> undoManager.doAndAdd(new PositionNodeLabelsCommand(view, PositionNodeLabelsCommand.Position.Above)));
+        controller.getLabelPositionAboveMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getLabelAboveButton().setOnAction(controller.getLabelPositionAboveMenuItem().getOnAction());
         controller.getLabelAboveButton().disableProperty().bind(controller.getLabelPositionAboveMenuItem().disableProperty());
 
-        controller.getLabelPositionBelowMenuItem().setOnAction(c -> undoManager.doAndAdd(new PositionNodeLabelsCommand(view, nodeSelection, PositionNodeLabelsCommand.Position.Below)));
-        controller.getLabelPositionBelowMenuItem().disableProperty().bind(noneSelected);
+        controller.getLabelPositionBelowMenuItem().setOnAction(c -> undoManager.doAndAdd(new PositionNodeLabelsCommand(view, PositionNodeLabelsCommand.Position.Below)));
+        controller.getLabelPositionBelowMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getLabelBelowButton().setOnAction(controller.getLabelPositionBelowMenuItem().getOnAction());
         controller.getLabelBelowButton().disableProperty().bind(controller.getLabelPositionBelowMenuItem().disableProperty());
 
-        controller.getLabelPositionLeftMenuItem().setOnAction(c -> undoManager.doAndAdd(new PositionNodeLabelsCommand(view, nodeSelection, PositionNodeLabelsCommand.Position.Left)));
-        controller.getLabelPositionLeftMenuItem().disableProperty().bind(noneSelected);
+        controller.getLabelPositionLeftMenuItem().setOnAction(c -> undoManager.doAndAdd(new PositionNodeLabelsCommand(view, PositionNodeLabelsCommand.Position.Left)));
+        controller.getLabelPositionLeftMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getLabelLeftButton().setOnAction(controller.getLabelPositionLeftMenuItem().getOnAction());
-        controller.getLabelLeftButton().disableProperty().bind(controller.getLabelPositionLeftMenuItem().disableProperty());
+        controller.getLabelLeftButton().disableProperty().bind(view.getGraphFX().emptyProperty());
 
-        controller.getLabelPositionRightMenuItem().setOnAction(c -> undoManager.doAndAdd(new PositionNodeLabelsCommand(view, nodeSelection, PositionNodeLabelsCommand.Position.Right)));
-        controller.getLabelPositionRightMenuItem().disableProperty().bind(noneSelected);
+        controller.getLabelPositionRightMenuItem().setOnAction(c -> undoManager.doAndAdd(new PositionNodeLabelsCommand(view, PositionNodeLabelsCommand.Position.Right)));
+        controller.getLabelPositionRightMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getLabelRightButton().setOnAction(controller.getLabelPositionRightMenuItem().getOnAction());
-        controller.getLabelRightButton().disableProperty().bind(controller.getLabelPositionRightMenuItem().disableProperty());
+        controller.getLabelRightButton().disableProperty().bind(view.getGraphFX().emptyProperty());
 
 
-        controller.getLabelPositionCenterMenuItem().setOnAction(c -> undoManager.doAndAdd(new PositionNodeLabelsCommand(view, nodeSelection, PositionNodeLabelsCommand.Position.Center)));
-        controller.getLabelPositionCenterMenuItem().disableProperty().bind(noneSelected);
+        controller.getLabelPositionCenterMenuItem().setOnAction(c -> undoManager.doAndAdd(new PositionNodeLabelsCommand(view, PositionNodeLabelsCommand.Position.Center)));
+        controller.getLabelPositionCenterMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getLabelCenterButton().setOnAction(controller.getLabelPositionCenterMenuItem().getOnAction());
-        controller.getLabelCenterButton().disableProperty().bind(controller.getLabelPositionCenterMenuItem().disableProperty());
+        controller.getLabelCenterButton().disableProperty().bind(view.getGraphFX().emptyProperty());
 
     }
 }

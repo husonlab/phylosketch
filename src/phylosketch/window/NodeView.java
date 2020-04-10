@@ -24,6 +24,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import jloda.fx.shapes.ISized;
@@ -50,6 +51,14 @@ public class NodeView {
         shapeGroup.setTranslateX(x);
         shapeGroup.setTranslateY(y);
 
+        {
+            final Circle spacer = new Circle(50);
+            spacer.setFill(Color.TRANSPARENT);
+            spacer.setStroke(Color.TRANSPARENT);
+            spacer.setMouseTransparent(true);
+            shapeGroup.getChildren().add(spacer);
+        }
+
         label.setLayoutX(10);
         label.setLayoutY(-7);
         label.translateXProperty().bind(translateXProperty());
@@ -58,6 +67,14 @@ public class NodeView {
 
     public Label getLabel() {
         return label;
+    }
+
+    public void setLabelAngle(Double angle) {
+        label.setRotate(angle);
+    }
+
+    public double getLabelAngle() {
+        return label.getRotate();
     }
 
     public Shape getShape() {

@@ -21,6 +21,7 @@
 package phylosketch.io;
 
 import javafx.stage.FileChooser;
+import jloda.fx.util.RecentFilesManager;
 import jloda.fx.util.TextFileFilter;
 import jloda.util.ProgramProperties;
 import phylosketch.window.MainWindow;
@@ -48,7 +49,7 @@ public class Save {
      * show save dialog
      *
      * @param window
-     * @return true, if save
+     * @return true, if saved
      */
     public static boolean showSaveDialog(MainWindow window) {
         final FileChooser fileChooser = new FileChooser();
@@ -75,8 +76,9 @@ public class Save {
         if (selectedFile != null) {
             Save.apply(selectedFile, window);
             ProgramProperties.put("SaveFileDir", selectedFile.getParent());
-        }
-        return false;
-
+            RecentFilesManager.getInstance().insertRecentFile(selectedFile.getPath());
+            return true;
+        } else
+            return false;
     }
 }

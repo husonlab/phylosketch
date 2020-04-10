@@ -113,6 +113,55 @@
                                                 <Separator layoutX="128.0" layoutY="16.0" maxHeight="-Infinity"
                                                            minHeight="-Infinity" orientation="VERTICAL"
                                                            prefHeight="16.0"/>
+                                                <MenuButton mnemonicParsing="false" text="Rotate">
+                                                    <items>
+                                                        <MenuItem fx:id="rotateGraphClockwiseButton"
+                                                                  mnemonicParsing="false" text="Graph Clockwise">
+                                                            <graphic>
+                                                                <ImageView fitHeight="16.0" fitWidth="16.0"
+                                                                           pickOnBounds="true" preserveRatio="true">
+                                                                    <image>
+                                                                        <Image url="@/jloda/resources/icons/RotateRight16.gif"/>
+                                                                    </image>
+                                                                </ImageView>
+                                                            </graphic>
+                                                        </MenuItem>
+                                                        <MenuItem fx:id="rotateGraphAnticlockwiseButton"
+                                                                  mnemonicParsing="false" text="Graph Anticlockwise">
+                                                            <graphic>
+                                                                <ImageView fitHeight="16.0" fitWidth="16.0"
+                                                                           pickOnBounds="true" preserveRatio="true">
+                                                                    <image>
+                                                                        <Image url="@/jloda/resources/icons/RotateLeft16.gif"/>
+                                                                    </image>
+                                                                </ImageView>
+                                                            </graphic>
+                                                        </MenuItem>
+                                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                                        <MenuItem fx:id="rotateLabelsClockwiseButton"
+                                                                  mnemonicParsing="false" text="Labels Clockwise">
+                                                            <graphic>
+                                                                <ImageView fitHeight="16.0" fitWidth="16.0"
+                                                                           pickOnBounds="true" preserveRatio="true">
+                                                                    <image>
+                                                                        <Image url="@/jloda/resources/icons/RotateRight16.gif"/>
+                                                                    </image>
+                                                                </ImageView>
+                                                            </graphic>
+                                                        </MenuItem>
+                                                        <MenuItem fx:id="rotateLabelsAnticlockwiseButton"
+                                                                  mnemonicParsing="false" text="Labels Anticlockwise">
+                                                            <graphic>
+                                                                <ImageView fitHeight="16.0" fitWidth="16.0"
+                                                                           pickOnBounds="true" preserveRatio="true">
+                                                                    <image>
+                                                                        <Image url="@/jloda/resources/icons/RotateLeft16.gif"/>
+                                                                    </image>
+                                                                </ImageView>
+                                                            </graphic>
+                                                        </MenuItem>
+                                                    </items>
+                                                </MenuButton>
                                                 <MenuButton mnemonicParsing="false" text="Align">
                                                     <items>
                                                         <MenuItem fx:id="alignLeftButton" mnemonicParsing="false"
@@ -260,176 +309,190 @@
                             <menus>
                                 <Menu fx:id="fileMenu" mnemonicParsing="false" text="File">
                                     <items>
-                                        <MenuItem fx:id="newMenuItem" mnemonicParsing="false" text="New...">
+                                        <MenuItem fx:id="newMenuItem" text="New...">
                                             <accelerator>
                                                 <KeyCodeCombination alt="UP" code="N" control="UP" meta="UP" shift="UP"
                                                                     shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
                                         <SeparatorMenuItem mnemonicParsing="false" />
-                                        <MenuItem fx:id="openMenuItem" mnemonicParsing="false" text="Open...">
+                                        <MenuItem fx:id="openMenuItem" text="Open...">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="O" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="O" control="UP" meta="UP" shift="UP"
+                                                                    shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
-                                        <Menu fx:id="recentMenu" mnemonicParsing="false" text="Recent" />
-                                        <SeparatorMenuItem mnemonicParsing="false" />
-                                        <MenuItem fx:id="saveAsMenuItem" mnemonicParsing="false" text="Save As...">
+                                        <Menu fx:id="recentMenu" text="Recent"/>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="saveAsMenuItem" text="Save As...">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="S" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="S" control="UP" meta="UP" shift="UP"
+                                                                    shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
-                                        <SeparatorMenuItem mnemonicParsing="false" />
-                                        <MenuItem fx:id="importMenuItem" mnemonicParsing="false" text="Import..." />
-                                        <MenuItem fx:id="exportMenuItem" mnemonicParsing="false" text="Export..." />
-                                        <SeparatorMenuItem mnemonicParsing="false" />
-                                        <MenuItem fx:id="loadBackgroundImageMenuItem" mnemonicParsing="false" text="Load Background Image...">
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="importMenuItem" text="Import..."/>
+                                        <MenuItem fx:id="exportMenuItem" text="Export..."/>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="loadBackgroundImageMenuItem" text="Load Background Image...">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="O" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="O" control="UP" meta="UP"
+                                                                    shift="DOWN" shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
-                                        <SeparatorMenuItem mnemonicParsing="false" />
-                                        <MenuItem fx:id="printMenuItem" mnemonicParsing="false" text="Print...">
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="printMenuItem" text="Print...">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="P" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="P" control="UP" meta="UP" shift="UP"
+                                                                    shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
-                                        <MenuItem fx:id="pageSetupMenuItem" mnemonicParsing="false" text="Page Setup..." />
+                                        <MenuItem fx:id="pageSetupMenuItem" text="Page Setup..."/>
                                         <SeparatorMenuItem mnemonicParsing="false" />
-                                        <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" text="Close">
+                                        <MenuItem fx:id="closeMenuItem" text="Close">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="W" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="W" control="UP" meta="UP" shift="UP"
+                                                                    shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
-                                        <MenuItem fx:id="quitMenuItem" mnemonicParsing="false" text="Quit">
+                                        <MenuItem fx:id="quitMenuItem" text="Quit">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="Q" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="Q" control="UP" meta="UP" shift="UP"
+                                                                    shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
                                     </items>
                                 </Menu>
                                 <Menu fx:id="editMenu" mnemonicParsing="false" text="Edit">
                                     <items>
-                                        <MenuItem fx:id="undoMenuItem" mnemonicParsing="false" text="Undo">
+                                        <MenuItem fx:id="undoMenuItem" text="Undo">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="Z" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="Z" control="UP" meta="UP" shift="UP"
+                                                                    shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
-                                        <MenuItem fx:id="redoMenuItem" mnemonicParsing="false" text="Redo">
+                                        <MenuItem fx:id="redoMenuItem" text="Redo">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="Z" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
-                                            </accelerator>
-                                        </MenuItem>
-                                        <SeparatorMenuItem mnemonicParsing="false" />
-                                        <MenuItem fx:id="cutMenuItem" mnemonicParsing="false" text="Cut">
-                                            <accelerator>
-                                                <KeyCodeCombination alt="UP" code="X" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
-                                            </accelerator>
-                                        </MenuItem>
-                                        <MenuItem fx:id="copyMenuItem" mnemonicParsing="false" text="Copy">
-                                            <accelerator>
-                                                <KeyCodeCombination alt="UP" code="C" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
-                                            </accelerator>
-                                        </MenuItem>
-                                        <MenuItem fx:id="copyNewickMenuItem" mnemonicParsing="false" text="Copy Newick">
-                                            <accelerator>
-                                                <KeyCodeCombination alt="UP" code="C" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
-                                            </accelerator>
-                                        </MenuItem>
-                                        <MenuItem fx:id="pasteMenuItem" mnemonicParsing="false" text="Paste">
-                                            <accelerator>
-                                                <KeyCodeCombination alt="UP" code="V" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="Z" control="UP" meta="UP"
+                                                                    shift="DOWN" shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
                                         <SeparatorMenuItem mnemonicParsing="false" />
-                                        <MenuItem fx:id="deleteMenuItem" mnemonicParsing="false" text="Delete">
+                                        <MenuItem fx:id="cutMenuItem" text="Cut">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="BACK_SPACE" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="X" control="UP" meta="UP" shift="UP"
+                                                                    shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
-                                        <MenuItem fx:id="deleteLabelsMenuItem" mnemonicParsing="false"
-                                                  text="Delete Labels"/>
-                                        <MenuItem fx:id="removeBackgroundImageMenuItem" mnemonicParsing="false" text="Delete Background Image" />
-                                        <SeparatorMenuItem mnemonicParsing="false" />
-                                        <MenuItem fx:id="findMenuItem" mnemonicParsing="false" text="Find...">
+                                        <MenuItem fx:id="copyMenuItem" text="Copy">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="F" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="C" control="UP" meta="UP" shift="UP"
+                                                                    shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
-                                        <MenuItem fx:id="findAgainMenuItem" mnemonicParsing="false" text="Find Again">
+                                        <MenuItem fx:id="copyNewickMenuItem" text="Copy Newick">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="G" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="C" control="UP" meta="UP"
+                                                                    shift="DOWN" shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
-                                        <MenuItem fx:id="replaceMenuItem" mnemonicParsing="false" text="Replace..."/>
+                                        <MenuItem fx:id="pasteMenuItem" text="Paste">
+                                            <accelerator>
+                                                <KeyCodeCombination alt="UP" code="V" control="UP" meta="UP" shift="UP"
+                                                                    shortcut="DOWN"/>
+                                            </accelerator>
+                                        </MenuItem>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="deleteMenuItem" text="Delete">
+                                            <accelerator>
+                                                <KeyCodeCombination alt="UP" code="BACK_SPACE" control="UP" meta="UP"
+                                                                    shift="UP" shortcut="DOWN"/>
+                                            </accelerator>
+                                        </MenuItem>
+                                        <MenuItem fx:id="deleteLabelsMenuItem" text="Delete Labels"/>
+                                        <MenuItem fx:id="removeBackgroundImageMenuItem" text="Delete Background Image"/>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="findMenuItem" text="Find...">
+                                            <accelerator>
+                                                <KeyCodeCombination alt="UP" code="F" control="UP" meta="UP" shift="UP"
+                                                                    shortcut="DOWN"/>
+                                            </accelerator>
+                                        </MenuItem>
+                                        <MenuItem fx:id="findAgainMenuItem" text="Find Again">
+                                            <accelerator>
+                                                <KeyCodeCombination alt="UP" code="G" control="UP" meta="UP" shift="UP"
+                                                                    shortcut="DOWN"/>
+                                            </accelerator>
+                                        </MenuItem>
+                                        <MenuItem fx:id="replaceMenuItem" text="Replace..."/>
                                     </items>
                                 </Menu>
                                 <Menu mnemonicParsing="false" text="Select">
                                     <items>
-                                        <MenuItem fx:id="selectAllMenuItem" mnemonicParsing="false" text="All">
+                                        <MenuItem fx:id="selectAllMenuItem" text="All">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="A" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="A" control="UP" meta="UP" shift="UP"
+                                                                    shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
-                                        <MenuItem fx:id="selectNoneMenuItem" mnemonicParsing="false" text="None">
+                                        <MenuItem fx:id="selectNoneMenuItem" text="None">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="A" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="A" control="UP" meta="UP"
+                                                                    shift="DOWN" shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
-                                        <MenuItem fx:id="selectInvertMenuItem" mnemonicParsing="false" text="Invert">
+                                        <MenuItem fx:id="selectInvertMenuItem" text="Invert">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="I" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
-                                            </accelerator>
-                                        </MenuItem>
-                                        <SeparatorMenuItem mnemonicParsing="false" />
-                                        <MenuItem fx:id="selectTreeEdgesMenuItem" mnemonicParsing="false" text="Tree Edges">
-                                            <accelerator>
-                                                <KeyCodeCombination alt="UP" code="T" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
-                                            </accelerator>
-                                        </MenuItem>
-                                        <MenuItem fx:id="selectReticulateEdgesMenuItem" mnemonicParsing="false" text="Reticulate Edges">
-                                            <accelerator>
-                                                <KeyCodeCombination alt="UP" code="E" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="I" control="UP" meta="UP" shift="UP"
+                                                                    shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
                                         <SeparatorMenuItem mnemonicParsing="false" />
-                                        <MenuItem fx:id="selectRootsMenuItem" mnemonicParsing="false" text="Roots"/>
-                                        <MenuItem fx:id="selectLeavesMenuItem" mnemonicParsing="false" text="Leaves">
+                                        <MenuItem fx:id="selectTreeEdgesMenuItem" text="Tree Edges">
                                             <accelerator>
-                                                <KeyCodeCombination alt="UP" code="L" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                                                <KeyCodeCombination alt="UP" code="T" control="UP" meta="UP"
+                                                                    shift="DOWN" shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
-                                        <MenuItem fx:id="selectTreeNodesMenuItem" mnemonicParsing="false"
-                                                  text="Tree Nodes">
+                                        <MenuItem fx:id="selectReticulateEdgesMenuItem" text="Reticulate Edges">
+                                            <accelerator>
+                                                <KeyCodeCombination alt="UP" code="E" control="UP" meta="UP"
+                                                                    shift="DOWN" shortcut="DOWN"/>
+                                            </accelerator>
+                                        </MenuItem>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="selectRootsMenuItem" text="Roots"/>
+                                        <MenuItem fx:id="selectLeavesMenuItem" text="Leaves">
+                                            <accelerator>
+                                                <KeyCodeCombination alt="UP" code="L" control="UP" meta="UP" shift="UP"
+                                                                    shortcut="DOWN"/>
+                                            </accelerator>
+                                        </MenuItem>
+                                        <MenuItem fx:id="selectTreeNodesMenuItem" text="Tree Nodes">
                                             <accelerator>
                                                 <KeyCodeCombination alt="UP" code="T" control="UP" meta="UP" shift="UP"
                                                                     shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
-                                        <MenuItem fx:id="selectReticulateNodesMenuitem" mnemonicParsing="false"
-                                                  text="Reticulate Nodes">
+                                        <MenuItem fx:id="selectReticulateNodesMenuitem" text="Reticulate Nodes">
                                             <accelerator>
                                                 <KeyCodeCombination alt="UP" code="R" control="UP" meta="UP"
                                                                     shift="DOWN" shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
                                         <SeparatorMenuItem mnemonicParsing="false"/>
-                                        <MenuItem fx:id="selectVisibleNodesMenuItem" mnemonicParsing="false"
-                                                  text="Visible Nodes"/>
-                                        <MenuItem fx:id="selectVisibleReticulationsMenuItem" mnemonicParsing="false"
+                                        <MenuItem fx:id="selectVisibleNodesMenuItem" text="Visible Nodes"/>
+                                        <MenuItem fx:id="selectVisibleReticulationsMenuItem"
                                                   text="Visible Reticulations"/>
-                                        <MenuItem fx:id="selectStableNodesMenuItem" mnemonicParsing="false"
-                                                  text="Stable Nodes"/>
+                                        <MenuItem fx:id="selectStableNodesMenuItem" text="Stable Nodes"/>
                                         <SeparatorMenuItem mnemonicParsing="false"/>
-                                        <MenuItem fx:id="selectAllBelowMenuItem" mnemonicParsing="false"
-                                                  text="All Below">
+                                        <MenuItem fx:id="selectAllBelowMenuItem" text="All Below">
                                             <accelerator>
                                                 <KeyCodeCombination alt="UP" code="B" control="UP" meta="UP" shift="UP"
                                                                     shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
-                                        <MenuItem fx:id="selectAllAboveMenuItem" mnemonicParsing="false"
-                                                  text="All Above">
+                                        <MenuItem fx:id="selectAllAboveMenuItem" text="All Above">
                                             <accelerator>
                                                 <KeyCodeCombination alt="UP" code="B" control="UP" meta="UP"
                                                                     shift="DOWN" shortcut="DOWN"/>
@@ -439,43 +502,56 @@
                                 </Menu>
                                 <Menu mnemonicParsing="false" text="Options">
                                     <items>
-                                        <MenuItem fx:id="labelLeavesABCMenuItem" mnemonicParsing="false"
-                                                  text="Label Leaves A,B,C..."/>
-                                        <MenuItem fx:id="labelLeaves123MenuItem" mnemonicParsing="false"
-                                                  text="Label Leaves 1,2,3..."/>
+                                        <MenuItem fx:id="labelLeavesABCMenuItem" text="Label Leaves A,B,C..."/>
+                                        <MenuItem fx:id="labelLeaves123MenuItem" text="Label Leaves 1,2,3..."/>
                                         <SeparatorMenuItem mnemonicParsing="false"/>
-                                        <MenuItem fx:id="labelLeavesMenuItem" mnemonicParsing="false"
-                                                  text="Label Leaves...">
+                                        <MenuItem fx:id="labelLeavesMenuItem" text="Label Leaves...">
                                             <accelerator>
                                                 <KeyCodeCombination alt="UP" code="L" control="UP" meta="UP"
                                                                     shift="DOWN" shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
                                         <SeparatorMenuItem mnemonicParsing="false"/>
-                                        <MenuItem fx:id="labelInternalABCMenuItem" mnemonicParsing="false"
+                                        <MenuItem fx:id="labelInternalABCMenuItem"
                                                   text="Label Internal Nodes A,B,C..."/>
-                                        <MenuItem fx:id="labelInternal123MenuItem" mnemonicParsing="false"
+                                        <MenuItem fx:id="labelInternal123MenuItem"
                                                   text="Label Internal Nodes 1,2,3..."/>
                                         <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <Menu mnemonicParsing="false" text="Rotate">
+                                            <items>
+                                                <MenuItem fx:id="rotateGraphClockwiseMenuItem" text="Graph Clockwise"/>
+                                                <MenuItem fx:id="rotateGraphAnticlockwiseMenuItem"
+                                                          text="Graph Anticlockwise"/>
+                                                <SeparatorMenuItem mnemonicParsing="false"/>
+                                                <MenuItem fx:id="rotateLabelsClockwiseMenuItem" text="Labels Clockwise">
+                                                    <accelerator>
+                                                        <KeyCodeCombination alt="UP" code="J" control="UP" meta="UP"
+                                                                            shift="UP" shortcut="DOWN"/>
+                                                    </accelerator>
+                                                </MenuItem>
+                                                <MenuItem fx:id="rotateLabelsAnticlockwiseMenuItem"
+                                                          text="Labels Anticlockwise">
+                                                    <accelerator>
+                                                        <KeyCodeCombination alt="UP" code="J" control="UP" meta="UP"
+                                                                            shift="DOWN" shortcut="DOWN"/>
+                                                    </accelerator>
+                                                </MenuItem>
+                                            </items>
+                                        </Menu>
                                         <Menu mnemonicParsing="false" text="Align">
                                             <items>
-                                                <MenuItem fx:id="alignLeftMenuItem" mnemonicParsing="false"
-                                                          text="Left"/>
-                                                <MenuItem fx:id="alignCenterMenuItem" mnemonicParsing="false"
-                                                          text="Center"/>
-                                                <MenuItem fx:id="alignRightMenuItem" mnemonicParsing="false"
-                                                          text="Right"/>
-                                                <MenuItem fx:id="alignTopMenuItem" mnemonicParsing="false" text="Top"/>
-                                                <MenuItem fx:id="alignMiddleMenuItem" mnemonicParsing="false"
-                                                          text="Middle"/>
-                                                <MenuItem fx:id="alignBottomMenuItem" mnemonicParsing="false"
-                                                          text="Bottom"/>
+                                                <MenuItem fx:id="alignLeftMenuItem" text="Left"/>
+                                                <MenuItem fx:id="alignCenterMenuItem" text="Center"/>
+                                                <MenuItem fx:id="alignRightMenuItem" text="Right"/>
+                                                <MenuItem fx:id="alignTopMenuItem" text="Top"/>
+                                                <MenuItem fx:id="alignMiddleMenuItem" text="Middle"/>
+                                                <MenuItem fx:id="alignBottomMenuItem" text="Bottom"/>
                                             </items>
                                         </Menu>
                                         <Menu mnemonicParsing="false" text="Distribute">
                                             <items>
-                                                <MenuItem fx:id="distributeHorizontallyMenuItem" mnemonicParsing="false" text="Horizontally" />
-                                                <MenuItem fx:id="distributeVerticallyMenuItem" mnemonicParsing="false" text="Vertically" />
+                                                <MenuItem fx:id="distributeHorizontallyMenuItem" text="Horizontally"/>
+                                                <MenuItem fx:id="distributeVerticallyMenuItem" text="Vertically"/>
                                             </items>
                                         </Menu>
                                         <Menu mnemonicParsing="false" text="Label Position">
@@ -493,30 +569,26 @@
                                             </items>
                                         </Menu>
                                         <SeparatorMenuItem mnemonicParsing="false"/>
-                                        <MenuItem fx:id="removeDiNodesMenuItem" mnemonicParsing="false"
-                                                  text="Remove Di Nodes">
+                                        <MenuItem fx:id="removeDiNodesMenuItem" text="Remove Di Nodes">
                                             <accelerator>
                                                 <KeyCodeCombination alt="UP" code="D" control="UP" meta="UP" shift="UP"
                                                                     shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
-                                        <MenuItem fx:id="addDiNodesMenuItem" mnemonicParsing="false"
-                                                  text="Add Di Nodes">
+                                        <MenuItem fx:id="addDiNodesMenuItem" text="Add Di Nodes">
                                             <accelerator>
                                                 <KeyCodeCombination alt="UP" code="D" control="UP" meta="UP"
                                                                     shift="DOWN" shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
                                         <SeparatorMenuItem mnemonicParsing="false"/>
-                                        <MenuItem fx:id="straightenEdgesMenuItem" mnemonicParsing="false"
-                                                  text="Straighten Edges">
+                                        <MenuItem fx:id="straightenEdgesMenuItem" text="Straighten Edges">
                                             <accelerator>
                                                 <KeyCodeCombination alt="UP" code="E" control="UP" meta="UP" shift="UP"
                                                                     shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
-                                        <MenuItem fx:id="reshapeEdgesMenuItem" mnemonicParsing="false"
-                                                  text="Reshape Edges">
+                                        <MenuItem fx:id="reshapeEdgesMenuItem" text="Reshape Edges">
                                             <accelerator>
                                                 <KeyCodeCombination alt="UP" code="R" control="UP" meta="UP" shift="UP"
                                                                     shortcut="DOWN"/>
@@ -526,8 +598,7 @@
                                 </Menu>
                                 <Menu mnemonicParsing="false" text="Algorithms">
                                     <items>
-                                        <MenuItem fx:id="normalizationMenuItem" mnemonicParsing="false"
-                                                  text="Compute Normalization..."/>
+                                        <MenuItem fx:id="normalizationMenuItem" text="Compute Normalization..."/>
                                     </items>
                                 </Menu>
                                 <Menu mnemonicParsing="false" text="View">
@@ -568,8 +639,7 @@
 
                                         <SeparatorMenuItem mnemonicParsing="false"/>
 
-                                        <MenuItem fx:id="enterFullScreenMenuItem" mnemonicParsing="false"
-                                                  text="Enter Fullscreen">
+                                        <MenuItem fx:id="enterFullScreenMenuItem" text="Enter Fullscreen">
                                             <accelerator>
                                                 <KeyCodeCombination alt="UP" code="F" control="DOWN" meta="UP"
                                                                     shift="UP" shortcut="DOWN"/>
@@ -579,9 +649,9 @@
                                 </Menu>
                                 <Menu fx:id="windowMenu" mnemonicParsing="false" text="Window">
                                     <items>
-                                        <MenuItem fx:id="aboutMenuItem" mnemonicParsing="false" text="About" />
+                                        <MenuItem fx:id="aboutMenuItem" text="About"/>
                                         <SeparatorMenuItem mnemonicParsing="false" />
-                                        <MenuItem fx:id="checkForUpdatesMenuItem" mnemonicParsing="false" text="Check for Updates..." />
+                                        <MenuItem fx:id="checkForUpdatesMenuItem" text="Check for Updates..."/>
                                         <SeparatorMenuItem mnemonicParsing="false" />
                                     </items>
                                 </Menu>
