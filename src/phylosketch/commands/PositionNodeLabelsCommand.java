@@ -20,23 +20,44 @@
 
 package phylosketch.commands;
 
+import javafx.animation.Animation;
+import javafx.animation.Transition;
 import javafx.scene.control.Label;
+import javafx.util.Duration;
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Node;
 import jloda.util.Basic;
+import jloda.util.ProgramProperties;
 import phylosketch.window.NodeView;
 import phylosketch.window.PhyloView;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 /**
  * change label positions
  * daniel huson, 2.2020
  */
 public class PositionNodeLabelsCommand extends UndoableRedoableCommand {
-    public enum Position {Above, Below, Left, Right, Center}
+
+    public enum Position {
+        Above, Below, Left, Right, Center;
+
+        public static Position getDefault(PhyloView.RootLocation rootLocation) {
+            switch (rootLocation) {
+                default:
+                case Top:
+                    return Below;
+                case Bottom:
+                    return Above;
+                case Left:
+                    return Right;
+                case Right:
+                    return Left;
+            }
+        }
+    }
 
     private final Runnable undo;
     private final Runnable redo;
@@ -47,26 +68,19 @@ public class PositionNodeLabelsCommand extends UndoableRedoableCommand {
      * @param view
      * @param position
      */
-    public PositionNodeLabelsCommand(PhyloView view, Position position) {
+    public PositionNodeLabelsCommand(PhyloView view, Collection<Node> nodes, Position position) {
         super("Label Position");
-
-        final Stream<Node> nodes;
-        if (view.getNodeSelection().size() > 0)
-            nodes = view.getNodeSelection().getSelectedItems().stream();
-        else
-            nodes = view.getGraph().nodeStream();
 
         final ArrayList<Data> dataList = new ArrayList<>();
 
-        nodes.forEach(v -> {
+        for (Node v : nodes) {
             final double nodeWidth = view.getNodeView(v).getWidth();
             final double nodeHeight = view.getNodeView(v).getHeight();
             final Label label = view.getNodeView(v).getLabel();
-            
+
             final boolean horizontalLabel = !(Basic.equals(label.getRotate(), 90, 0.00001) || Basic.equals(label.getRotate(), 270, 0.00001));
 
             if (horizontalLabel) {
-
                 switch (position) {
                     case Above: {
                         dataList.add(new Data(v.getId(), label.getLayoutX(), -0.5 * label.getWidth(), label.getLayoutY(), -(0.5 * label.getHeight() + label.getHeight() + 5)));
@@ -113,23 +127,40 @@ public class PositionNodeLabelsCommand extends UndoableRedoableCommand {
                     }
                 }
             }
-        });
+        }
 
-        undo = () -> {
+        undo = () -> animatePositionChange(view, false, dataList);
+
+        redo = () -> animatePositionChange(view, true, dataList);
+    }
+
+    private void animatePositionChange(PhyloView view, boolean toNew, Collection<Data> dataList) {
+        if (dataList.size() < ProgramProperties.get("AnimationLimit", 5000)) {
+            final Animation animation = new Transition() {
+                {
+                    setCycleDuration(Duration.millis(500));
+                }
+
+                @Override
+                protected void interpolate(double frac) {
+                    final double p = (toNew ? 1.0 - frac : frac);
+                    final double q = (toNew ? frac : 1.0 - frac);
+
+                    for (Data data : dataList) {
+                        final NodeView nv = view.getNodeView(view.getGraph().searchNodeId(data.id));
+                        nv.getLabel().setLayoutX(p * data.oldX + q * data.newX);
+                        nv.getLabel().setLayoutY(p * data.oldY + q * data.newY);
+                    }
+                }
+            };
+            animation.play();
+        } else {
             for (Data data : dataList) {
                 final NodeView nv = view.getNodeView(view.getGraph().searchNodeId(data.id));
-                nv.getLabel().setLayoutX(data.oldX);
-                nv.getLabel().setLayoutY(data.oldY);
+                nv.getLabel().setLayoutX(toNew ? data.newX : data.oldX);
+                nv.getLabel().setLayoutY(toNew ? data.newY : data.oldY);
             }
-        };
-
-        redo = () -> {
-            for (Data data : dataList) {
-                final NodeView nv = view.getNodeView(view.getGraph().searchNodeId(data.id));
-                nv.getLabel().setLayoutX(data.newX);
-                nv.getLabel().setLayoutY(data.newY);
-            }
-        };
+        }
     }
 
     @Override

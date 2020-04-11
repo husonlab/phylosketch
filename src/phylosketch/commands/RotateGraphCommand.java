@@ -26,21 +26,36 @@ import javafx.geometry.Point2D;
 import javafx.util.Duration;
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.fx.util.GeometryUtilsFX;
+import jloda.util.ProgramProperties;
 import phylosketch.window.PhyloView;
 
+/**
+ * rotate the graph clockwise or anticlockwise by 90o
+ * Daniel Huson, 4.2020
+ */
 public class RotateGraphCommand extends UndoableRedoableCommand {
     private final Runnable undo;
     private final Runnable redo;
 
-    public RotateGraphCommand(final PhyloView phyloView, boolean clockwise) {
+    public RotateGraphCommand(final PhyloView view, boolean clockwise) {
         super("Rotate graph " + (clockwise ? "clockwise" : "anticlockwise"));
 
-        undo = () -> rotateAnimated(phyloView, clockwise ? -90 : 90);
-        redo = () -> rotateAnimated(phyloView, clockwise ? 90 : -90);
+        final PositionNodeLabelsCommand positionNodeLabelsCommand = new PositionNodeLabelsCommand(view, view.getGraph().nodesList(),
+                PositionNodeLabelsCommand.Position.getDefault(view.computeRootLocation().next(clockwise)));
+
+        undo = () -> {
+            rotateAnimated(view, clockwise ? -90 : 90);
+            positionNodeLabelsCommand.undo();
+
+        };
+        redo = () -> {
+            rotateAnimated(view, clockwise ? 90 : -90);
+            positionNodeLabelsCommand.redo();
+        };
     }
 
     private void rotateAnimated(PhyloView phyloView, double alpha) {
-        if (phyloView.getGraph().getNumberOfNodes() < 5000) {
+        if (phyloView.getGraph().getNumberOfNodes() < ProgramProperties.get("AnimationLimit", 5000)) {
             final Animation animation = new Transition() {
                 double previous = 0;
 
@@ -67,12 +82,12 @@ public class RotateGraphCommand extends UndoableRedoableCommand {
      * @param alpha
      */
     private void rotate(PhyloView phyloView, double alpha) {
-        phyloView.getGraph().nodeParallelStream().map(phyloView::getNodeView).forEach(nv -> {
+        phyloView.getGraph().nodeStream().map(phyloView::getNodeView).forEach(nv -> {
             final Point2D point = GeometryUtilsFX.rotate(nv.getTranslateX(), nv.getTranslateY(), alpha);
             nv.setTranslateX(point.getX());
             nv.setTranslateY(point.getY());
         });
-        phyloView.getGraph().edgeParallelStream().map(phyloView::getEdgeView).forEach(ev -> {
+        phyloView.getGraph().edgeStream().map(phyloView::getEdgeView).forEach(ev -> {
             final double[] controlCoordinates = ev.getControlCoordinates();
             for (int i = 0; i < controlCoordinates.length; i += 2) {
                 final Point2D point = GeometryUtilsFX.rotate(controlCoordinates[i], controlCoordinates[i + 1], alpha);

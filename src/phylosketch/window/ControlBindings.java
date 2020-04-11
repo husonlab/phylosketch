@@ -286,10 +286,22 @@ public class ControlBindings {
         controller.getRotateGraphAnticlockwiseMenuItem().setOnAction(c -> undoManager.doAndAdd(new RotateGraphCommand(view, false)));
         controller.getRotateGraphAnticlockwiseMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
-        controller.getRotateLabelsClockwiseMenuItem().setOnAction(c -> undoManager.doAndAdd(new RotateLabelsCommand(view, true)));
+        controller.getFlipGraphHorizontallyMenuItem().setOnAction(c -> undoManager.doAndAdd(new FlipGraphCommand(view, true)));
+        controller.getFlipGraphHorizontallyMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
+
+        controller.getFlipGraphVerticallyMenuItem().setOnAction(c -> undoManager.doAndAdd(new FlipGraphCommand(view, false)));
+        controller.getFlipGraphVerticallyMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
+
+        controller.getFlipGraphHorizontallyButton().setOnAction(controller.getFlipGraphHorizontallyMenuItem().getOnAction());
+        controller.getFlipGraphHorizontallyButton().disableProperty().bind(view.getGraphFX().emptyProperty());
+
+        controller.getFlipGraphVerticallyButton().setOnAction(controller.getFlipGraphVerticallyMenuItem().getOnAction());
+        controller.getFlipGraphVerticallyButton().disableProperty().bind(view.getGraphFX().emptyProperty());
+
+        controller.getRotateLabelsClockwiseMenuItem().setOnAction(c -> undoManager.doAndAdd(new RotateLabelsCommand(view, view.selectedOrAllNodes(), true)));
         controller.getRotateLabelsClockwiseMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
-        controller.getRotateLabelsAnticlockwiseMenuItem().setOnAction(c -> undoManager.doAndAdd(new RotateLabelsCommand(view, false)));
+        controller.getRotateLabelsAnticlockwiseMenuItem().setOnAction(c -> undoManager.doAndAdd(new RotateLabelsCommand(view, view.selectedOrAllNodes(), false)));
         controller.getRotateLabelsAnticlockwiseMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getRotateGraphClockwiseButton().setOnAction(controller.getRotateGraphClockwiseMenuItem().getOnAction());
@@ -358,17 +370,17 @@ public class ControlBindings {
         RecentFilesManager.getInstance().setFileOpener(FileOpenManager.getFileOpener());
         RecentFilesManager.getInstance().setupMenu(controller.getRecentMenu());
 
-        controller.getRemoveDiNodesMenuItem().setOnAction(c -> undoManager.doAndAdd(new RemoveDiNodesCommand(controller.getContentPane(), view, view.getNodeSelection().getSelectedItems())));
-        controller.getRemoveDiNodesMenuItem().disableProperty().bind(view.getNodeSelection().emptyProperty());
+        controller.getRemoveDiNodesMenuItem().setOnAction(c -> undoManager.doAndAdd(new RemoveDiNodesCommand(controller.getContentPane(), view, view.selectedOrAllNodes())));
+        controller.getRemoveDiNodesMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
-        controller.getAddDiNodesMenuItem().setOnAction(c -> undoManager.doAndAdd(SplitEdgeCommand.createAddDiNodesCommand(controller.getContentPane(), view, view.getEdgeSelection().getSelectedItems())));
+        controller.getAddDiNodesMenuItem().setOnAction(c -> undoManager.doAndAdd(SplitEdgeCommand.createAddDiNodesCommand(controller.getContentPane(), view, view.selectedOrAllEdges())));
         controller.getAddDiNodesMenuItem().disableProperty().bind(view.getEdgeSelection().emptyProperty());
 
-        controller.getStraightenEdgesMenuItem().setOnAction(c -> undoManager.doAndAdd(new ChangeEdgeShapeCommand(view, view.getEdgeSelection().getSelectedItems(), ChangeEdgeShapeCommand.EdgeShape.Straight)));
-        controller.getStraightenEdgesMenuItem().disableProperty().bind(view.getEdgeSelection().emptyProperty());
+        controller.getStraightenEdgesMenuItem().setOnAction(c -> undoManager.doAndAdd(new ChangeEdgeShapeCommand(view, view.selectedOrAllEdges(), ChangeEdgeShapeCommand.EdgeShape.Straight)));
+        controller.getStraightenEdgesMenuItem().disableProperty().bind(Bindings.isEmpty(view.getGraphFX().getEdgeList()));
 
-        controller.getReshapeEdgesMenuItem().setOnAction(c -> undoManager.doAndAdd(new ChangeEdgeShapeCommand(view, view.getEdgeSelection().getSelectedItems(), ChangeEdgeShapeCommand.EdgeShape.Reshape)));
-        controller.getReshapeEdgesMenuItem().disableProperty().bind(view.getEdgeSelection().emptyProperty());
+        controller.getReshapeEdgesMenuItem().setOnAction(c -> undoManager.doAndAdd(new ChangeEdgeShapeCommand(view, view.selectedOrAllEdges(), ChangeEdgeShapeCommand.EdgeShape.Reshape)));
+        controller.getReshapeEdgesMenuItem().disableProperty().bind(Bindings.isEmpty(view.getGraphFX().getEdgeList()));
 
         controller.getAboutMenuItem().setOnAction((e) -> SplashScreen.showSplash(Duration.ofMinutes(2)));
 
@@ -493,11 +505,11 @@ public class ControlBindings {
         controller.getAlignTopButton().setOnAction(controller.getAlignTopMenuItem().getOnAction());
         controller.getAlignTopButton().disableProperty().bind(controller.getAlignTopMenuItem().disableProperty());
 
-        controller.getAlignMiddleMenuItem().setOnAction(c -> undoManager.doAndAdd(new AlignNodesCommand(view, nodeSelection, AlignNodesCommand.Alignment.Middle)));
-        controller.getAlignMiddleMenuItem().disableProperty().bind(atMostOneSelected);
+        controller.getAlignMiddleMenuItem().setOnAction(c -> undoManager.doAndAdd(new AlignNodesCommand(view, view.selectedOrAllNodes(), AlignNodesCommand.Alignment.Middle)));
+        controller.getAlignMiddleMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getAlignMiddleButton().setOnAction(controller.getAlignMiddleMenuItem().getOnAction());
-        controller.getAlignMiddleButton().disableProperty().bind(controller.getAlignMiddleMenuItem().disableProperty());
+        controller.getAlignMiddleButton().disableProperty().bind(atMostOneSelected);
 
         controller.getAlignBottomMenuItem().setOnAction(c -> undoManager.doAndAdd(new AlignNodesCommand(view, nodeSelection, AlignNodesCommand.Alignment.Bottom)));
         controller.getAlignBottomMenuItem().disableProperty().bind(atMostOneSelected);
@@ -544,32 +556,31 @@ public class ControlBindings {
         final BooleanProperty noneSelected = new SimpleBooleanProperty(false);
         noneSelected.bind(Bindings.size(nodeSelection).isEqualTo(0));
 
-        controller.getLabelPositionAboveMenuItem().setOnAction(c -> undoManager.doAndAdd(new PositionNodeLabelsCommand(view, PositionNodeLabelsCommand.Position.Above)));
+        controller.getLabelPositionAboveMenuItem().setOnAction(c -> undoManager.doAndAdd(new PositionNodeLabelsCommand(view, view.selectedOrAllNodes(), PositionNodeLabelsCommand.Position.Above)));
         controller.getLabelPositionAboveMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getLabelAboveButton().setOnAction(controller.getLabelPositionAboveMenuItem().getOnAction());
         controller.getLabelAboveButton().disableProperty().bind(controller.getLabelPositionAboveMenuItem().disableProperty());
 
-        controller.getLabelPositionBelowMenuItem().setOnAction(c -> undoManager.doAndAdd(new PositionNodeLabelsCommand(view, PositionNodeLabelsCommand.Position.Below)));
+        controller.getLabelPositionBelowMenuItem().setOnAction(c -> undoManager.doAndAdd(new PositionNodeLabelsCommand(view, view.selectedOrAllNodes(), PositionNodeLabelsCommand.Position.Below)));
         controller.getLabelPositionBelowMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getLabelBelowButton().setOnAction(controller.getLabelPositionBelowMenuItem().getOnAction());
         controller.getLabelBelowButton().disableProperty().bind(controller.getLabelPositionBelowMenuItem().disableProperty());
 
-        controller.getLabelPositionLeftMenuItem().setOnAction(c -> undoManager.doAndAdd(new PositionNodeLabelsCommand(view, PositionNodeLabelsCommand.Position.Left)));
+        controller.getLabelPositionLeftMenuItem().setOnAction(c -> undoManager.doAndAdd(new PositionNodeLabelsCommand(view, view.selectedOrAllNodes(), PositionNodeLabelsCommand.Position.Left)));
         controller.getLabelPositionLeftMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getLabelLeftButton().setOnAction(controller.getLabelPositionLeftMenuItem().getOnAction());
         controller.getLabelLeftButton().disableProperty().bind(view.getGraphFX().emptyProperty());
 
-        controller.getLabelPositionRightMenuItem().setOnAction(c -> undoManager.doAndAdd(new PositionNodeLabelsCommand(view, PositionNodeLabelsCommand.Position.Right)));
+        controller.getLabelPositionRightMenuItem().setOnAction(c -> undoManager.doAndAdd(new PositionNodeLabelsCommand(view, view.selectedOrAllNodes(), PositionNodeLabelsCommand.Position.Right)));
         controller.getLabelPositionRightMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getLabelRightButton().setOnAction(controller.getLabelPositionRightMenuItem().getOnAction());
         controller.getLabelRightButton().disableProperty().bind(view.getGraphFX().emptyProperty());
 
-
-        controller.getLabelPositionCenterMenuItem().setOnAction(c -> undoManager.doAndAdd(new PositionNodeLabelsCommand(view, PositionNodeLabelsCommand.Position.Center)));
+        controller.getLabelPositionCenterMenuItem().setOnAction(c -> undoManager.doAndAdd(new PositionNodeLabelsCommand(view, view.selectedOrAllNodes(), PositionNodeLabelsCommand.Position.Center)));
         controller.getLabelPositionCenterMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getLabelCenterButton().setOnAction(controller.getLabelPositionCenterMenuItem().getOnAction());

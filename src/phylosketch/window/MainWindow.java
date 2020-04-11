@@ -72,6 +72,9 @@ public class MainWindow implements IMainWindow {
             controller = extendedFXMLLoader.getController();
         }
 
+        final MemoryUsage memoryUsage = MemoryUsage.getInstance();
+        controller.getMemoryUsageLabel().textProperty().bind(memoryUsage.memoryUsageStringProperty());
+
         FileOpenManager.setExtensions(Arrays.asList(new FileChooser.ExtensionFilter("Nexus", "*.nexus", "*.nex"),
                 new FileChooser.ExtensionFilter("All", "*.*")));
         FileOpenManager.setFileOpener(new PhyloSketchFileOpener());

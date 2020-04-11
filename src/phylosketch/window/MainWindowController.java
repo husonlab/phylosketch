@@ -280,6 +280,13 @@ public class MainWindowController {
     private MenuItem rotateGraphAnticlockwiseButton;
 
     @FXML
+    private MenuItem flipGraphHorizontallyButton;
+
+    @FXML
+    private MenuItem flipGraphVerticallyButton;
+
+
+    @FXML
     private MenuItem rotateLabelsClockwiseButton;
 
     @FXML
@@ -291,6 +298,12 @@ public class MainWindowController {
 
     @FXML
     private MenuItem rotateGraphAnticlockwiseMenuItem;
+
+    @FXML
+    private MenuItem flipGraphHorizontallyMenuItem;
+
+    @FXML
+    private MenuItem flipGraphVerticallyMenuItem;
 
     @FXML
     private MenuItem rotateLabelsClockwiseMenuItem;
@@ -321,6 +334,9 @@ public class MainWindowController {
 
     @FXML
     private Label selectionLabel;
+
+    @FXML
+    private Label memoryUsageLabel;
 
     @FXML
     private MenuItem alignLeftButton;
@@ -663,6 +679,10 @@ public class MainWindowController {
         return selectionLabel;
     }
 
+    public Label getMemoryUsageLabel() {
+        return memoryUsageLabel;
+    }
+
     public VBox getInfoLabelsVBox() {
         return infoLabelsVBox;
     }
@@ -834,6 +854,22 @@ public class MainWindowController {
 
     public MenuItem getRotateGraphAnticlockwiseMenuItem() {
         return rotateGraphAnticlockwiseMenuItem;
+    }
+
+    public MenuItem getFlipGraphHorizontallyMenuItem() {
+        return flipGraphHorizontallyMenuItem;
+    }
+
+    public MenuItem getFlipGraphVerticallyMenuItem() {
+        return flipGraphVerticallyMenuItem;
+    }
+
+    public MenuItem getFlipGraphHorizontallyButton() {
+        return flipGraphHorizontallyButton;
+    }
+
+    public MenuItem getFlipGraphVerticallyButton() {
+        return flipGraphVerticallyButton;
     }
 
     public MenuItem getRotateLabelsClockwiseMenuItem() {

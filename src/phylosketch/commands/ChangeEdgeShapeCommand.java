@@ -20,30 +20,45 @@
 
 package phylosketch.commands;
 
+import javafx.animation.Animation;
+import javafx.animation.Transition;
 import javafx.geometry.Point2D;
+import javafx.util.Duration;
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Edge;
+import jloda.util.Basic;
+import jloda.util.ProgramProperties;
 import phylosketch.window.PhyloView;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * change the shape of edges
+ * Daniel Huson, 2.2020
+ */
 public class ChangeEdgeShapeCommand extends UndoableRedoableCommand {
     public enum EdgeShape {Straight, DownRight, RightDown, Reshape}
 
     final private Runnable undo;
     final private Runnable redo;
 
+    /**
+     * constructor
+     *
+     * @param view
+     * @param shape
+     */
     public ChangeEdgeShapeCommand(PhyloView view, Collection<Edge> edges, EdgeShape shape) {
         super("Edge Shape");
 
-        final boolean isLeftToRight = shape == EdgeShape.Reshape && view.isLeftToRightLayout();
+        final boolean horizontal = (shape == EdgeShape.Reshape && view.computeRootLocation().isHorizontal());
 
         final Map<Integer, double[]> id2oldCoordinates = new HashMap<>();
         final Map<Integer, double[]> id2newCoordinates = new HashMap<>();
 
-        for (Edge e : edges) {
+        edges.forEach(e -> {
             final double[] oldCoordinates = view.getEdgeView(e).getControlCoordinates();
 
             final double[] newCoordinates;
@@ -54,7 +69,7 @@ public class ChangeEdgeShapeCommand extends UndoableRedoableCommand {
             if (shape == EdgeShape.Reshape) {
                 if (Math.abs(start.getX() - end.getX()) < 5 || Math.abs(start.getY() - end.getY()) < 5 || start.distance(end) < 25)
                     shapeToUse = EdgeShape.Straight;
-                else if (isLeftToRight)
+                else if (horizontal)
                     shapeToUse = EdgeShape.DownRight;
                 else
                     shapeToUse = EdgeShape.RightDown;
@@ -75,22 +90,38 @@ public class ChangeEdgeShapeCommand extends UndoableRedoableCommand {
                     break;
                 }
             }
-            id2oldCoordinates.put(e.getId(), oldCoordinates);
-            id2newCoordinates.put(e.getId(), newCoordinates);
-
-        }
-
-        undo = () -> {
-            for (Integer id : id2oldCoordinates.keySet()) {
-                view.getEdgeView(view.getGraph().searchEdgeId(id)).setControlCoordinates(id2oldCoordinates.get(id));
+            synchronized (id2oldCoordinates) {
+                id2oldCoordinates.put(e.getId(), oldCoordinates);
+                id2newCoordinates.put(e.getId(), newCoordinates);
             }
-        };
+        });
 
-        redo = () -> {
-            for (Integer id : id2newCoordinates.keySet()) {
+        undo = () -> animateChangeShape(view, id2newCoordinates, id2oldCoordinates);
+
+        redo = () -> animateChangeShape(view, id2oldCoordinates, id2newCoordinates);
+    }
+
+    private void animateChangeShape(PhyloView view, Map<Integer, double[]> id2oldCoordinates, Map<Integer, double[]> id2newCoordinates) {
+        if (id2oldCoordinates.size() < ProgramProperties.get("AnimationLimit", 5000)) {
+            final Animation animation = new Transition() {
+                {
+                    setCycleDuration(Duration.millis(500));
+                }
+
+                @Override
+                protected void interpolate(double p) {
+                    final double q = 1.0 - p;
+                    for (Integer id : id2oldCoordinates.keySet()) {
+                        view.getEdgeView(view.getGraph().searchEdgeId(id)).setControlCoordinates(Basic.weightedSum(p, id2newCoordinates.get(id), q, id2oldCoordinates.get(id)));
+                    }
+                }
+            };
+            animation.play();
+        } else {
+            for (Integer id : id2oldCoordinates.keySet()) {
                 view.getEdgeView(view.getGraph().searchEdgeId(id)).setControlCoordinates(id2newCoordinates.get(id));
             }
-        };
+        }
     }
 
     @Override

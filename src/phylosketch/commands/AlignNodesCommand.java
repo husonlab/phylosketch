@@ -20,8 +20,12 @@
 
 package phylosketch.commands;
 
+import javafx.animation.Animation;
+import javafx.animation.Transition;
+import javafx.util.Duration;
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Node;
+import jloda.util.ProgramProperties;
 import phylosketch.window.NodeView;
 import phylosketch.window.PhyloView;
 
@@ -52,51 +56,66 @@ public class AlignNodesCommand extends UndoableRedoableCommand {
         if (minX.isPresent() && maxX.isPresent() && minY.isPresent() && maxY.isPresent()) {
             switch (alignment) {
                 case Top: {
-                    nodes.forEach(v -> dataList.add(new Data(v.getId(), 0, minY.get() - view.getNodeView(v).getTranslateY())));
+                    nodes.forEach(v -> dataList.add(new Data(v.getId(), view.getNodeView(v).getTranslateX(), view.getNodeView(v).getTranslateY(), 0, minY.get() - view.getNodeView(v).getTranslateY())));
                     break;
                 }
                 case Middle: {
                     final double middle = (0.5 * (minY.get() + maxY.get()));
-                    nodes.forEach(v -> dataList.add(new Data(v.getId(), 0, middle - view.getNodeView(v).getTranslateY())));
+                    nodes.forEach(v -> dataList.add(new Data(v.getId(), view.getNodeView(v).getTranslateX(), view.getNodeView(v).getTranslateY(), 0, middle - view.getNodeView(v).getTranslateY())));
                     break;
                 }
                 case Bottom: {
-                    nodes.forEach(v -> dataList.add(new Data(v.getId(), 0, maxY.get() - view.getNodeView(v).getTranslateY())));
+                    nodes.forEach(v -> dataList.add(new Data(v.getId(), view.getNodeView(v).getTranslateX(), view.getNodeView(v).getTranslateY(), 0, maxY.get() - view.getNodeView(v).getTranslateY())));
 
                     break;
                 }
                 case Left: {
-                    nodes.forEach(v -> dataList.add(new Data(v.getId(), minX.get() - view.getNodeView(v).getTranslateX(), 0)));
+                    nodes.forEach(v -> dataList.add(new Data(v.getId(), view.getNodeView(v).getTranslateX(), view.getNodeView(v).getTranslateY(), minX.get() - view.getNodeView(v).getTranslateX(), 0)));
                     break;
                 }
                 case Center: {
                     final double center = (0.5 * (minX.get() + maxX.get()));
-                    nodes.forEach(v -> dataList.add(new Data(v.getId(), center - view.getNodeView(v).getTranslateX(), 0)));
+                    nodes.forEach(v -> dataList.add(new Data(v.getId(), view.getNodeView(v).getTranslateX(), view.getNodeView(v).getTranslateY(), center - view.getNodeView(v).getTranslateX(), 0)));
                     break;
                 }
                 case Right: {
-                    nodes.forEach(v -> dataList.add(new Data(v.getId(), maxX.get() - view.getNodeView(v).getTranslateX(), 0)));
+                    nodes.forEach(v -> dataList.add(new Data(v.getId(), view.getNodeView(v).getTranslateX(), view.getNodeView(v).getTranslateY(), maxX.get() - view.getNodeView(v).getTranslateX(), 0)));
                     break;
                 }
             }
         }
 
-        undo = () -> {
+        undo = () -> animateAlign(view, dataList, true);
+
+        redo = () -> animateAlign(view, dataList, false);
+    }
+
+    private void animateAlign(PhyloView view, ArrayList<Data> dataList, boolean back) {
+        if (dataList.size() < ProgramProperties.get("AnimationLimit", 5000)) {
+            final Animation animation = new Transition() {
+                {
+                    setCycleDuration(Duration.millis(500));
+                }
+
+                @Override
+                protected void interpolate(double p) {
+                    final double q = 1.0 - p;
+                    for (Data data : dataList) {
+                        final NodeView nv = view.getNodeView(view.getGraph().searchNodeId(data.id));
+                        nv.setTranslateX((back ? p : q) * data.oldX + (back ? q : p) * data.newX);
+                        nv.setTranslateY((back ? p : q) * data.oldY + (back ? q : p) * data.newY);
+                    }
+
+                }
+            };
+            animation.play();
+        } else {
             for (Data data : dataList) {
                 final NodeView nv = view.getNodeView(view.getGraph().searchNodeId(data.id));
-                nv.setTranslateX(nv.getTranslateX() - data.dx);
-                nv.setTranslateY(nv.getTranslateY() - data.dy);
+                nv.setTranslateX(back ? data.oldX : data.newX);
+                nv.setTranslateY(back ? data.oldY : data.newY);
             }
-        };
-
-        redo = () -> {
-            for (Data data : dataList) {
-                final NodeView nv = view.getNodeView(view.getGraph().searchNodeId(data.id));
-                nv.setTranslateX(nv.getTranslateX() + data.dx);
-                nv.setTranslateY(nv.getTranslateY() + data.dy);
-            }
-        };
-
+        }
     }
 
     @Override
@@ -111,13 +130,17 @@ public class AlignNodesCommand extends UndoableRedoableCommand {
 
     private static class Data {
         final int id;
-        final double dx;
-        final double dy;
+        final double oldX;
+        final double oldY;
+        final double newX;
+        final double newY;
 
-        public Data(int id, double dx, double dy) {
+        public Data(int id, double oldX, double oldY, double dx, double dy) {
             this.id = id;
-            this.dx = dx;
-            this.dy = dy;
+            this.oldX = oldX;
+            this.oldY = oldY;
+            this.newX = oldX + dx;
+            this.newY = oldY + dy;
         }
     }
 }

@@ -39,9 +39,11 @@ import jloda.fx.control.ItemSelectionModel;
 import jloda.fx.graph.GraphFX;
 import jloda.fx.shapes.NodeShape;
 import jloda.fx.undo.UndoManager;
+import jloda.fx.util.GeometryUtilsFX;
 import jloda.fx.util.SelectionEffect;
 import jloda.graph.*;
 import jloda.phylo.PhyloTree;
+import jloda.util.Basic;
 import jloda.util.Single;
 import phylosketch.commands.MoveNodeLabelCommand;
 import phylosketch.commands.MoveSelectedNodesCommand;
@@ -49,15 +51,64 @@ import phylosketch.commands.NewEdgeAndNodeCommand;
 import phylosketch.util.EdgeContextMenu;
 import phylosketch.util.NodeLabelDialog;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * editor
  * Daniel Huson, 1.2020
  */
 public class PhyloView {
+    public enum RootLocation {
+        Top, Bottom, Left, Right;
+
+        public boolean isHorizontal() {
+            return this == Left || this == Right;
+        }
+
+        /**
+         * computes the next root location if graph is rotated by 90deg
+         *
+         * @param clockwise direction
+         * @return resulting root location
+         */
+        public RootLocation next(boolean clockwise) {
+            switch (this) {
+                default:
+                case Top:
+                    return clockwise ? Right : Left;
+                case Bottom:
+                    return clockwise ? Left : Right;
+                case Left:
+                    return clockwise ? Top : Bottom;
+                case Right:
+                    return clockwise ? Bottom : Top;
+            }
+        }
+
+        /**
+         * computes the next root location if graph is flipped
+         *
+         * @param horizontal direction
+         * @return resulting root location
+         */
+        public RootLocation opposite(boolean horizontal) {
+            switch (this) {
+                default:
+                case Top:
+                    return horizontal ? Top : Bottom;
+                case Bottom:
+                    return horizontal ? Bottom : Top;
+                case Left:
+                    return horizontal ? Right : Left;
+                case Right:
+                    return horizontal ? Left : Right;
+            }
+
+        }
+    }
+
     private final StringProperty fileName = new SimpleStringProperty("");
 
     private final PhyloTree graph = new PhyloTree();
@@ -417,23 +468,36 @@ public class PhyloView {
         return null;
     }
 
-    /**
-     * is the layout horizontal (rather than vertical)
-     *
-     * @return true, if horizontal
-     */
-    public boolean isLeftToRightLayout() {
-        final Optional<Double> minx = graph.nodeStream().filter(v -> v.getOutDegree() == 0).map(v -> getNodeView(v).getTranslateX()).min(Double::compare);
-        final Optional<Double> maxx = graph.nodeStream().filter(v -> v.getOutDegree() == 0).map(v -> getNodeView(v).getTranslateX()).max(Double::compare);
-        final Optional<Double> miny = graph.nodeStream().filter(v -> v.getOutDegree() == 0).map(v -> getNodeView(v).getTranslateY()).min(Double::compare);
-        final Optional<Double> maxy = graph.nodeStream().filter(v -> v.getOutDegree() == 0).map(v -> getNodeView(v).getTranslateY()).max(Double::compare);
+    public RootLocation computeRootLocation() {
+        Point2D averageRoot = new Point2D(0, 0);
+        int roots = 0;
+        Point2D averageNode = new Point2D(0, 0);
+        int nodes = 0;
 
-        if (minx.isPresent() && maxx.isPresent() && miny.isPresent() && maxy.isPresent()) {
-            double dx = maxx.get() - minx.get();
-            double dy = maxy.get() - miny.get();
-            return dx <= dy;
+        for (Node v : graph.nodes()) {
+            final double x = getX(v);
+            final double y = getY(v);
+            if (v.getInDegree() == 0) {
+                averageRoot = new Point2D(averageRoot.getX() + x, averageRoot.getY() + y);
+                roots++;
+            }
+            averageNode = new Point2D(averageNode.getX() + x, averageNode.getY() + y);
+            nodes++;
         }
-        return false;
+        if (roots > 0)
+            averageRoot = new Point2D(averageRoot.getX() / roots, averageRoot.getY() / roots);
+        if (nodes > 0)
+            averageNode = new Point2D(averageNode.getX() / nodes, averageNode.getY() / nodes);
+
+        final double angle = GeometryUtilsFX.computeAngle(averageRoot.subtract(averageNode));
+        if (angle >= 45 && angle <= 135)
+            return RootLocation.Bottom;
+        else if (angle >= 135 && angle <= 225)
+            return RootLocation.Left;
+        else if (angle >= 225 && angle <= 315)
+            return RootLocation.Top;
+        else
+            return RootLocation.Right;
     }
 
     public Font getFont() {
@@ -458,6 +522,20 @@ public class PhyloView {
 
     public ItemSelectionModel<Node> getNodeSelection() {
         return nodeSelection;
+    }
+
+    public Collection<Node> selectedOrAllNodes() {
+        if (getNodeSelection().size() > 0)
+            return getNodeSelection().getSelectedItems();
+        else
+            return Basic.asList(graph.nodes());
+    }
+
+    public Collection<Edge> selectedOrAllEdges() {
+        if (getEdgeSelection().size() > 0)
+            return getEdgeSelection().getSelectedItems();
+        else
+            return Basic.asList(graph.edges());
     }
 
     public NodeArray<NodeView> getNode2View() {

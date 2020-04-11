@@ -20,8 +20,12 @@
 
 package phylosketch.commands;
 
+import javafx.animation.Animation;
+import javafx.animation.Transition;
+import javafx.util.Duration;
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Node;
+import jloda.util.ProgramProperties;
 import phylosketch.window.NodeView;
 import phylosketch.window.PhyloView;
 
@@ -41,7 +45,7 @@ public class DistributeNodesCommand extends UndoableRedoableCommand {
     private final Runnable redo;
 
     public DistributeNodesCommand(PhyloView view, Collection<Node> nodes, Direction direction) {
-        super("Node Alignment");
+        super("Node distribution");
 
         final ArrayList<Data> dataList = new ArrayList<>();
 
@@ -75,20 +79,42 @@ public class DistributeNodesCommand extends UndoableRedoableCommand {
             }
         }
 
-        undo = () -> {
-            if (direction == Direction.Horizontally)
-                dataList.forEach(d -> view.getNodeView(view.getGraph().searchNodeId(d.id)).setTranslateX(d.oldValue));
-            else
-                dataList.forEach(d -> view.getNodeView(view.getGraph().searchNodeId(d.id)).setTranslateY(d.oldValue));
+        undo = () -> animateDistribute(view, dataList, direction, true);
 
-        };
+        redo = () -> animateDistribute(view, dataList, direction, false);
+    }
 
-        redo = () -> {
-            if (direction == Direction.Horizontally)
-                dataList.forEach(d -> view.getNodeView(view.getGraph().searchNodeId(d.id)).setTranslateX(d.newValue));
-            else
-                dataList.forEach(d -> view.getNodeView(view.getGraph().searchNodeId(d.id)).setTranslateY(d.newValue));
-        };
+    private void animateDistribute(PhyloView view, ArrayList<Data> dataList, Direction direction, boolean back) {
+        if (dataList.size() < ProgramProperties.get("AnimationLimit", 5000)) {
+            final Animation animation = new Transition() {
+                {
+                    setCycleDuration(Duration.millis(500));
+                }
+
+                @Override
+                protected void interpolate(double p) {
+                    final double q = 1.0 - p;
+                    for (Data data : dataList) {
+                        final NodeView nv = view.getNodeView(view.getGraph().searchNodeId(data.id));
+                        if (direction == Direction.Horizontally)
+                            nv.setTranslateX((back ? p : q) * data.oldValue + (back ? q : p) * data.newValue);
+                        else
+                            nv.setTranslateY((back ? p : q) * data.oldValue + (back ? q : p) * data.newValue);
+                    }
+
+                }
+            };
+            animation.play();
+        } else {
+            for (Data data : dataList) {
+                final NodeView nv = view.getNodeView(view.getGraph().searchNodeId(data.id));
+                if (direction == Direction.Horizontally)
+                    nv.setTranslateX(back ? data.oldValue : data.newValue);
+                else
+                    nv.setTranslateY(back ? data.oldValue : data.newValue);
+            }
+
+        }
     }
 
     @Override

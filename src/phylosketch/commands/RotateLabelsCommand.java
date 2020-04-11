@@ -26,9 +26,9 @@ import javafx.util.Duration;
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.fx.util.GeometryUtilsFX;
 import jloda.graph.Node;
+import jloda.util.ProgramProperties;
 import phylosketch.window.PhyloView;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -39,21 +39,15 @@ public class RotateLabelsCommand extends UndoableRedoableCommand {
     private final Runnable undo;
     private final Runnable redo;
 
-    public RotateLabelsCommand(final PhyloView phyloView, boolean clockwise) {
+    public RotateLabelsCommand(final PhyloView phyloView, Collection<Node> nodes, boolean clockwise) {
         super("Rotate labels " + (clockwise ? "clockwise" : "anticlockwise"));
 
-        final ArrayList<Node> nodes = new ArrayList<>();
-        if (phyloView.getNodeSelection().size() > 0)
-            nodes.addAll(phyloView.getNodeSelection().getSelectedItems());
-        else
-            nodes.addAll(phyloView.getGraph().getNodesAsSet());
-
-        undo = () -> rotate(phyloView, nodes, clockwise ? -90 : 90);
+        undo = () -> rotateAnimated(phyloView, nodes, clockwise ? -90 : 90);
         redo = () -> rotateAnimated(phyloView, nodes, clockwise ? 90 : -90);
     }
 
     private void rotateAnimated(PhyloView phyloView, Collection<Node> nodes, double alpha) {
-        if (nodes.size() < 5000) {
+        if (nodes.size() < ProgramProperties.get("AnimationLimit", 5000)) {
             final Animation animation = new Transition() {
                 double previous = 0;
 

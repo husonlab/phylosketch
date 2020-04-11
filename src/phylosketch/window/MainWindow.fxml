@@ -58,7 +58,7 @@
                                                         </ImageView>
                                                     </graphic>
                                                     <tooltip>
-                                                        <Tooltip text="Open  file."/>
+                                                        <Tooltip text="Open a file."/>
                                                     </tooltip>
                                                 </Button>
                                                 <Separator maxHeight="-Infinity" minHeight="-Infinity"
@@ -89,7 +89,7 @@
                                                         </ImageView>
                                                     </graphic>
                                                     <tooltip>
-                                                        <Tooltip text="Export in extended Newick  format."/>
+                                                        <Tooltip text="Export in extended Newick format."/>
                                                     </tooltip>
                                                 </Button>
                                                 <Separator layoutX="63.0" layoutY="16.0" maxHeight="-Infinity"
@@ -113,7 +113,7 @@
                                                 <Separator layoutX="128.0" layoutY="16.0" maxHeight="-Infinity"
                                                            minHeight="-Infinity" orientation="VERTICAL"
                                                            prefHeight="16.0"/>
-                                                <MenuButton mnemonicParsing="false" text="Rotate">
+                                                <MenuButton mnemonicParsing="false" text="Graph">
                                                     <items>
                                                         <MenuItem fx:id="rotateGraphClockwiseButton"
                                                                   mnemonicParsing="false" text="Graph Clockwise">
@@ -138,65 +138,62 @@
                                                             </graphic>
                                                         </MenuItem>
                                                         <SeparatorMenuItem mnemonicParsing="false"/>
-                                                        <MenuItem fx:id="rotateLabelsClockwiseButton"
-                                                                  mnemonicParsing="false" text="Labels Clockwise">
+                                                        <MenuItem fx:id="flipGraphHorizontallyButton"
+                                                                  mnemonicParsing="false"
+                                                                  text="Flip Graph Horizontally">
                                                             <graphic>
                                                                 <ImageView fitHeight="16.0" fitWidth="16.0"
                                                                            pickOnBounds="true" preserveRatio="true">
                                                                     <image>
-                                                                        <Image url="@/jloda/resources/icons/RotateRight16.gif"/>
+                                                                        <Image url="@/jloda/resources/icons/ExpandHorizontal16.gif"/>
                                                                     </image>
                                                                 </ImageView>
                                                             </graphic>
                                                         </MenuItem>
-                                                        <MenuItem fx:id="rotateLabelsAnticlockwiseButton"
-                                                                  mnemonicParsing="false" text="Labels Anticlockwise">
+                                                        <MenuItem fx:id="flipGraphVerticallyButton"
+                                                                  mnemonicParsing="false" text="Flip Graph Vertically">
                                                             <graphic>
                                                                 <ImageView fitHeight="16.0" fitWidth="16.0"
                                                                            pickOnBounds="true" preserveRatio="true">
                                                                     <image>
-                                                                        <Image url="@/jloda/resources/icons/RotateLeft16.gif"/>
+                                                                        <Image url="@/jloda/resources/icons/ExpandVertical16.gif"/>
                                                                     </image>
                                                                 </ImageView>
                                                             </graphic>
                                                         </MenuItem>
-                                                    </items>
-                                                </MenuButton>
-                                                <MenuButton mnemonicParsing="false" text="Align">
-                                                    <items>
-                                                        <MenuItem fx:id="alignLeftButton" mnemonicParsing="false"
-                                                                  text="Left"/>
-                                                        <MenuItem fx:id="alignCenterButton" mnemonicParsing="false"
-                                                                  text="Center"/>
-                                                        <MenuItem fx:id="alignRightButton" mnemonicParsing="false"
-                                                                  text="Right"/>
-                                                        <SeparatorMenuItem mnemonicParsing="false"/>
-                                                        <MenuItem fx:id="alignTopButton" mnemonicParsing="false"
-                                                                  text="Top"/>
-                                                        <MenuItem fx:id="alignMiddleButton" mnemonicParsing="false"
-                                                                  text="Middle"/>
-                                                        <MenuItem fx:id="alignBottomButton" mnemonicParsing="false"
-                                                                  text="Bottom"/>
                                                     </items>
                                                     <tooltip>
-                                                        <Tooltip text="Align selected nodes (at least 2)."/>
+                                                        <Tooltip text="Set orientation of graph and labels"/>
                                                     </tooltip>
                                                 </MenuButton>
-                                                <MenuButton layoutX="184.0" layoutY="14.0" mnemonicParsing="false"
-                                                            text="Distribute">
+                                                <MenuButton mnemonicParsing="false" text="Nodes">
                                                     <items>
+                                                        <MenuItem fx:id="alignLeftButton" mnemonicParsing="false"
+                                                                  text="Align Left"/>
+                                                        <MenuItem fx:id="alignCenterButton" mnemonicParsing="false"
+                                                                  text="Align Center"/>
+                                                        <MenuItem fx:id="alignRightButton" mnemonicParsing="false"
+                                                                  text="Align Right"/>
+                                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                                        <MenuItem fx:id="alignTopButton" mnemonicParsing="false"
+                                                                  text="Align Top"/>
+                                                        <MenuItem fx:id="alignMiddleButton" mnemonicParsing="false"
+                                                                  text="Align Middle"/>
+                                                        <MenuItem fx:id="alignBottomButton" mnemonicParsing="false"
+                                                                  text="Align Bottom"/>
+                                                        <SeparatorMenuItem mnemonicParsing="false"/>
                                                         <MenuItem fx:id="distributeHorizontallyButton"
-                                                                  mnemonicParsing="false" text="Horizontally"/>
+                                                                  mnemonicParsing="false"
+                                                                  text="Distribute Horizontally"/>
                                                         <MenuItem fx:id="distributeVerticallyButton"
-                                                                  mnemonicParsing="false" text="Vertically"/>
+                                                                  mnemonicParsing="false" text="Distribute Vertically"/>
                                                     </items>
                                                     <tooltip>
-                                                        <Tooltip
-                                                                text="Equally distributed selected nodes (at least 3)."/>
+                                                        <Tooltip text="Align and distribute selected nodes"/>
                                                     </tooltip>
                                                 </MenuButton>
                                                 <MenuButton layoutX="252.0" layoutY="14.0" mnemonicParsing="false"
-                                                            text="Label Pos">
+                                                            text="Labels">
                                                     <items>
                                                         <MenuItem fx:id="labelLeftButton" mnemonicParsing="false"
                                                                   text="Left"/>
@@ -208,6 +205,29 @@
                                                                   text="Above"/>
                                                         <MenuItem fx:id="labelBelowButton" mnemonicParsing="false"
                                                                   text="Below"/>
+                                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                                        <MenuItem fx:id="rotateLabelsClockwiseButton"
+                                                                  mnemonicParsing="false" text="Rotate Clockwise">
+                                                            <graphic>
+                                                                <ImageView fitHeight="16.0" fitWidth="16.0"
+                                                                           pickOnBounds="true" preserveRatio="true">
+                                                                    <image>
+                                                                        <Image url="@/jloda/resources/icons/RotateRight16.gif"/>
+                                                                    </image>
+                                                                </ImageView>
+                                                            </graphic>
+                                                        </MenuItem>
+                                                        <MenuItem fx:id="rotateLabelsAnticlockwiseButton"
+                                                                  mnemonicParsing="false" text="Rotate Anticlockwise">
+                                                            <graphic>
+                                                                <ImageView fitHeight="16.0" fitWidth="16.0"
+                                                                           pickOnBounds="true" preserveRatio="true">
+                                                                    <image>
+                                                                        <Image url="@/jloda/resources/icons/RotateLeft16.gif"/>
+                                                                    </image>
+                                                                </ImageView>
+                                                            </graphic>
+                                                        </MenuItem>
                                                     </items>
                                                     <tooltip>
                                                         <Tooltip text="Set label position for selected nodes."/>
@@ -315,7 +335,7 @@
                                                                     shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
-                                        <SeparatorMenuItem mnemonicParsing="false" />
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
                                         <MenuItem fx:id="openMenuItem" text="Open...">
                                             <accelerator>
                                                 <KeyCodeCombination alt="UP" code="O" control="UP" meta="UP" shift="UP"
@@ -517,24 +537,20 @@
                                         <MenuItem fx:id="labelInternal123MenuItem"
                                                   text="Label Internal Nodes 1,2,3..."/>
                                         <SeparatorMenuItem mnemonicParsing="false"/>
-                                        <Menu mnemonicParsing="false" text="Rotate">
+                                        <Menu mnemonicParsing="false" text="Graph">
                                             <items>
-                                                <MenuItem fx:id="rotateGraphClockwiseMenuItem" text="Graph Clockwise"/>
+                                                <MenuItem fx:id="rotateGraphClockwiseMenuItem"
+                                                          text="Rotate  Clockwise"/>
                                                 <MenuItem fx:id="rotateGraphAnticlockwiseMenuItem"
-                                                          text="Graph Anticlockwise"/>
+                                                          text="Rotate Anticlockwise"/>
                                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                                <MenuItem fx:id="rotateLabelsClockwiseMenuItem" text="Labels Clockwise">
-                                                    <accelerator>
-                                                        <KeyCodeCombination alt="UP" code="J" control="UP" meta="UP"
-                                                                            shift="UP" shortcut="DOWN"/>
-                                                    </accelerator>
+                                                <MenuItem fx:id="flipGraphHorizontallyMenuItem" mnemonicParsing="false"
+                                                          text="Flip Graph Horizontally">
+
                                                 </MenuItem>
-                                                <MenuItem fx:id="rotateLabelsAnticlockwiseMenuItem"
-                                                          text="Labels Anticlockwise">
-                                                    <accelerator>
-                                                        <KeyCodeCombination alt="UP" code="J" control="UP" meta="UP"
-                                                                            shift="DOWN" shortcut="DOWN"/>
-                                                    </accelerator>
+                                                <MenuItem fx:id="flipGraphVerticallyMenuItem" mnemonicParsing="false"
+                                                          text="Flip Graph Vertically">
+
                                                 </MenuItem>
                                             </items>
                                         </Menu>
@@ -546,15 +562,12 @@
                                                 <MenuItem fx:id="alignTopMenuItem" text="Top"/>
                                                 <MenuItem fx:id="alignMiddleMenuItem" text="Middle"/>
                                                 <MenuItem fx:id="alignBottomMenuItem" text="Bottom"/>
-                                            </items>
-                                        </Menu>
-                                        <Menu mnemonicParsing="false" text="Distribute">
-                                            <items>
+                                                <SeparatorMenuItem mnemonicParsing="false"/>
                                                 <MenuItem fx:id="distributeHorizontallyMenuItem" text="Horizontally"/>
                                                 <MenuItem fx:id="distributeVerticallyMenuItem" text="Vertically"/>
                                             </items>
                                         </Menu>
-                                        <Menu mnemonicParsing="false" text="Label Position">
+                                        <Menu mnemonicParsing="false" text="Labels">
                                             <items>
                                                 <MenuItem fx:id="labelPositionLeftMenuItem" mnemonicParsing="false"
                                                           text="Left"/>
@@ -566,6 +579,21 @@
                                                           text="Above"/>
                                                 <MenuItem fx:id="labelPositionBelowMenuItem" mnemonicParsing="false"
                                                           text="Below"/>
+                                                <SeparatorMenuItem mnemonicParsing="false"/>
+
+                                                <MenuItem fx:id="rotateLabelsClockwiseMenuItem" text="Rotate Clockwise">
+                                                    <accelerator>
+                                                        <KeyCodeCombination alt="UP" code="J" control="UP" meta="UP"
+                                                                            shift="UP" shortcut="DOWN"/>
+                                                    </accelerator>
+                                                </MenuItem>
+                                                <MenuItem fx:id="rotateLabelsAnticlockwiseMenuItem"
+                                                          text="Rotate Anticlockwise">
+                                                    <accelerator>
+                                                        <KeyCodeCombination alt="UP" code="J" control="UP" meta="UP"
+                                                                            shift="DOWN" shortcut="DOWN"/>
+                                                    </accelerator>
+                                                </MenuItem>
                                             </items>
                                         </Menu>
                                         <SeparatorMenuItem mnemonicParsing="false"/>
@@ -661,13 +689,21 @@
                 </VBox>
             </top>
             <bottom>
-                <FlowPane fx:id="statusFlowPane" alignment="CENTER_LEFT" hgap="5.0" maxWidth="1.7976931348623157E308" prefHeight="32.0" style="-fx-background-color: #f4f4f4; -fx-border-color: lightgray;" vgap="5.0">
+                <FlowPane fx:id="statusFlowPane" alignment="CENTER_LEFT" hgap="5.0" maxWidth="1.7976931348623157E308"
+                          prefHeight="32.0" style="-fx-background-color: #f4f4f4; -fx-border-color: lightgray;"
+                          vgap="5.0">
                     <padding>
-                        <Insets left="10.0" right="250.0" />
+                        <Insets left="10.0" right="300.0"/>
                     </padding>
                 </FlowPane>
             </bottom>
         </BorderPane>
-        <Label fx:id="selectionLabel" style="-fx-background-color: #f4f4f4;" text="Selection" textFill="GREY" AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="30.0" />
+        <HBox layoutX="519.0" layoutY="375.0" spacing="20.0" AnchorPane.bottomAnchor="8.0"
+              AnchorPane.rightAnchor="16.0">
+            <children>
+                <Label fx:id="selectionLabel" style="-fx-background-color: #f4f4f4;" text="Selection" textFill="GREY"/>
+                <Label fx:id="memoryUsageLabel" text="Memory" textFill="GREY"/>
+            </children>
+        </HBox>
     </children>
 </AnchorPane>

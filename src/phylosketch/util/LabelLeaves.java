@@ -86,7 +86,7 @@ public class LabelLeaves {
         final PhyloTree graph = phyloView.getGraph();
 
         final List<Pair<Node, Double>> list;
-        if (phyloView.isLeftToRightLayout())
+        if (phyloView.computeRootLocation().isHorizontal())
             list = graph.nodeStream().filter(v -> v.getOutDegree() == 0).map(v -> new Pair<>(v, phyloView.getNodeView(v).getTranslateY())).collect(Collectors.toList());
         else
             list = graph.nodeStream().filter(v -> v.getOutDegree() == 0).map(v -> new Pair<>(v, phyloView.getNodeView(v).getTranslateX())).collect(Collectors.toList());
@@ -98,7 +98,7 @@ public class LabelLeaves {
         final PhyloTree graph = phyloView.getGraph();
 
         final List<Pair<Node, Double>> list;
-        if (phyloView.isLeftToRightLayout())
+        if (phyloView.computeRootLocation().isHorizontal())
             list = graph.nodeStream().filter(v -> v.getOutDegree() > 0).map(v -> new Pair<>(v, phyloView.getNodeView(v).getTranslateY())).collect(Collectors.toList());
         else
             list = graph.nodeStream().filter(v -> v.getOutDegree() > 0).map(v -> new Pair<>(v, phyloView.getNodeView(v).getTranslateX())).collect(Collectors.toList());
