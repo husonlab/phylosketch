@@ -52,6 +52,7 @@ public class PhyloSketch extends Application {
      * @param args
      */
     public static void main(String[] args) {
+        ProgramProperties.setUseGUI(true);
         Basic.restoreSystemOut(System.err); // send system out to system err
         Basic.startCollectionStdErr();
 
