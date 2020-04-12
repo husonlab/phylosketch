@@ -55,9 +55,12 @@ public class SaveBeforeClosingDialog {
             if (result.isPresent()) {
                 if (result.get() == buttonTypeYes) {
                     return Save.showSaveDialog(mainWindow) ? Result.save : Result.close;
-                } else return result.get() == buttonTypeNo ? Result.close : Result.cancel;
+                } else if (result.get() == buttonTypeNo) {
+                    return Result.close;
+                } else
+                    return Result.cancel;
             }
-            return Result.cancel; // canceled
+            return Result.close;
         }
     }
 }
