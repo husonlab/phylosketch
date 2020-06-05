@@ -101,9 +101,7 @@ public class ControlBindings {
         contentPane.prefHeightProperty().bind(controller.getBorderPane().heightProperty());
 
         final BooleanProperty hasBackgroundImage = new SimpleBooleanProperty(false);
-        contentPane.getChildren().addListener((InvalidationListener) c -> {
-            hasBackgroundImage.set(contentPane.getChildren().size() > 0 && contentPane.getChildren().get(0) instanceof ImageView);
-        });
+        contentPane.getChildren().addListener((InvalidationListener) c -> hasBackgroundImage.set(contentPane.getChildren().size() > 0 && contentPane.getChildren().get(0) instanceof ImageView));
 
         controller.getInfoLabelsVBox().visibleProperty().bind(view.getGraphFX().emptyProperty());
         controller.getInfoLabelsVBox().setMouseTransparent(true);
@@ -242,9 +240,7 @@ public class ControlBindings {
                 undoManager.doAndAdd(new DeleteNodesEdgesCommand(contentPane, view, view.getNodeSelection().getSelectedItems(), view.getEdgeSelection().getSelectedItems())));
         controller.getDeleteMenuItem().disableProperty().bind(nodeSelection.emptyProperty().and(edgeSelection.emptyProperty()));
 
-        controller.getDeleteLabelsMenuItem().setOnAction(e -> {
-            nodeSelection.getSelectedItems().forEach(v -> view.getNodeView(v).getLabel().setText(null));
-        });
+        controller.getDeleteLabelsMenuItem().setOnAction(e -> nodeSelection.getSelectedItems().forEach(v -> view.getNodeView(v).getLabel().setText(null)));
         controller.getDeleteLabelsMenuItem().disableProperty().bind(nodeSelection.emptyProperty());
 
         contentPane.setOnMousePressed((e) -> {
@@ -271,7 +267,7 @@ public class ControlBindings {
         });
         controller.getCopyNewickMenuItem().disableProperty().bind(isLeafLabeledDAG.not());
 
-        final FindToolBar graphFindToolBar = new FindToolBar(new GraphSearcher(window.getController().getScrollPane(), view.getGraph(), view.getNodeSelection(), view::getLabel, (v, t) -> undoManager.doAndAdd(new ChangeLabelCommand(view, v, t))));
+        final FindToolBar graphFindToolBar = new FindToolBar(window.getStage(), new GraphSearcher(window.getController().getScrollPane(), view.getGraph(), view.getNodeSelection(), view::getLabel, (v, t) -> undoManager.doAndAdd(new ChangeLabelCommand(view, v, t))));
         controller.getTopVBox().getChildren().add(graphFindToolBar);
         controller.getFindMenuItem().setOnAction(c -> graphFindToolBar.setShowFindToolBar(true));
         controller.getFindMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
