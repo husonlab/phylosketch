@@ -21,6 +21,7 @@
 package phylosketch.formattab;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ComboBoxBase;
@@ -67,6 +68,9 @@ public class FormatTabController {
     private ComboBox<String> edgeStyleCBox;
 
     @FXML
+    private Button openHTMLEditor;
+
+    @FXML
     void initialize() {
         fontComboBoxPane.getChildren().remove(fontComboBox);
         fontSelector = new FontSelector(ProgramProperties.getDefaultFontFX());
@@ -111,5 +115,9 @@ public class FormatTabController {
 
     public ComboBox<String> getEdgeStyleCBox() {
         return edgeStyleCBox;
+    }
+
+    public Button getOpenHTMLEditor() {
+        return openHTMLEditor;
     }
 }

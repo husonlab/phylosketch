@@ -32,6 +32,7 @@ import jloda.util.Single;
 import phylosketch.commands.*;
 import phylosketch.window.MainWindow;
 import phylosketch.window.PhyloView;
+import splitstree5.gui.graphlabels.LabelsEditor;
 
 import java.io.IOException;
 
@@ -158,5 +159,12 @@ public class FormatTab extends StackPane {
                 phyloView.getUndoManager().doAndAdd(new ChangeEdgeStyleCommand(phyloView, edgeSelection.getSelectedItems(), n.equals("Arrow")));
         });
         controller.getEdgeStyleCBox().disableProperty().bind(edgeSelection.emptyProperty());
+
+        controller.getOpenHTMLEditor().disableProperty().bind(nodeSelection.emptyProperty());
+        controller.getOpenHTMLEditor().setOnAction(event -> {
+            LabelsEditor labelsEditor = new LabelsEditor();
+            labelsEditor.setLabel(phyloView.getLabel(nodeSelection.getSelectedItems().get(0)));
+            labelsEditor.show();
+        });
     }
 }
