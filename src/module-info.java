@@ -21,6 +21,4 @@ module phylosketch {
 
     opens phylosketch.formattab;
     opens phylosketch.formattab.fontselector;
-
-
 }

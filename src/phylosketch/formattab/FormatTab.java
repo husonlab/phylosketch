@@ -30,6 +30,7 @@ import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.util.Single;
 import phylosketch.commands.*;
+import phylosketch.main.PhyloSketch;
 import phylosketch.window.MainWindow;
 import phylosketch.window.PhyloView;
 import splitstree5.gui.graphlabels.LabelsEditor;
@@ -160,11 +161,14 @@ public class FormatTab extends StackPane {
         });
         controller.getEdgeStyleCBox().disableProperty().bind(edgeSelection.emptyProperty());
 
-        controller.getOpenHTMLEditor().disableProperty().bind(nodeSelection.emptyProperty());
-        controller.getOpenHTMLEditor().setOnAction(event -> {
-            LabelsEditor labelsEditor = new LabelsEditor();
-            labelsEditor.setLabel(phyloView.getLabel(nodeSelection.getSelectedItems().get(0)));
-            labelsEditor.show();
-        });
+        if (PhyloSketch.enableExperimental) {
+            controller.getOpenHTMLEditor().disableProperty().bind(nodeSelection.emptyProperty());
+            controller.getOpenHTMLEditor().setOnAction(event -> {
+                LabelsEditor labelsEditor = new LabelsEditor();
+                labelsEditor.setLabel(phyloView.getLabel(nodeSelection.getSelectedItems().get(0)));
+                labelsEditor.show();
+            });
+        } else
+            controller.getOpenHTMLEditor().setVisible(false);
     }
 }

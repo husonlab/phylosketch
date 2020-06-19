@@ -46,6 +46,7 @@ import java.time.Duration;
  * Daniel Huson, 1.2020
  */
 public class PhyloSketch extends Application {
+    public static boolean enableExperimental = false;
     /**
      * main
      *
@@ -106,6 +107,10 @@ public class PhyloSketch extends Application {
         final boolean showVersion = options.getOption("-V", "version", "Show version string", false);
         final boolean silentMode = options.getOption("-S", "silentMode", "Silent mode", false);
         ProgramExecutorService.setNumberOfCoresToUse(options.getOption("-t", "threads", "Maximum number of threads to use in a parallel algorithm (0=all available)", 0));
+
+
+        enableExperimental = options.getOption("-x", "experimental", "Enable experimental features", false);
+
         options.done();
 
         ProgramProperties.load(propertiesFile);

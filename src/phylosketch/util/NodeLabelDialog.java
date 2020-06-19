@@ -20,9 +20,8 @@
 
 package phylosketch.util;
 
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
+import jloda.fx.label.EditLabelDialog;
 import jloda.graph.Node;
 import phylosketch.commands.ChangeNodeLabelsCommand;
 import phylosketch.window.PhyloView;
@@ -35,27 +34,18 @@ import java.util.Optional;
  * show the node label dialog
  * Daniel Huson, 1.2020
  */
-public class NodeLabelDialog extends ContextMenu {
+public class NodeLabelDialog {
 
     public static boolean apply(Stage owner, PhyloView editor, Node v) {
-        final int id = v.getId();
-        final String oldLabel = editor.getLabel(v).getText();
-
-        // ask for label
-        TextInputDialog dialog = new TextInputDialog(oldLabel);
-        dialog.initOwner(owner);
-        dialog.setTitle("Node Label Input");
-        dialog.setHeaderText("Set node label");
-        dialog.setContentText("Please enter node label:");
-        dialog.setResizable(true);
-
-        Optional<String> result = dialog.showAndWait();
-        final String newLabel;
+        final EditLabelDialog editLabelDialog = new EditLabelDialog(owner, editor.getLabel(v));
+        final Optional<String> result = editLabelDialog.showAndWait();
         if (result.isPresent()) {
-            newLabel = result.get();
+            final int id = v.getId();
+            final String oldLabel = editor.getLabel(v).getText();
+            final String newLabel = result.get();
             editor.getUndoManager().doAndAdd(new ChangeNodeLabelsCommand(editor, Collections.singletonList(new ChangeNodeLabelsCommand.Data(id, oldLabel, newLabel))));
             return true;
-        }
-        return false; // canceled
+        } else
+            return false;
     }
 }

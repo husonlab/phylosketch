@@ -27,7 +27,6 @@ import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.CubicCurve;
@@ -222,9 +221,14 @@ public class PhyloView {
         graphNodeLabels.getChildren().add(nodeView.getLabel());
 
         nodeView.getShapeGroup().setOnContextMenuRequested(c -> {
-            final MenuItem setLabel = new MenuItem("Set Label");
+            final MenuItem setLabel = new MenuItem("Edit label");
             setLabel.setOnAction((e) -> NodeLabelDialog.apply(window.getStage(), this, v));
-            new ContextMenu(setLabel, new SeparatorMenuItem()).show(window.getStage(), c.getScreenX(), c.getScreenY());
+            new ContextMenu(setLabel).show(window.getStage(), c.getScreenX(), c.getScreenY());
+        });
+        nodeView.getLabel().setOnContextMenuRequested(c -> {
+            final MenuItem setLabel = new MenuItem("Edit Label");
+            setLabel.setOnAction((e) -> NodeLabelDialog.apply(window.getStage(), this, v));
+            new ContextMenu(setLabel).show(window.getStage(), c.getScreenX(), c.getScreenY());
         });
         return nodeView;
     }
@@ -461,9 +465,11 @@ public class PhyloView {
 
     private Node findNodeIfHit(double x, double y) {
         for (Node v : graph.nodes()) {
-            final Shape shape = node2view.get(v).getShape();
-            if (shape.contains(shape.screenToLocal(x, y)))
-                return v;
+            if (node2view.get(v) != null) {
+                final Shape shape = node2view.get(v).getShape();
+                if (shape != null && shape.contains(shape.screenToLocal(x, y)))
+                    return v;
+            }
         }
         return null;
     }
