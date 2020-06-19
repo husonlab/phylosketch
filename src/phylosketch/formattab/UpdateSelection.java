@@ -20,9 +20,9 @@
 
 package phylosketch.formattab;
 
-import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import jloda.fx.control.RichTextLabel;
 import jloda.fx.shapes.NodeShape;
 import jloda.graph.Edge;
 import jloda.graph.Node;
@@ -81,7 +81,7 @@ public class UpdateSelection {
                         nodeWidth = null;
                     }
                 }
-                final Label label = nodeView.getLabel();
+                final RichTextLabel label = nodeView.getLabel();
                 if (label.getText().length() > 0) {
                     if (labelFontSame) {
                         if (labelFont == null) {

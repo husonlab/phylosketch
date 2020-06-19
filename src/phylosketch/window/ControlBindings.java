@@ -27,7 +27,6 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
-import javafx.scene.control.Labeled;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
@@ -35,6 +34,7 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import jloda.fx.control.ItemSelectionModel;
+import jloda.fx.control.RichTextLabel;
 import jloda.fx.control.ZoomableScrollPane;
 import jloda.fx.find.FindToolBar;
 import jloda.fx.find.GraphSearcher;
@@ -195,7 +195,7 @@ public class ControlBindings {
 
         controller.getCopyMenuItem().setOnAction(e -> {
             if (view.getNodeSelection().size() > 0) {
-                final List<String> labels = graph.nodeStream().map(view::getLabel).filter(a -> a.getText().length() > 0).map(Labeled::getText).collect(Collectors.toList());
+                final List<String> labels = graph.nodeStream().map(view::getLabel).filter(a -> a.getText().length() > 0).map(RichTextLabel::getText).collect(Collectors.toList());
                 final ClipboardContent clipboardContent = new ClipboardContent();
                 clipboardContent.putString(Basic.toString(labels, "\n"));
                 Clipboard.getSystemClipboard().setContent(clipboardContent);
@@ -267,7 +267,7 @@ public class ControlBindings {
         });
         controller.getCopyNewickMenuItem().disableProperty().bind(isLeafLabeledDAG.not());
 
-        final FindToolBar graphFindToolBar = new FindToolBar(window.getStage(), new GraphSearcher(window.getController().getScrollPane(), view.getGraph(), view.getNodeSelection(), view::getLabel, (v, t) -> undoManager.doAndAdd(new ChangeLabelCommand(view, v, t))));
+        final FindToolBar graphFindToolBar = new FindToolBar(window.getStage(), new GraphSearcher(window.getController().getScrollPane(), view.getGraph(), view.getNodeSelection(), (v) -> view.getLabel(v).getText(), (v, t) -> undoManager.doAndAdd(new ChangeLabelCommand(view, v, t)), view::getLabel));
         controller.getTopVBox().getChildren().add(graphFindToolBar);
         controller.getFindMenuItem().setOnAction(c -> graphFindToolBar.setShowFindToolBar(true));
         controller.getFindMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());

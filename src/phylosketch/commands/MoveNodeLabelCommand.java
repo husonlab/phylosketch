@@ -20,7 +20,7 @@
 
 package phylosketch.commands;
 
-import javafx.scene.control.Label;
+import jloda.fx.control.RichTextLabel;
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Node;
 import phylosketch.window.PhyloView;
@@ -39,13 +39,13 @@ public class MoveNodeLabelCommand extends UndoableRedoableCommand {
         final int id = v.getId();
 
         undo = () -> {
-            final Label label = editor.getNodeView(editor.getGraph().searchNodeId(id)).getLabel();
+            final RichTextLabel label = editor.getNodeView(editor.getGraph().searchNodeId(id)).getLabel();
             label.setLayoutX(label.getLayoutX() - dx);
             label.setLayoutY(label.getLayoutY() - dy);
         };
 
         redo = () -> {
-            final Label label = editor.getNodeView(editor.getGraph().searchNodeId(id)).getLabel();
+            final RichTextLabel label = editor.getNodeView(editor.getGraph().searchNodeId(id)).getLabel();
             label.setLayoutX(label.getLayoutX() + dx);
             label.setLayoutY(label.getLayoutY() + dy);
         };

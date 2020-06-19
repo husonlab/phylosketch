@@ -22,8 +22,8 @@ package phylosketch.commands;
 
 import javafx.animation.Animation;
 import javafx.animation.Transition;
-import javafx.scene.control.Label;
 import javafx.util.Duration;
+import jloda.fx.control.RichTextLabel;
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Node;
 import jloda.util.Basic;
@@ -76,7 +76,7 @@ public class PositionNodeLabelsCommand extends UndoableRedoableCommand {
         for (Node v : nodes) {
             final double nodeWidth = view.getNodeView(v).getWidth();
             final double nodeHeight = view.getNodeView(v).getHeight();
-            final Label label = view.getNodeView(v).getLabel();
+            final RichTextLabel label = view.getNodeView(v).getLabel();
 
             final boolean horizontalLabel = !(Basic.equals(label.getRotate(), 90, 0.00001) || Basic.equals(label.getRotate(), 270, 0.00001));
 

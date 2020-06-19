@@ -47,6 +47,7 @@ public class NodeLabelDialog extends ContextMenu {
         dialog.setTitle("Node Label Input");
         dialog.setHeaderText("Set node label");
         dialog.setContentText("Please enter node label:");
+        dialog.setResizable(true);
 
         Optional<String> result = dialog.showAndWait();
         final String newLabel;

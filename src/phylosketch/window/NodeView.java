@@ -22,16 +22,16 @@ package phylosketch.window;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.scene.Group;
-import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
+import jloda.fx.control.RichTextLabel;
 import jloda.fx.shapes.ISized;
 import jloda.fx.shapes.NodeShape;
 
 public class NodeView {
-    private final Label label = new Label();
+    private final RichTextLabel label = new RichTextLabel();
     private final Group shapeGroup = new Group();
     private Shape shape;
 
@@ -65,7 +65,7 @@ public class NodeView {
         label.translateYProperty().bind(translateYProperty());
     }
 
-    public Label getLabel() {
+    public RichTextLabel getLabel() {
         return label;
     }
 

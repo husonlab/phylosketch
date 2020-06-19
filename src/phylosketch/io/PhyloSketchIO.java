@@ -20,7 +20,6 @@
 
 package phylosketch.io;
 
-import javafx.scene.control.Label;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.Pane;
@@ -28,6 +27,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.CubicCurve;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import jloda.fx.control.RichTextLabel;
 import jloda.fx.shapes.NodeShape;
 import jloda.fx.util.FontUtils;
 import jloda.graph.Edge;
@@ -92,7 +92,7 @@ public class PhyloSketchIO {
             nodeData.put("type", NodeShape.getCode(nodeView.getShape()));
             if (!nodeView.getShape().getFill().equals(Color.WHITE))
                 nodeData.put("clr", nodeView.getShape().getFill().toString());
-            final Label label = nodeView.getLabel();
+            final RichTextLabel label = nodeView.getLabel();
             if (label.getText().length() > 0) {
                 nodeData.put("text", label.getText());
                 nodeData.put("lx", String.format("%.2f", label.getLayoutX()));
@@ -178,7 +178,7 @@ public class PhyloSketchIO {
 
 
             if (nodeData.get("text") != null) {
-                final Label label = nodeView.getLabel();
+                final RichTextLabel label = nodeView.getLabel();
                 label.setText(nodeData.get("text"));
 
                 label.setLayoutX(Basic.parseDouble(nodeData.get("lx")));

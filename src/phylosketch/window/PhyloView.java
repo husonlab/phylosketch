@@ -26,7 +26,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.layout.Pane;
@@ -36,6 +35,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import jloda.fx.control.ItemSelectionModel;
+import jloda.fx.control.RichTextLabel;
 import jloda.fx.graph.GraphFX;
 import jloda.fx.shapes.NodeShape;
 import jloda.fx.undo.UndoManager;
@@ -422,7 +422,7 @@ public class PhyloView {
             final double mouseX = c.getSceneX();
             final double mouseY = c.getSceneY();
 
-            final Label label = nodeView.getLabel();
+            final RichTextLabel label = nodeView.getLabel();
             label.setLayoutX(label.getLayoutX() + (mouseX - previousMousePosition[0]));
             label.setLayoutY(label.getLayoutY() + (mouseY - previousMousePosition[1]));
 
@@ -554,7 +554,7 @@ public class PhyloView {
         return getNodeView(v).getTranslateY();
     }
 
-    public Label getLabel(Node v) {
+    public RichTextLabel getLabel(Node v) {
         return node2view.get(v).getLabel();
     }
 
