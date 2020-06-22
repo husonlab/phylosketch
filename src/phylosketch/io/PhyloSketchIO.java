@@ -118,6 +118,8 @@ public class PhyloSketchIO {
             edgeData.put("sw", String.format("%.2f", curve.getStrokeWidth()));
             if (!curve.getStroke().equals(Color.BLACK))
                 edgeData.put("clr", curve.getStroke().toString());
+            if (!edgeView.getArrowHead().isVisible())
+                edgeData.put("arw", "false");
         }
 
         final TaxaNexusOutput taxaOutput = new TaxaNexusOutput();
@@ -219,6 +221,9 @@ public class PhyloSketchIO {
                     final double sw = Basic.parseDouble(edgeData.get("sw"));
                     if (sw > 0)
                         edgeView.getCurve().setStrokeWidth(sw);
+                }
+                if (edgeData.get("arw") != null) {
+                    edgeView.getArrowHead().setVisible(Basic.parseBoolean(edgeData.get("arw")));
                 }
             }
         }
