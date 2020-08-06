@@ -267,7 +267,16 @@ public class ControlBindings {
         });
         controller.getCopyNewickMenuItem().disableProperty().bind(isLeafLabeledDAG.not());
 
-        final FindToolBar graphFindToolBar = new FindToolBar(window.getStage(), new GraphSearcher(window.getController().getScrollPane(), view.getGraph(), view.getNodeSelection(), (v) -> view.getLabel(v).getText(), (v, t) -> undoManager.doAndAdd(new ChangeLabelCommand(view, v, t)), view::getLabel));
+        final GraphSearcher graphSearcher = new GraphSearcher(view.getGraph(), view.getNodeSelection(), (v) -> view.getLabel(v).getText(), (v, t) -> undoManager.doAndAdd(new ChangeLabelCommand(view, v, t)));
+        final FindToolBar graphFindToolBar = new FindToolBar(window.getStage(), graphSearcher);
+
+        graphSearcher.foundProperty().addListener((c, o, n) -> {
+            if (n != null && view.getLabel(n) != null) {
+                controller.getScrollPane().ensureVisible(view.getLabel(n));
+            }
+        });
+
+
         controller.getTopVBox().getChildren().add(graphFindToolBar);
         controller.getFindMenuItem().setOnAction(c -> graphFindToolBar.setShowFindToolBar(true));
         controller.getFindMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());

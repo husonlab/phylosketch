@@ -159,7 +159,7 @@ public class Normalize {
             graph.nodes().forEach(v -> view.addNode(old2new.get(v), newWindow.getController().getContentPane(), coordinates.get(v).getX(), coordinates.get(v).getY()));
             view.getGraph().edges().forEach(view::addEdge);
 
-            view.getUndoManager().doAndAdd(new ChangeEdgeShapeCommand(view, Basic.asList(graph.edges()), ChangeEdgeShapeCommand.EdgeShape.Reshape));
+            view.getUndoManager().doAndAdd(new ChangeEdgeShapeCommand(view, Basic.asList(view.getGraph().edges()), ChangeEdgeShapeCommand.EdgeShape.Reshape));
 
             view.setDirty(true);
         });
