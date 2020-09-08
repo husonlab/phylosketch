@@ -236,23 +236,7 @@ public class NetworkProperties {
     }
 
     /**
-     * determines all stable nodes, which are nodes that lie on all paths to all of their children
-     *
-     * @param graph
-     * @return
-     */
-    public static NodeSet allStableInternal(PhyloTree graph) {
-        final NodeSet result = new NodeSet(graph);
-
-        if (isNonEmptyDAG(graph)) {
-            for (Node root : findRoots(graph))
-                allStableInternalRec(root, new HashSet<>(), new HashSet<>(), result);
-        }
-        return result;
-    }
-
-    /**
-     * determines all visible reticulations, which are nodes that have a tree path to a leaf or stable node
+     * determines all visible reticulations, which are nodes that have a tree path to a leaf or to a stable node
      *
      * @param graph
      * @return
@@ -260,8 +244,12 @@ public class NetworkProperties {
     public static NodeSet allVisibleNodes(PhyloTree graph) {
         final NodeSet result = new NodeSet(graph);
         if (isNonEmptyDAG(graph)) {
+
+            final Set<Node> leaves = graph.nodeStream().filter(v -> v.getOutDegree() == 0).collect(Collectors.toSet());
+            final NodeSet stableNodes = allLowestStableAncestors(graph, leaves);
+
             for (Node root : findRoots(graph))
-                allVisibleNodesRec(root, allStableInternal(graph), result);
+                allVisibleNodesRec(root, stableNodes, result);
         }
         return result;
     }
@@ -280,15 +268,25 @@ public class NetworkProperties {
     }
 
     /**
-     * recursively determines all stable nodes
+     * determines all completely stable nodes, which are nodes that lie on all paths to all of their children
      *
-     * @param v
-     * @param below
-     * @param parentsOfBelow
-     * @param result
+     * @param graph
+     * @return
      */
-    private static void allStableInternalRec(Node v, Set<Node> below, Set<Node> parentsOfBelow, NodeSet result) {
+    public static NodeSet allCompletelyStableInternal(PhyloTree graph) {
+        final NodeSet result = new NodeSet(graph);
 
+        if (isNonEmptyDAG(graph)) {
+            for (Node root : findRoots(graph))
+                allCompletelyStableInternalRec(root, new HashSet<>(), new HashSet<>(), result);
+        }
+        return result;
+    }
+
+    /**
+     * recursively determines all stable nodes
+     */
+    private static void allCompletelyStableInternalRec(Node v, Set<Node> below, Set<Node> parentsOfBelow, NodeSet result) {
         if (v.getOutDegree() == 0) {
             below.add(v);
             parentsOfBelow.addAll(Basic.asList(v.parents()));
@@ -297,7 +295,7 @@ public class NetworkProperties {
             final Set<Node> parentsOfBelowV = new HashSet<>();
 
             for (Node w : v.children()) {
-                allStableInternalRec(w, belowV, parentsOfBelowV, result);
+                allCompletelyStableInternalRec(w, belowV, parentsOfBelowV, result);
             }
             belowV.forEach(u -> parentsOfBelowV.addAll(Basic.asList(u.parents())));
             belowV.add(v);
@@ -307,6 +305,81 @@ public class NetworkProperties {
             }
             below.addAll(belowV);
             parentsOfBelow.addAll(parentsOfBelowV);
+        }
+    }
+
+    /**
+     * determines all stable nodes for the given query set. For each node in the query set, this
+     * is the set of nodes that lies on all paths to that member of the query set
+     */
+    public static NodeSet allLowestStableAncestors(PhyloTree graph, Collection<Node> query) {
+        final NodeSet result = new NodeSet(graph);
+
+        if (isNonEmptyDAG(graph)) {
+            final NodeArray<Set<Node>> below = new NodeArray<>(graph);
+            for (Node root : findRoots(graph)) {
+                labelByDescendantsRec(root, query, below);
+                if (below.get(root) != null) {
+                    final Set<Node> remainingQuery = new HashSet<>(below.get(root));
+                    allStableAncestorsRec(root, remainingQuery, below, result);
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * label by all queries below
+     *
+     * @param v
+     * @param below
+     * @return
+     */
+    private static Set<Node> labelByDescendantsRec(Node v, Collection<Node> query, NodeArray<Set<Node>> below) {
+        Set<Node> belowV = null;
+
+        for (Node w : v.children()) {
+            final Set<Node> belowW = labelByDescendantsRec(w, query, below);
+            if (belowW != null) {
+                if (belowV == null)
+                    belowV = new HashSet<>();
+                belowV.addAll(belowW);
+            }
+        }
+        if (query.contains(v)) {
+            if (belowV == null)
+                belowV = new HashSet<>();
+            belowV.add(v);
+        }
+        below.put(v, belowV);
+        return belowV;
+    }
+
+    /**
+     * recursively determines all stable nodes
+     */
+    private static void allStableAncestorsRec(Node v, Set<Node> remainingQuery, NodeArray<Set<Node>> below, NodeSet result) {
+        if (remainingQuery.size() > 0) {
+            final Map<Node, Integer> count = new HashMap<>();
+            for (Node w : v.children()) {
+                final Set<Node> belowW = below.get(w);
+                if (belowW != null) {
+                    for (Node u : belowW) {
+                        if (remainingQuery.contains(u)) {
+                            count.merge(u, 1, Integer::sum);
+                        }
+                    }
+                }
+            }
+            for (Node u : count.keySet()) {
+                if (count.get(u) > 1) {
+                    result.add(v);
+                    remainingQuery.remove(u);
+                }
+            }
+            for (Node w : v.children()) {
+                allStableAncestorsRec(w, remainingQuery, below, result);
+            }
         }
     }
 

@@ -2,7 +2,13 @@
 <install4j version="8.0.4" transformSequenceNumber="8">
   <directoryPresets config="../../javafx-jmods" />
   <application name="PhyloSketch" applicationId="6936-1140-5584-9278" mediaDir="../../../builds" shortName="PhyloSketch" publisher="Daniel Huson and Mike Steel" publisherWeb="http://www.husonlab.org/phylosketch" version="0.0.1_alpha" allPathsRelative="true" macVolumeId="b8c0a1154e563a9a" javaMinVersion="11">
-    <codeSigning macEnabled="true" macPkcs12File="../../../../etc/application.p12" windowsEnabled="true" windowsPkcs12File="../../../../etc/windows.pfx" macNotarize="true" appleId="daniel@huson.de" />
+    <codeSigning macEnabled="true" macPkcs12File="../../../../etc/application.p12" windowsEnabled="true" windowsPkcs12File="../../../../etc/windows.pfx" macNotarize="true" appleId="daniel@huson.de">
+      <macSearchedJars>
+        <entry>jna-*</entry>
+        <entry>swt-*</entry>
+        <entry>sqlite-*</entry>
+      </macSearchedJars>
+    </codeSigning>
     <jreBundles jdkProviderId="AdoptOpenJDK" release="openjdk14/jdk-14.0.1+7">
       <modules />
     </jreBundles>

@@ -243,7 +243,7 @@ public class ControlBindings {
         controller.getDeleteLabelsMenuItem().setOnAction(e -> nodeSelection.getSelectedItems().forEach(v -> view.getNodeView(v).getLabel().setText(null)));
         controller.getDeleteLabelsMenuItem().disableProperty().bind(nodeSelection.emptyProperty());
 
-        contentPane.setOnMousePressed((e) -> {
+        contentPane.setOnMousePressed(e -> {
             if (e.getClickCount() == 2) {
                 final Point2D location = contentPane.sceneToLocal(e.getSceneX(), e.getSceneY());
                 undoManager.doAndAdd(new CreateNodeCommand(contentPane, view, location.getX(), location.getY()));
@@ -384,8 +384,14 @@ public class ControlBindings {
         controller.getStraightenEdgesMenuItem().setOnAction(c -> undoManager.doAndAdd(new ChangeEdgeShapeCommand(view, view.selectedOrAllEdges(), ChangeEdgeShapeCommand.EdgeShape.Straight)));
         controller.getStraightenEdgesMenuItem().disableProperty().bind(Bindings.isEmpty(view.getGraphFX().getEdgeList()));
 
+        controller.getStraightenEdgesButton().setOnAction(controller.getStraightenEdgesMenuItem().getOnAction());
+        controller.getStraightenEdgesButton().disableProperty().bind(controller.getStraightenEdgesMenuItem().disableProperty());
+
         controller.getReshapeEdgesMenuItem().setOnAction(c -> undoManager.doAndAdd(new ChangeEdgeShapeCommand(view, view.selectedOrAllEdges(), ChangeEdgeShapeCommand.EdgeShape.Reshape)));
         controller.getReshapeEdgesMenuItem().disableProperty().bind(Bindings.isEmpty(view.getGraphFX().getEdgeList()));
+
+        controller.getReshapEdgesButton().setOnAction(controller.getReshapeEdgesMenuItem().getOnAction());
+        controller.getReshapEdgesButton().disableProperty().bind(controller.getReshapeEdgesMenuItem().disableProperty());
 
         controller.getAboutMenuItem().setOnAction((e) -> SplashScreen.showSplash(Duration.ofMinutes(2)));
 
@@ -439,7 +445,7 @@ public class ControlBindings {
         controller.getSelectReticulateNodesMenuitem().setOnAction(e -> graph.nodeStream().filter(v -> v.getInDegree() > 1).forEach(nodeSelection::select));
         controller.getSelectReticulateNodesMenuitem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
-        controller.getSelectStableNodesMenuItem().setOnAction(e -> NetworkProperties.allStableInternal(graph).forEach(nodeSelection::select));
+        controller.getSelectStableNodesMenuItem().setOnAction(e -> NetworkProperties.allCompletelyStableInternal(graph).forEach(nodeSelection::select));
         controller.getSelectStableNodesMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getSelectVisibleNodesMenuItem().setOnAction(e -> NetworkProperties.allVisibleNodes(graph).forEach(nodeSelection::select));
@@ -485,6 +491,9 @@ public class ControlBindings {
             }
         });
         controller.getSelectAllBelowMenuItem().disableProperty().bind(nodeSelection.emptyProperty());
+
+        controller.getSelectLowestStableAncestorMenuItem().setOnAction(e -> nodeSelection.selectItems(NetworkProperties.allLowestStableAncestors(graph, nodeSelection.getSelectedItems())));
+        controller.getSelectLowestStableAncestorMenuItem().disableProperty().bind(nodeSelection.emptyProperty());
 
         controller.getSelectTreeEdgesMenuItem().setOnAction(c -> graph.edgeStream().filter(e -> e.getTarget().getInDegree() <= 1).forEach(edgeSelection::select));
         controller.getSelectReticulateEdgesMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());

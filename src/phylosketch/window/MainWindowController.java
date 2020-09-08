@@ -157,6 +157,9 @@ public class MainWindowController {
     private MenuItem selectAllAboveMenuItem;
 
     @FXML
+    private MenuItem selectLowestStableAncestorMenuItem;
+
+    @FXML
     private MenuItem labelLeavesABCMenuItem;
 
     @FXML
@@ -202,7 +205,6 @@ public class MainWindowController {
 
     @FXML
     private MenuItem labelPositionCenterMenuItem;
-
 
     @FXML
     private MenuItem labelPositionAboveMenuItem;
@@ -361,6 +363,12 @@ public class MainWindowController {
 
     @FXML
     private MenuItem distributeVerticallyButton;
+
+    @FXML
+    private MenuItem straightenEdgesButton;
+
+    @FXML
+    private MenuItem reshapEdgesButton;
 
     @FXML
     private MenuItem labelLeftButton;
@@ -591,6 +599,10 @@ public class MainWindowController {
         return selectAllAboveMenuItem;
     }
 
+    public MenuItem getSelectLowestStableAncestorMenuItem() {
+        return selectLowestStableAncestorMenuItem;
+    }
+
     public MenuItem getLabelLeavesABCMenuItem() {
         return labelLeavesABCMenuItem;
     }
@@ -729,6 +741,14 @@ public class MainWindowController {
 
     public MenuItem getDistributeVerticallyMenuItem() {
         return distributeVerticallyMenuItem;
+    }
+
+    public MenuItem getStraightenEdgesButton() {
+        return straightenEdgesButton;
+    }
+
+    public MenuItem getReshapEdgesButton() {
+        return reshapEdgesButton;
     }
 
     public MenuItem getLabelPositionLeftMenuItem() {

@@ -192,6 +192,17 @@
                                                         <Tooltip text="Align and distribute selected nodes"/>
                                                     </tooltip>
                                                 </MenuButton>
+                                                <MenuButton mnemonicParsing="false" text="Edges">
+                                                    <items>
+                                                        <MenuItem fx:id="straightenEdgesButton" mnemonicParsing="false"
+                                                                  text="Straighten"/>
+                                                        <MenuItem fx:id="reshapEdgesButton" mnemonicParsing="false"
+                                                                  text="Reshape"/>
+                                                    </items>
+                                                    <tooltip>
+                                                        <Tooltip text="Straighten or reshape all or selected edges"/>
+                                                    </tooltip>
+                                                </MenuButton>
                                                 <MenuButton layoutX="252.0" layoutY="14.0" mnemonicParsing="false"
                                                             text="Labels">
                                                     <items>
@@ -504,7 +515,7 @@
                                         <MenuItem fx:id="selectVisibleNodesMenuItem" text="Visible Nodes"/>
                                         <MenuItem fx:id="selectVisibleReticulationsMenuItem"
                                                   text="Visible Reticulations"/>
-                                        <MenuItem fx:id="selectStableNodesMenuItem" text="Stable Nodes"/>
+                                        <MenuItem fx:id="selectStableNodesMenuItem" text="Completely Stable Nodes"/>
                                         <SeparatorMenuItem mnemonicParsing="false"/>
                                         <MenuItem fx:id="selectAllBelowMenuItem" text="All Below">
                                             <accelerator>
@@ -518,6 +529,8 @@
                                                                     shift="DOWN" shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
+                                        <MenuItem fx:id="selectLowestStableAncestorMenuItem"
+                                                  text="Lowest Stable Ancestor"/>
                                     </items>
                                 </Menu>
                                 <Menu mnemonicParsing="false" text="Options">

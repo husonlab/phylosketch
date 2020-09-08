@@ -21,7 +21,9 @@
 package phylosketch.window;
 
 import javafx.beans.InvalidationListener;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
@@ -97,16 +99,24 @@ public class EdgeView {
                 return new Pair<>(e, 2);
         };
 
-        MouseDragClosestNode.setup(curve, view.getNode2View().get(edge.getSource()).getShapeGroup(), circle1,
+        final BooleanProperty isSelected = new SimpleBooleanProperty(view.getEdgeSelection().isSelected(edge));
+        view.getEdgeSelection().getSelectedItems().addListener((InvalidationListener) c -> {
+            isSelected.set(view.getEdgeSelection().isSelected(edge));
+        });
+
+        MouseDragClosestNode.setup(curve, isSelected, view.getNode2View().get(edge.getSource()).getShapeGroup(), circle1,
                 view.getNode2View().get(edge.getTarget()).getShapeGroup(), circle2,
                 (circle, delta) -> view.getUndoManager().add(new EdgeShapeCommand(view, translatingControl.apply((Circle) circle), delta)));
 
         curve.setOnMouseClicked(c -> {
-            if (!c.isShiftDown()) {
-                view.getNodeSelection().clearSelection();
-                view.getEdgeSelection().clearAndSelect(edge);
-            } else
-                view.getEdgeSelection().toggleSelection(edge);
+            if (!MouseDragClosestNode.wasMoved()) {
+                if (!c.isShiftDown()) {
+                    view.getNodeSelection().clearSelection();
+                    view.getEdgeSelection().clearAndSelect(edge);
+                } else
+                    view.getEdgeSelection().toggleSelection(edge);
+            }
+            c.consume();
         });
 
         arrowHead = new Polygon(-3, -3, 5, 0, -3, 3);
