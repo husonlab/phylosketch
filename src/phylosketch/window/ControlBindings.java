@@ -517,10 +517,10 @@ public class ControlBindings {
         controller.getAlignTopMenuItem().disableProperty().bind(atMostOneSelected);
 
         controller.getAlignTopButton().setOnAction(controller.getAlignTopMenuItem().getOnAction());
-        controller.getAlignTopButton().disableProperty().bind(controller.getAlignTopMenuItem().disableProperty());
+        controller.getAlignTopButton().disableProperty().bind(atMostOneSelected);
 
         controller.getAlignMiddleMenuItem().setOnAction(c -> undoManager.doAndAdd(new AlignNodesCommand(view, view.selectedOrAllNodes(), AlignNodesCommand.Alignment.Middle)));
-        controller.getAlignMiddleMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
+        controller.getAlignMiddleMenuItem().disableProperty().bind(atMostOneSelected);
 
         controller.getAlignMiddleButton().setOnAction(controller.getAlignMiddleMenuItem().getOnAction());
         controller.getAlignMiddleButton().disableProperty().bind(atMostOneSelected);
@@ -541,25 +541,25 @@ public class ControlBindings {
         controller.getAlignCenterMenuItem().disableProperty().bind(atMostOneSelected);
 
         controller.getAlignCenterButton().setOnAction(controller.getAlignCenterMenuItem().getOnAction());
-        controller.getAlignCenterButton().disableProperty().bind(controller.getAlignCenterMenuItem().disableProperty());
+        controller.getAlignCenterButton().disableProperty().bind(atMostOneSelected);
 
         controller.getAlignRightMenuItem().setOnAction(c -> undoManager.doAndAdd(new AlignNodesCommand(view, nodeSelection, AlignNodesCommand.Alignment.Right)));
         controller.getAlignRightMenuItem().disableProperty().bind(atMostOneSelected);
 
         controller.getAlignRightButton().setOnAction(controller.getAlignRightMenuItem().getOnAction());
-        controller.getAlignRightButton().disableProperty().bind(controller.getAlignRightMenuItem().disableProperty());
+        controller.getAlignRightButton().disableProperty().bind(atMostOneSelected);
 
         controller.getDistributeHorizontallyMenuItem().setOnAction(c -> undoManager.doAndAdd(new DistributeNodesCommand(view, nodeSelection, DistributeNodesCommand.Direction.Horizontally)));
         controller.getDistributeHorizontallyMenuItem().disableProperty().bind(atMostTwoSelected);
 
         controller.getDistributeHorizontallyButton().setOnAction(controller.getDistributeHorizontallyMenuItem().getOnAction());
-        controller.getDistributeHorizontallyButton().disableProperty().bind(controller.getDistributeHorizontallyMenuItem().disableProperty());
+        controller.getDistributeHorizontallyButton().disableProperty().bind(atMostTwoSelected);
 
         controller.getDistributeVerticallyMenuItem().setOnAction(c -> undoManager.doAndAdd(new DistributeNodesCommand(view, nodeSelection, DistributeNodesCommand.Direction.Vertically)));
         controller.getDistributeVerticallyMenuItem().disableProperty().bind(atMostTwoSelected);
 
         controller.getDistributeVerticallyButton().setOnAction(controller.getDistributeVerticallyMenuItem().getOnAction());
-        controller.getDistributeVerticallyButton().disableProperty().bind(controller.getDistributeVerticallyMenuItem().disableProperty());
+        controller.getDistributeVerticallyButton().disableProperty().bind(atMostTwoSelected);
     }
 
     public static void setupLabelPosition(PhyloView view, MainWindowController controller) {

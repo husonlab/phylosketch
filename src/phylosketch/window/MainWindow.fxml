@@ -576,8 +576,10 @@
                                                 <MenuItem fx:id="alignMiddleMenuItem" text="Middle"/>
                                                 <MenuItem fx:id="alignBottomMenuItem" text="Bottom"/>
                                                 <SeparatorMenuItem mnemonicParsing="false"/>
-                                                <MenuItem fx:id="distributeHorizontallyMenuItem" text="Horizontally"/>
-                                                <MenuItem fx:id="distributeVerticallyMenuItem" text="Vertically"/>
+                                                <MenuItem fx:id="distributeHorizontallyMenuItem"
+                                                          text="Distribute Horizontally"/>
+                                                <MenuItem fx:id="distributeVerticallyMenuItem"
+                                                          text="Distribute Vertically"/>
                                             </items>
                                         </Menu>
                                         <Menu mnemonicParsing="false" text="Labels">

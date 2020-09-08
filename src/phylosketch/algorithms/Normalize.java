@@ -107,7 +107,7 @@ public class Normalize {
         final Set<String> targetNodeLabels = target.nodeStream().map(target::getLabel).filter(s -> s != null && s.length() > 0).collect(Collectors.toSet());
         final long lost = srcNodeLabels.stream().filter(s -> !targetNodeLabels.contains(s)).count();
         if (lost > 0)
-            NotificationManager.showWarning("Number of labeled internal nodes removed: " + lost);
+            NotificationManager.showInformation("Number of labeled internal nodes removed: " + lost);
     }
 
     /**
