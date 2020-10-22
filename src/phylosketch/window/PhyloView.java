@@ -333,9 +333,9 @@ public class PhyloView {
                             if (!oldControlPointLocations.containsKey(e.getId())) {
                                 oldControlPointLocations.put(e.getId(), edgeView.getControlCoordinates());
                             }
-                                edgeView.startMoved(deltaXReshapeEdge, deltaYReshapeEdge);
-                                newControlPointLocations.put(e.getId(), edgeView.getControlCoordinates());
-                            }
+                            edgeView.startMoved(deltaXReshapeEdge, deltaYReshapeEdge);
+                            newControlPointLocations.put(e.getId(), edgeView.getControlCoordinates());
+                        }
                         for (Edge e : u.inEdges()) {
                             final EdgeView edgeView = edge2view.get(e);
                             if (!oldControlPointLocations.containsKey(e.getId())) {

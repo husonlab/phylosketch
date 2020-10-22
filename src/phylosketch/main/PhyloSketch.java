@@ -20,6 +20,7 @@
  */
 
 package phylosketch.main;
+
 import com.briksoftware.javafx.platform.osx.OSXIntegration;
 import javafx.application.Application;
 import javafx.geometry.Point2D;
@@ -47,6 +48,7 @@ import java.time.Duration;
  */
 public class PhyloSketch extends Application {
     public static boolean enableExperimental = false;
+
     /**
      * main
      *
