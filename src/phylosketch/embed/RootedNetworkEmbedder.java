@@ -63,7 +63,7 @@ public class RootedNetworkEmbedder {
      */
     private static void computeCoordinatesCladogramRec(Pane mainPane, PhyloView view, Node v, NodeArray<List<Node>> node2LSAChildren, NodeDoubleArray yCoord, int maxLevel, NodeIntegerArray levels) {
         view.addNode(v, mainPane, 50 * (maxLevel + 1 - levels.getValue(v)), 50 * yCoord.getValue(v));
-        for (Node w : node2LSAChildren.get(v)) {
+        for (Node w : node2LSAChildren.getValue(v)) {
             computeCoordinatesCladogramRec(mainPane, view, w, node2LSAChildren, yCoord, maxLevel, levels);
         }
     }
@@ -126,7 +126,7 @@ public class RootedNetworkEmbedder {
                 computeLevelsRec(graph, node2GuideTreeChildren, w, levels, add, path);
             level = Math.max(level, levels.get(w) + (graph.isTransferEdge(f) ? 0 : add));
         }
-        final Collection<Node> lsaChildren = node2GuideTreeChildren.get(v);
+        final Collection<Node> lsaChildren = node2GuideTreeChildren.getValue(v);
         if (lsaChildren != null) {
             for (Node w : lsaChildren) {
                 if (!below.contains(w) && !path.contains(w)) {
@@ -164,11 +164,11 @@ public class RootedNetworkEmbedder {
      * @return index of last leaf
      */
     private static int computeYCoordinateOfLeavesRec(Node v, NodeArray<List<Node>> node2LSAChildren, int leafNumber, NodeDoubleArray yCoord, List<Node> nodeOrder) {
-        List<Node> list = node2LSAChildren.get(v);
+        List<Node> list = node2LSAChildren.getValue(v);
 
         if (list.size() == 0) {
             // String taxonName = tree.getLabel(v);
-            yCoord.set(v, ++leafNumber);
+            yCoord.put(v, (double) ++leafNumber);
             nodeOrder.add(v);
         } else {
             for (Node w : list) {
@@ -190,7 +190,7 @@ public class RootedNetworkEmbedder {
             double first = Double.NEGATIVE_INFINITY;
             double last = Double.NEGATIVE_INFINITY;
 
-            for (Node w : node2LSAChildren.get(v)) {
+            for (Node w : node2LSAChildren.getValue(v)) {
                 double y = yCoord.get(w);
                 if (y == 0) {
                     computeYCoordinateOfInternalRec(w, node2LSAChildren, yCoord);
@@ -200,7 +200,7 @@ public class RootedNetworkEmbedder {
                 if (first == Double.NEGATIVE_INFINITY)
                     first = last;
             }
-            yCoord.set(v, 0.5 * (last + first));
+            yCoord.put(v, 0.5 * (last + first));
         }
     }
 
@@ -223,12 +223,12 @@ public class RootedNetworkEmbedder {
                 double value = leafPos;
                 for (int i = lastLeaf + 1; i < nextLeaf; i++) {
                     value += add;
-                    yCoord.set(nodes[i], value);
+                    yCoord.put(nodes[i], value);
                 }
             }
             // assign whole positions to actual leaves:
             if (nextLeaf < nodes.length) {
-                yCoord.set(nodes[nextLeaf], ++leafPos);
+                yCoord.put(nodes[nextLeaf], ++leafPos);
             }
             lastLeaf = nextLeaf;
         }
