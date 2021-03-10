@@ -46,13 +46,13 @@ public class ChangeNodeColorCommand extends UndoableRedoableCommand {
 
         undo = () -> {
             for (Data data : dataList) {
-                editor.getNodeView(editor.getGraph().searchNodeId(data.id)).getShape().setFill(data.oldValue);
+                editor.getNodeView(editor.getGraph().findNodeById(data.id)).getShape().setFill(data.oldValue);
             }
         };
 
         redo = () -> {
             for (Data data : dataList) {
-                editor.getNodeView(editor.getGraph().searchNodeId(data.id)).getShape().setFill(data.newValue);
+                editor.getNodeView(editor.getGraph().findNodeById(data.id)).getShape().setFill(data.newValue);
             }
         };
     }

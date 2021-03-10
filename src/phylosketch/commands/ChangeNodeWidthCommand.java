@@ -46,14 +46,14 @@ public class ChangeNodeWidthCommand extends UndoableRedoableCommand {
 
         undo = () -> {
             for (Data data : dataList) {
-                ISized sized = ((ISized) editor.getNodeView(editor.getGraph().searchNodeId(data.id)).getShape());
+                ISized sized = ((ISized) editor.getNodeView(editor.getGraph().findNodeById(data.id)).getShape());
                 sized.setSize(data.oldValue, sized.getHeight());
             }
         };
 
         redo = () -> {
             for (Data data : dataList) {
-                ISized sized = ((ISized) editor.getNodeView(editor.getGraph().searchNodeId(data.id)).getShape());
+                ISized sized = ((ISized) editor.getNodeView(editor.getGraph().findNodeById(data.id)).getShape());
                 sized.setSize(data.newValue, sized.getHeight());
             }
         };

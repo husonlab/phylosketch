@@ -22,8 +22,8 @@ package phylosketch.commands;
 
 import javafx.collections.ObservableList;
 import jloda.fx.undo.UndoableRedoableCommand;
+import jloda.graph.Edge;
 import jloda.graph.Node;
-import jloda.graph.NodeEdge;
 import jloda.phylo.PhyloTree;
 import phylosketch.window.PhyloView;
 
@@ -58,21 +58,21 @@ public class MoveSelectedNodesCommand extends UndoableRedoableCommand {
         final Map<Integer, double[]> oldEdgeControlCoordinates = new HashMap<>(oldEdgeControlCoordinates0);
         final Map<Integer, double[]> newEdgeControlCoordinates = new HashMap<>(newEdgeControlCoordinates0);
 
-        final List<Integer> nodeData = selectedItems.stream().map(NodeEdge::getId).collect(Collectors.toList());
+        final List<Integer> nodeData = selectedItems.stream().map(Node::getId).collect(Collectors.toList());
         final List<Integer> edgeData = graph.edgeStream().filter(e -> oldEdgeControlCoordinates.containsKey(e.getId()) && newEdgeControlCoordinates.containsKey(e.getId()))
-                .map(NodeEdge::getId).collect(Collectors.toList());
+                .map(Edge::getId).collect(Collectors.toList());
 
 
         undo = () -> {
-            nodeData.forEach(id -> editor.moveNode(graph.searchNodeId(id), -dx, -dy));
+            nodeData.forEach(id -> editor.moveNode(graph.findNodeById(id), -dx, -dy));
 
-            edgeData.forEach(id -> editor.getEdge2view().getValue(graph.searchEdgeId(id)).setControlCoordinates(oldEdgeControlCoordinates.get(id)));
+            edgeData.forEach(id -> editor.getEdge2view().getValue(graph.findEdgeById(id)).setControlCoordinates(oldEdgeControlCoordinates.get(id)));
         };
 
         redo = () -> {
-            nodeData.forEach(id -> editor.moveNode(graph.searchNodeId(id), dx, dy));
+            nodeData.forEach(id -> editor.moveNode(graph.findNodeById(id), dx, dy));
 
-            edgeData.forEach(id -> editor.getEdge2view().getValue(graph.searchEdgeId(id)).setControlCoordinates(newEdgeControlCoordinates.get(id)));
+            edgeData.forEach(id -> editor.getEdge2view().getValue(graph.findEdgeById(id)).setControlCoordinates(newEdgeControlCoordinates.get(id)));
         };
     }
 

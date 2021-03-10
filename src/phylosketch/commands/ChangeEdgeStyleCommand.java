@@ -45,13 +45,13 @@ public class ChangeEdgeStyleCommand extends UndoableRedoableCommand {
 
         undo = () -> {
             for (Data data : dataList) {
-                editor.getEdgeView(editor.getGraph().searchEdgeId(data.id)).getArrowHead().setVisible(data.oldValue);
+                editor.getEdgeView(editor.getGraph().findEdgeById(data.id)).getArrowHead().setVisible(data.oldValue);
             }
         };
 
         redo = () -> {
             for (Data data : dataList) {
-                editor.getEdgeView(editor.getGraph().searchEdgeId(data.id)).getArrowHead().setVisible(data.newValue);
+                editor.getEdgeView(editor.getGraph().findEdgeById(data.id)).getArrowHead().setVisible(data.newValue);
             }
         };
     }

@@ -39,11 +39,11 @@ public class ChangeLabelCommand extends UndoableRedoableCommand {
         final int id = v.getId();
 
         undo = () -> {
-            view.getLabel(view.getGraph().searchNodeId(id)).setText(oldText);
+            view.getLabel(view.getGraph().findNodeById(id)).setText(oldText);
         };
 
         redo = () -> {
-            view.getLabel(view.getGraph().searchNodeId(id)).setText(newText);
+            view.getLabel(view.getGraph().findNodeById(id)).setText(newText);
         };
     }
 

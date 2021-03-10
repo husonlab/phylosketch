@@ -57,7 +57,7 @@ public class ZoomCommand extends UndoableRedoableCommand {
         }
         undo = () -> {
             oldNodes.forEach(t -> {
-                final NodeView nodeView = editor.getNodeView(graph.searchNodeId(t.getFirst()));
+                final NodeView nodeView = editor.getNodeView(graph.findNodeById(t.getFirst()));
                 nodeView.setTranslateX(t.getSecond());
                 nodeView.setTranslateY(t.getThird());
             });
@@ -70,7 +70,7 @@ public class ZoomCommand extends UndoableRedoableCommand {
 
         redo = () ->
                 newNodes.forEach(t -> {
-                    final NodeView nodeView = editor.getNodeView(graph.searchNodeId(t.getFirst()));
+                    final NodeView nodeView = editor.getNodeView(graph.findNodeById(t.getFirst()));
                     nodeView.setTranslateX(t.getSecond());
                     nodeView.setTranslateY(t.getThird());
                 });

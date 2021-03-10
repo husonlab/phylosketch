@@ -46,13 +46,13 @@ public class ChangeLabelColorCommand extends UndoableRedoableCommand {
 
         undo = () -> {
             for (Data data : dataList) {
-                editor.getLabel(editor.getGraph().searchNodeId(data.id)).setTextFill(data.oldValue);
+                editor.getLabel(editor.getGraph().findNodeById(data.id)).setTextFill(data.oldValue);
             }
         };
 
         redo = () -> {
             for (Data data : dataList) {
-                editor.getLabel(editor.getGraph().searchNodeId(data.id)).setTextFill(data.newValue);
+                editor.getLabel(editor.getGraph().findNodeById(data.id)).setTextFill(data.newValue);
             }
         };
     }

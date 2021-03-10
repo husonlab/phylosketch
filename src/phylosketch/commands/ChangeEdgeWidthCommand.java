@@ -45,13 +45,13 @@ public class ChangeEdgeWidthCommand extends UndoableRedoableCommand {
 
         undo = () -> {
             for (Data data : dataList) {
-                editor.getCurve(editor.getGraph().searchEdgeId(data.id)).setStrokeWidth(data.oldValue);
+                editor.getCurve(editor.getGraph().findEdgeById(data.id)).setStrokeWidth(data.oldValue);
             }
         };
 
         redo = () -> {
             for (Data data : dataList) {
-                editor.getCurve(editor.getGraph().searchEdgeId(data.id)).setStrokeWidth(data.newValue);
+                editor.getCurve(editor.getGraph().findEdgeById(data.id)).setStrokeWidth(data.newValue);
             }
         };
     }

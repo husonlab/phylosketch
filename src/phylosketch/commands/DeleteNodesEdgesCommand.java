@@ -75,8 +75,8 @@ public class DeleteNodesEdgesCommand extends UndoableRedoableCommand {
                 view.getNodeSelection().select(v);
             }
             for (EdgeData data : edgeDataList) {
-                final Node v = graph.searchNodeId(data.sourceId);
-                final Node w = graph.searchNodeId(data.targetId);
+                final Node v = graph.findNodeById(data.sourceId);
+                final Node w = graph.findNodeById(data.targetId);
                 final Edge e = graph.newEdge(v, w, null, data.id);
                 data.apply(view.addEdge(e));
                 view.getEdgeSelection().select(e);
@@ -85,12 +85,12 @@ public class DeleteNodesEdgesCommand extends UndoableRedoableCommand {
 
         redo = () -> {
             for (EdgeData data : edgeDataList) {
-                final Edge e = graph.searchEdgeId(data.id);
+                final Edge e = graph.findEdgeById(data.id);
                 view.removeEdge(e);
                 graph.deleteEdge(e);
             }
             for (NodeData data : nodeDataList) {
-                final Node v = graph.searchNodeId(data.id);
+                final Node v = graph.findNodeById(data.id);
                 view.removeNode(v);
                 graph.deleteNode(v);
             }

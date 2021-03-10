@@ -95,7 +95,7 @@ public class DistributeNodesCommand extends UndoableRedoableCommand {
                 protected void interpolate(double p) {
                     final double q = 1.0 - p;
                     for (Data data : dataList) {
-                        final NodeView nv = view.getNodeView(view.getGraph().searchNodeId(data.id));
+                        final NodeView nv = view.getNodeView(view.getGraph().findNodeById(data.id));
                         if (direction == Direction.Horizontally)
                             nv.setTranslateX((back ? p : q) * data.oldValue + (back ? q : p) * data.newValue);
                         else
@@ -107,7 +107,7 @@ public class DistributeNodesCommand extends UndoableRedoableCommand {
             animation.play();
         } else {
             for (Data data : dataList) {
-                final NodeView nv = view.getNodeView(view.getGraph().searchNodeId(data.id));
+                final NodeView nv = view.getNodeView(view.getGraph().findNodeById(data.id));
                 if (direction == Direction.Horizontally)
                     nv.setTranslateX(back ? data.oldValue : data.newValue);
                 else

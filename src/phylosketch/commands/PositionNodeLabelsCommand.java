@@ -147,7 +147,7 @@ public class PositionNodeLabelsCommand extends UndoableRedoableCommand {
                     final double q = (toNew ? frac : 1.0 - frac);
 
                     for (Data data : dataList) {
-                        final NodeView nv = view.getNodeView(view.getGraph().searchNodeId(data.id));
+                        final NodeView nv = view.getNodeView(view.getGraph().findNodeById(data.id));
                         nv.getLabel().setLayoutX(p * data.oldX + q * data.newX);
                         nv.getLabel().setLayoutY(p * data.oldY + q * data.newY);
                     }
@@ -156,7 +156,7 @@ public class PositionNodeLabelsCommand extends UndoableRedoableCommand {
             animation.play();
         } else {
             for (Data data : dataList) {
-                final NodeView nv = view.getNodeView(view.getGraph().searchNodeId(data.id));
+                final NodeView nv = view.getNodeView(view.getGraph().findNodeById(data.id));
                 nv.getLabel().setLayoutX(toNew ? data.newX : data.oldX);
                 nv.getLabel().setLayoutY(toNew ? data.newY : data.oldY);
             }

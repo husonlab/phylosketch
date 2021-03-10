@@ -101,7 +101,7 @@ public class AlignNodesCommand extends UndoableRedoableCommand {
                 protected void interpolate(double p) {
                     final double q = 1.0 - p;
                     for (Data data : dataList) {
-                        final NodeView nv = view.getNodeView(view.getGraph().searchNodeId(data.id));
+                        final NodeView nv = view.getNodeView(view.getGraph().findNodeById(data.id));
                         nv.setTranslateX((back ? p : q) * data.oldX + (back ? q : p) * data.newX);
                         nv.setTranslateY((back ? p : q) * data.oldY + (back ? q : p) * data.newY);
                     }
@@ -111,7 +111,7 @@ public class AlignNodesCommand extends UndoableRedoableCommand {
             animation.play();
         } else {
             for (Data data : dataList) {
-                final NodeView nv = view.getNodeView(view.getGraph().searchNodeId(data.id));
+                final NodeView nv = view.getNodeView(view.getGraph().findNodeById(data.id));
                 nv.setTranslateX(back ? data.oldX : data.newX);
                 nv.setTranslateY(back ? data.oldY : data.newY);
             }

@@ -66,11 +66,11 @@ public class SplitEdgeCommand extends UndoableRedoableCommand {
 
         undo = () -> {
             if (newNodeId > 0) {
-                final Node v = graph.searchNodeId(newNodeId);
+                final Node v = graph.findNodeById(newNodeId);
                 view.removeNode(v);
                 graph.deleteNode(v);
 
-                final Edge oldEdge = graph.newEdge(graph.searchNodeId(sourceId), graph.searchNodeId(targetId), null, oldEdgeId);
+                final Edge oldEdge = graph.newEdge(graph.findNodeById(sourceId), graph.findNodeById(targetId), null, oldEdgeId);
                 final EdgeView ev = view.addEdge(oldEdge);
                 ev.setControlCoordinates(oldEdgeCoordinates);
                 ev.getCurve().setStrokeWidth(oldEdgeWidth);
@@ -79,7 +79,7 @@ public class SplitEdgeCommand extends UndoableRedoableCommand {
         };
 
         redo = () -> {
-            final Edge oldEdge = graph.searchEdgeId(oldEdgeId);
+            final Edge oldEdge = graph.findEdgeById(oldEdgeId);
             view.removeEdge(oldEdge);
             graph.deleteEdge(oldEdge);
 
@@ -91,12 +91,12 @@ public class SplitEdgeCommand extends UndoableRedoableCommand {
                 newNode = graph.newNode(null, newNodeId);
             view.addNode(newNode, pane, location.getX(), location.getY());
 
-            final Edge e1 = graph.newEdge(graph.searchNodeId(sourceId), newNode);
+            final Edge e1 = graph.newEdge(graph.findNodeById(sourceId), newNode);
             final EdgeView ev1 = view.addEdge(e1);
             ev1.getCurve().setStrokeWidth(oldEdgeWidth);
             ev1.getCurve().setStroke(oldEdgePaint);
 
-            final Edge e2 = graph.newEdge(newNode, graph.searchNodeId(targetId));
+            final Edge e2 = graph.newEdge(newNode, graph.findNodeById(targetId));
             final EdgeView ev2 = view.addEdge(e2);
             ev2.getCurve().setStrokeWidth(oldEdgeWidth);
             ev2.getCurve().setStroke(oldEdgePaint);

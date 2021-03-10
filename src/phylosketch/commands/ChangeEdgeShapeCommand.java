@@ -112,14 +112,14 @@ public class ChangeEdgeShapeCommand extends UndoableRedoableCommand {
                 protected void interpolate(double p) {
                     final double q = 1.0 - p;
                     for (Integer id : id2oldCoordinates.keySet()) {
-                        view.getEdgeView(view.getGraph().searchEdgeId(id)).setControlCoordinates(Basic.weightedSum(p, id2newCoordinates.get(id), q, id2oldCoordinates.get(id)));
+                        view.getEdgeView(view.getGraph().findEdgeById(id)).setControlCoordinates(Basic.weightedSum(p, id2newCoordinates.get(id), q, id2oldCoordinates.get(id)));
                     }
                 }
             };
             animation.play();
         } else {
             for (Integer id : id2oldCoordinates.keySet()) {
-                view.getEdgeView(view.getGraph().searchEdgeId(id)).setControlCoordinates(id2newCoordinates.get(id));
+                view.getEdgeView(view.getGraph().findEdgeById(id)).setControlCoordinates(id2newCoordinates.get(id));
             }
         }
     }

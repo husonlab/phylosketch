@@ -58,11 +58,11 @@ public class NewEdgeAndNodeCommand extends UndoableRedoableCommand {
 
         undo = () -> {
             if (wId > 0) {
-                final Node w = graph.searchNodeId(wId);
+                final Node w = graph.findNodeById(wId);
                 editor.removeNode(w);
                 graph.deleteNode(w);
             } else if (edgeId > 0) {
-                final Edge e = graph.searchEdgeId(edgeId);
+                final Edge e = graph.findEdgeById(edgeId);
                 editor.removeEdge(e);
                 graph.deleteEdge(e);
             }
@@ -78,9 +78,9 @@ public class NewEdgeAndNodeCommand extends UndoableRedoableCommand {
                     w = graph.newNode(null, wId);
                 editor.addNode(w, pane, x, y);
             } else
-                w = graph.searchNodeId(bId);
+                w = graph.findNodeById(bId);
 
-            final Node v = graph.searchNodeId(aId);
+            final Node v = graph.findNodeById(aId);
             if (v.getCommonEdge(w) == null && v != w) {
                 Edge e;
                 if (edgeId == 0) {
@@ -91,7 +91,7 @@ public class NewEdgeAndNodeCommand extends UndoableRedoableCommand {
                 }
                 editor.addEdge(e);
             }
-            if (wId > 0) Platform.runLater(() -> editor.getNodeSelection().clearAndSelect(graph.searchNodeId(wId)));
+            if (wId > 0) Platform.runLater(() -> editor.getNodeSelection().clearAndSelect(graph.findNodeById(wId)));
         };
     }
 

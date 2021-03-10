@@ -46,14 +46,14 @@ public class ChangeFontCommand extends UndoableRedoableCommand {
 
         undo = () -> {
             for (Data data : dataList) {
-                editor.getLabel(editor.getGraph().searchNodeId(data.id)).setFont(data.oldValue);
+                editor.getLabel(editor.getGraph().findNodeById(data.id)).setFont(data.oldValue);
 
             }
         };
 
         redo = () -> {
             for (Data data : dataList) {
-                editor.getLabel(editor.getGraph().searchNodeId(data.id)).setFont(data.newValue);
+                editor.getLabel(editor.getGraph().findNodeById(data.id)).setFont(data.newValue);
 
             }
         };

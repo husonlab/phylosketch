@@ -92,7 +92,7 @@ public class EdgeView {
 
         // reference current translating control
         final Function<Circle, Pair<Edge, Integer>> translatingControl = (circle) -> {
-            final Edge e = view.getGraph().searchEdgeId(id);
+            final Edge e = view.getGraph().findEdgeById(id);
             if (circle == circle1)
                 return new Pair<>(e, 1);
             else

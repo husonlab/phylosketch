@@ -39,13 +39,13 @@ public class MoveNodeLabelCommand extends UndoableRedoableCommand {
         final int id = v.getId();
 
         undo = () -> {
-            final RichTextLabel label = editor.getNodeView(editor.getGraph().searchNodeId(id)).getLabel();
+            final RichTextLabel label = editor.getNodeView(editor.getGraph().findNodeById(id)).getLabel();
             label.setLayoutX(label.getLayoutX() - dx);
             label.setLayoutY(label.getLayoutY() - dy);
         };
 
         redo = () -> {
-            final RichTextLabel label = editor.getNodeView(editor.getGraph().searchNodeId(id)).getLabel();
+            final RichTextLabel label = editor.getNodeView(editor.getGraph().findNodeById(id)).getLabel();
             label.setLayoutX(label.getLayoutX() + dx);
             label.setLayoutY(label.getLayoutY() + dy);
         };

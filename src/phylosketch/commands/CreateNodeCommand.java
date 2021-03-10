@@ -41,7 +41,7 @@ public class CreateNodeCommand extends UndoableRedoableCommand {
 
         undo = () -> {
             if (id != 0) {
-                final Node v = graph.searchNodeId(id);
+                final Node v = graph.findNodeById(id);
                 if (v != null) {
                     editor.removeNode(v);
                     graph.deleteNode(v);

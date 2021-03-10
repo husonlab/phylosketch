@@ -41,7 +41,7 @@ public class EdgeShapeCommand extends UndoableRedoableCommand {
         final int controlId = edgeAndControlId.get2();
 
         undo = () -> {
-            final CubicCurve curve = phyloView.getCurve(phyloView.getGraph().searchEdgeId(id));
+            final CubicCurve curve = phyloView.getCurve(phyloView.getGraph().findEdgeById(id));
             if (controlId == 1) {
                 curve.setControlX1(curve.getControlX1() - delta.getX());
                 curve.setControlY1(curve.getControlY1() - delta.getY());
@@ -51,7 +51,7 @@ public class EdgeShapeCommand extends UndoableRedoableCommand {
             }
         };
         redo = () -> {
-            final CubicCurve curve = phyloView.getCurve(phyloView.getGraph().searchEdgeId(id));
+            final CubicCurve curve = phyloView.getCurve(phyloView.getGraph().findEdgeById(id));
             if (controlId == 1) {
                 curve.setControlX1(curve.getControlX1() + delta.getX());
                 curve.setControlY1(curve.getControlY1() + delta.getY());

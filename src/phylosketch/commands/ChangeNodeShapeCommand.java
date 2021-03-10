@@ -46,14 +46,14 @@ public class ChangeNodeShapeCommand extends UndoableRedoableCommand {
 
         undo = () -> {
             for (Data data : dataList) {
-                editor.changeNodeShape(editor.getGraph().searchNodeId(data.id), data.oldValue);
+                editor.changeNodeShape(editor.getGraph().findNodeById(data.id), data.oldValue);
 
             }
         };
 
         redo = () -> {
             for (Data data : dataList) {
-                editor.changeNodeShape(editor.getGraph().searchNodeId(data.id), data.newValue);
+                editor.changeNodeShape(editor.getGraph().findNodeById(data.id), data.newValue);
             }
         };
     }

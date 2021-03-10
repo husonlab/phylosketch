@@ -46,13 +46,13 @@ public class ChangeEdgeColorCommand extends UndoableRedoableCommand {
 
         undo = () -> {
             for (Data data : dataList) {
-                editor.getCurve(editor.getGraph().searchEdgeId(data.id)).setStroke(data.oldValue);
+                editor.getCurve(editor.getGraph().findEdgeById(data.id)).setStroke(data.oldValue);
             }
         };
 
         redo = () -> {
             for (Data data : dataList) {
-                editor.getCurve(editor.getGraph().searchEdgeId(data.id)).setStroke(data.newValue);
+                editor.getCurve(editor.getGraph().findEdgeById(data.id)).setStroke(data.newValue);
             }
         };
     }

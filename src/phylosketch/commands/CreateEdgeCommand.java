@@ -45,15 +45,15 @@ public class CreateEdgeCommand extends UndoableRedoableCommand {
 
         undo = () -> {
             if (eId != 0) {
-                final Edge e = graph.searchEdgeId(eId);
+                final Edge e = graph.findEdgeById(eId);
                 phyloView.removeEdge(e);
                 graph.deleteEdge(e);
             }
         };
 
         redo = () -> {
-            final Node vv = graph.searchNodeId(vId);
-            final Node ww = graph.searchNodeId(wId);
+            final Node vv = graph.findNodeById(vId);
+            final Node ww = graph.findNodeById(wId);
             final Edge e;
             if (eId == 0) {
                 e = graph.newEdge(vv, ww);

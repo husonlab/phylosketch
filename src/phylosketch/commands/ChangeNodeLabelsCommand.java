@@ -36,8 +36,8 @@ public class ChangeNodeLabelsCommand extends UndoableRedoableCommand {
     public ChangeNodeLabelsCommand(PhyloView editor, List<Data> dataList) {
         super("Label");
 
-        undo = () -> dataList.forEach(data -> editor.getLabel(editor.getGraph().searchNodeId(data.getNodeId())).setText(data.getOldLabel()));
-        redo = () -> dataList.forEach(data -> editor.getLabel(editor.getGraph().searchNodeId(data.getNodeId())).setText(data.getNewLabel()));
+        undo = () -> dataList.forEach(data -> editor.getLabel(editor.getGraph().findNodeById(data.getNodeId())).setText(data.getOldLabel()));
+        redo = () -> dataList.forEach(data -> editor.getLabel(editor.getGraph().findNodeById(data.getNodeId())).setText(data.getNewLabel()));
     }
 
     @Override
