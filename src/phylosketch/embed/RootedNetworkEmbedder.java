@@ -47,7 +47,7 @@ public class RootedNetworkEmbedder {
         Optional<Node> root = graph.nodeStream().filter(v -> v.getInDegree() == 0).findFirst();
         if (root.isPresent()) {
             graph.setRoot(root.get());
-            NodeIntegerArray levels = computeLevels(graph, node2LSAChildren, 1);
+            NodeIntArray levels = computeLevels(graph, node2LSAChildren, 1);
             final int maxLevel = Basic.max(levels.values());
             NodeDoubleArray yCoord = computeYCoordinates(graph, node2LSAChildren, graph.getRoot());
 
@@ -61,9 +61,9 @@ public class RootedNetworkEmbedder {
      *
      * @param v Node
      */
-    private static void computeCoordinatesCladogramRec(Pane mainPane, PhyloView view, Node v, NodeArray<List<Node>> node2LSAChildren, NodeDoubleArray yCoord, int maxLevel, NodeIntegerArray levels) {
-        view.addNode(v, mainPane, 50 * (maxLevel + 1 - levels.getValue(v)), 50 * yCoord.getValue(v));
-        for (Node w : node2LSAChildren.getValue(v)) {
+    private static void computeCoordinatesCladogramRec(Pane mainPane, PhyloView view, Node v, NodeArray<List<Node>> node2LSAChildren, NodeDoubleArray yCoord, int maxLevel, NodeIntArray levels) {
+        view.addNode(v, mainPane, 50 * (maxLevel + 1 - levels.get(v)), 50 * yCoord.get(v));
+        for (Node w : node2LSAChildren.get(v)) {
             computeCoordinatesCladogramRec(mainPane, view, w, node2LSAChildren, yCoord, maxLevel, levels);
         }
     }
@@ -101,8 +101,8 @@ public class RootedNetworkEmbedder {
      * @param add
      * @return levels
      */
-    private static NodeIntegerArray computeLevels(PhyloTree graph, NodeArray<List<Node>> node2GuideTreeChildren, int add) {
-        NodeIntegerArray levels = new NodeIntegerArray(graph);
+    private static NodeIntArray computeLevels(PhyloTree graph, NodeArray<List<Node>> node2GuideTreeChildren, int add) {
+        NodeIntArray levels = new NodeIntArray(graph);
         computeLevelsRec(graph, node2GuideTreeChildren, graph.getRoot(), levels, add, new HashSet<>());
         return levels;
     }
@@ -115,24 +115,24 @@ public class RootedNetworkEmbedder {
      * @param add
      * @return max height
      */
-    private static void computeLevelsRec(PhyloTree graph, NodeArray<List<Node>> node2GuideTreeChildren, Node v, NodeIntegerArray levels, int add, Set<Node> path) {
+    private static void computeLevelsRec(PhyloTree graph, NodeArray<List<Node>> node2GuideTreeChildren, Node v, NodeIntArray levels, int add, Set<Node> path) {
         path.add(v);
         int level = 0;
         Set<Node> below = new HashSet<>();
         for (Edge f = v.getFirstOutEdge(); f != null; f = v.getNextOutEdge(f)) {
             Node w = f.getTarget();
             below.add(w);
-            if (levels.getValue(w) == null)
+            if (levels.get(w) == null)
                 computeLevelsRec(graph, node2GuideTreeChildren, w, levels, add, path);
-            level = Math.max(level, levels.get(w) + (graph.isTransferEdge(f) ? 0 : add));
+            level = Math.max(level, levels.getInt(w) + (graph.isTransferEdge(f) ? 0 : add));
         }
-        final Collection<Node> lsaChildren = node2GuideTreeChildren.getValue(v);
+        final Collection<Node> lsaChildren = node2GuideTreeChildren.get(v);
         if (lsaChildren != null) {
             for (Node w : lsaChildren) {
                 if (!below.contains(w) && !path.contains(w)) {
-                    if (levels.getValue(w) == null)
+                    if (levels.get(w) == null)
                         computeLevelsRec(graph, node2GuideTreeChildren, w, levels, add, path);
-                    level = Math.max(level, levels.get(w) + add);
+                    level = Math.max(level, levels.getInt(w) + add);
                 }
             }
         }
@@ -164,7 +164,7 @@ public class RootedNetworkEmbedder {
      * @return index of last leaf
      */
     private static int computeYCoordinateOfLeavesRec(Node v, NodeArray<List<Node>> node2LSAChildren, int leafNumber, NodeDoubleArray yCoord, List<Node> nodeOrder) {
-        List<Node> list = node2LSAChildren.getValue(v);
+        List<Node> list = node2LSAChildren.get(v);
 
         if (list.size() == 0) {
             // String taxonName = tree.getLabel(v);
@@ -190,11 +190,11 @@ public class RootedNetworkEmbedder {
             double first = Double.NEGATIVE_INFINITY;
             double last = Double.NEGATIVE_INFINITY;
 
-            for (Node w : node2LSAChildren.getValue(v)) {
-                double y = yCoord.get(w);
+            for (Node w : node2LSAChildren.get(v)) {
+                double y = yCoord.getDouble(w);
                 if (y == 0) {
                     computeYCoordinateOfInternalRec(w, node2LSAChildren, yCoord);
-                    y = yCoord.get(w);
+                    y = yCoord.getDouble(w);
                 }
                 last = y;
                 if (first == Double.NEGATIVE_INFINITY)

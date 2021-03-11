@@ -50,7 +50,7 @@ public class LSATree {
             // check that all reticulation nodes have a LSA:
             for (Node v = tree.getFirstNode(); v != null; v = v.getNext()) {
                 if (v.getInDegree() >= 2) {
-                    Node lsa = reticulation2LSA.getValue(v);
+                    Node lsa = reticulation2LSA.get(v);
                     if (lsa == null)
                         System.err.println("WARNING: no LSA found for node: " + v);
                 }
@@ -58,14 +58,14 @@ public class LSATree {
 
             List<Edge> toDelete = new LinkedList<>();
             for (Node v = tree.getFirstNode(); v != null; v = v.getNext()) {
-                Node lsa = reticulation2LSA.getValue(v);
+                Node lsa = reticulation2LSA.get(v);
 
                 if (lsa != null) {
                     for (Edge e = v.getFirstInEdge(); e != null; e = v.getNextInEdge(e))
                         toDelete.add(e);
                     Edge e = tree.newEdge(lsa, v);
-                    tree.setWeight(e, reticulation2LSAEdgeLength.getValue(v));
-                    // System.err.println("WEIGHT: " + (float) reticulation2LSAEdgeLength.getValue(v));
+                    tree.setWeight(e, reticulation2LSAEdgeLength.get(v));
+                    // System.err.println("WEIGHT: " + (float) reticulation2LSAEdgeLength.get(v));
                     // tree.setLabel(v,tree.getLabel(v)!=null?tree.getLabel(v)+"/"+(float)tree.getWeight(e):""+(float)tree.getWeight(e));
                 }
             }
@@ -166,9 +166,9 @@ public class LSATree {
                 node2LSAChildren.put(v, children);
             }
             for (Node v = tree.getFirstNode(); v != null; v = v.getNext()) {
-                Node lsa = reticulation2LSA.getValue(v);
+                Node lsa = reticulation2LSA.get(v);
                 if (lsa != null)
-                    node2LSAChildren.getValue(lsa).add(v);
+                    node2LSAChildren.get(lsa).add(v);
             }
         }
     }
@@ -181,11 +181,11 @@ public class LSATree {
      * @param reticulation2LSA
      * @return number of edges between a reticulation and its lsa
      */
-    private static NodeIntegerArray computeReticulationSize(PhyloTree tree, NodeArray reticulation2LSA) {
-        NodeIntegerArray rSize = new NodeIntegerArray(tree);
+    private static NodeIntArray computeReticulationSize(PhyloTree tree, NodeArray reticulation2LSA) {
+        NodeIntArray rSize = new NodeIntArray(tree);
 
         for (Node r = tree.getFirstNode(); r != null; r = r.getNext()) {
-            Node lsa = (Node) reticulation2LSA.getValue(r);
+            Node lsa = (Node) reticulation2LSA.get(r);
             if (lsa != null) {
                 System.err.println("lsa: " + lsa + " r: " + r);
                 EdgeSet visited = new EdgeSet(tree);
@@ -266,9 +266,9 @@ public class LSATree {
         // visit all children and determine all reticulations below this node
         for (Edge f = v.getFirstOutEdge(); f != null; f = v.getNextOutEdge(f)) {
             Node w = f.getTarget();
-            if (node2below.getValue(w) == null) // if haven't processed child yet, do it:
+            if (node2below.get(w) == null) // if haven't processed child yet, do it:
                 computeReticulation2LSARec(tree, w);
-            reticulationsBelow.addAll(node2below.getValue(w));
+            reticulationsBelow.addAll(node2below.get(w));
             if (w.getInDegree() > 1)
                 reticulationsBelow.add(w);
         }
@@ -278,15 +278,15 @@ public class LSATree {
         List<Node> toDelete = new LinkedList<>();
         for (Node r : reticulationsBelow) {
             // determine which paths from the reticulation lead to this node
-            EdgeArray edge2PathSet = ret2Edge2PathSet.getValue(r);
+            EdgeArray edge2PathSet = ret2Edge2PathSet.get(r);
             BitSet paths = new BitSet();
             for (Edge f = v.getFirstOutEdge(); f != null; f = v.getNextOutEdge(f)) {
-                BitSet eSet = (BitSet) edge2PathSet.getValue(f);
+                BitSet eSet = (BitSet) edge2PathSet.get(f);
                 if (eSet != null)
                     paths.or(eSet);
 
             }
-            BitSet alive = ret2PathSet.getValue(r);
+            BitSet alive = ret2PathSet.get(r);
             if (paths.equals(alive)) // if the set of paths equals all alive paths, v is lsa of r
             {
                 reticulation2LSA.put(r, v);
@@ -301,12 +301,12 @@ public class LSATree {
         if (v.getInDegree() >= 1) {
             for (Node r : reticulationsBelow) {
                 // determine which paths from the reticulation lead to this node
-                EdgeArray<BitSet> edge2PathSet = ret2Edge2PathSet.getValue(r);
+                EdgeArray<BitSet> edge2PathSet = ret2Edge2PathSet.get(r);
 
                 BitSet newSet = new BitSet();
 
                 for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
-                    BitSet pathSet = edge2PathSet.getValue(e);
+                    BitSet pathSet = edge2PathSet.get(e);
                     if (pathSet != null)
                         newSet.or(pathSet);
                 }
@@ -316,9 +316,9 @@ public class LSATree {
         // open new paths on all additional in-edges:
         if (v.getInDegree() >= 2) {
             for (Node r : reticulationsBelow) {
-                BitSet existingPathsForR = ret2PathSet.getValue(r);
+                BitSet existingPathsForR = ret2PathSet.get(r);
 
-                EdgeArray<BitSet> edge2PathSet = ret2Edge2PathSet.getValue(r);
+                EdgeArray<BitSet> edge2PathSet = ret2Edge2PathSet.get(r);
                 // start with the second in edge:
                 for (Edge e = v.getNextInEdge(v.getFirstInEdge()); e != null; e = v.getNextInEdge(e)) {
                     BitSet pathsForEdge = new BitSet();
@@ -369,24 +369,24 @@ public class LSATree {
 
             for (Edge f = v.getFirstOutEdge(); f != null; f = v.getNextOutEdge(f)) {
                 computeReticulation2LSAEdgeLengthRec(tree, f.getTarget(), visited);
-                reticulationsBelow.addAll(node2below.getValue(f.getTarget()));
+                reticulationsBelow.addAll(node2below.get(f.getTarget()));
             }
 
-            reticulationsBelow.removeAll(node2below.getValue(v)); // because reticulations mentioned here don't hve v as LSA
+            reticulationsBelow.removeAll(node2below.get(v)); // because reticulations mentioned here don't hve v as LSA
 
             for (Node r : reticulationsBelow) {
-                NodeDoubleArray node2Dist = ret2Node2Length.getValue(r);
+                NodeDoubleArray node2Dist = ret2Node2Length.get(r);
                 double length = 0;
                 for (Edge f = v.getFirstOutEdge(); f != null; f = v.getNextOutEdge(f)) {
                     Node w = f.getTarget();
-                    length += node2Dist.getValue(w);
+                    length += node2Dist.get(w);
                     if (!tree.isSpecial(f))
                         length += tree.getWeight(f);
                 }
                 if (v.getOutDegree() > 0)
                     length /= v.getOutDegree();
                 node2Dist.put(v, length);
-                if (reticulation2LSA.getValue(r) == v)
+                if (reticulation2LSA.get(r) == v)
                     ret2length.put(r, length);
             }
         }

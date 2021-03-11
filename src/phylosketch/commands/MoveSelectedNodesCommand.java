@@ -66,13 +66,13 @@ public class MoveSelectedNodesCommand extends UndoableRedoableCommand {
         undo = () -> {
             nodeData.forEach(id -> editor.moveNode(graph.findNodeById(id), -dx, -dy));
 
-            edgeData.forEach(id -> editor.getEdge2view().getValue(graph.findEdgeById(id)).setControlCoordinates(oldEdgeControlCoordinates.get(id)));
+            edgeData.forEach(id -> editor.getEdge2view().get(graph.findEdgeById(id)).setControlCoordinates(oldEdgeControlCoordinates.get(id)));
         };
 
         redo = () -> {
             nodeData.forEach(id -> editor.moveNode(graph.findNodeById(id), dx, dy));
 
-            edgeData.forEach(id -> editor.getEdge2view().getValue(graph.findEdgeById(id)).setControlCoordinates(newEdgeControlCoordinates.get(id)));
+            edgeData.forEach(id -> editor.getEdge2view().get(graph.findEdgeById(id)).setControlCoordinates(newEdgeControlCoordinates.get(id)));
         };
     }
 

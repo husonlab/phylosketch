@@ -104,8 +104,8 @@ public class EdgeView {
             isSelected.set(view.getEdgeSelection().isSelected(edge));
         });
 
-        MouseDragClosestNode.setup(curve, isSelected, view.getNode2View().getValue(edge.getSource()).getShapeGroup(), circle1,
-                view.getNode2View().getValue(edge.getTarget()).getShapeGroup(), circle2,
+        MouseDragClosestNode.setup(curve, isSelected, view.getNode2View().get(edge.getSource()).getShapeGroup(), circle1,
+                view.getNode2View().get(edge.getTarget()).getShapeGroup(), circle2,
                 (circle, delta) -> view.getUndoManager().add(new EdgeShapeCommand(view, translatingControl.apply((Circle) circle), delta)));
 
         curve.setOnMouseClicked(c -> {

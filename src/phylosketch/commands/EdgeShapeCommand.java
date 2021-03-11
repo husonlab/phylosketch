@@ -37,8 +37,8 @@ public class EdgeShapeCommand extends UndoableRedoableCommand {
 
     public EdgeShapeCommand(PhyloView phyloView, Pair<Edge, Integer> edgeAndControlId, Point2D delta) {
         super("Edge Shape");
-        final int id = edgeAndControlId.get1().getId();
-        final int controlId = edgeAndControlId.get2();
+        final int id = edgeAndControlId.getFirst().getId();
+        final int controlId = edgeAndControlId.getSecond();
 
         undo = () -> {
             final CubicCurve curve = phyloView.getCurve(phyloView.getGraph().findEdgeById(id));

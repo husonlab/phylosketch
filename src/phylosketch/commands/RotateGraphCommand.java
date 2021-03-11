@@ -26,7 +26,7 @@ import javafx.geometry.Point2D;
 import javafx.util.Duration;
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.fx.util.GeometryUtilsFX;
-import jloda.util.IterationUtils;
+import jloda.util.IteratorUtils;
 import jloda.util.ProgramProperties;
 import phylosketch.window.PhyloView;
 
@@ -41,7 +41,7 @@ public class RotateGraphCommand extends UndoableRedoableCommand {
     public RotateGraphCommand(final PhyloView view, boolean clockwise) {
         super("Rotate graph " + (clockwise ? "clockwise" : "anticlockwise"));
 
-        final PositionNodeLabelsCommand positionNodeLabelsCommand = new PositionNodeLabelsCommand(view, IterationUtils.asList(view.getGraph().nodes()),
+        final PositionNodeLabelsCommand positionNodeLabelsCommand = new PositionNodeLabelsCommand(view, IteratorUtils.asList(view.getGraph().nodes()),
                 PositionNodeLabelsCommand.Position.getDefault(view.computeRootLocation().next(clockwise)));
 
         undo = () -> {

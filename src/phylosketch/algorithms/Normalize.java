@@ -75,9 +75,9 @@ public class Normalize {
 
         // create full graph:
         for (Node vs : visibleAndLeaves) {
-            final Node vt = src2tar.getValue(vs);
-            for (Node ws : visibleBelow.getValue(vs)) {
-                final Node wt = src2tar.getValue(ws);
+            final Node vt = src2tar.get(vs);
+            for (Node ws : visibleBelow.get(vs)) {
+                final Node wt = src2tar.get(ws);
                 target.newEdge(vt, wt);
             }
         }
@@ -156,7 +156,7 @@ public class Normalize {
             final NodeArray<Node> old2new = new NodeArray<>(graph);
             view.getGraph().copy(graph, old2new, null);
 
-            graph.nodes().forEach(v -> view.addNode(old2new.getValue(v), newWindow.getController().getContentPane(), coordinates.getValue(v).getX(), coordinates.getValue(v).getY()));
+            graph.nodes().forEach(v -> view.addNode(old2new.get(v), newWindow.getController().getContentPane(), coordinates.get(v).getX(), coordinates.get(v).getY()));
             view.getGraph().edges().forEach(view::addEdge);
 
             view.getUndoManager().doAndAdd(new ChangeEdgeShapeCommand(view, Basic.asList(view.getGraph().edges()), ChangeEdgeShapeCommand.EdgeShape.Reshape));

@@ -172,7 +172,7 @@ public class PhyloView {
             while (e.next()) {
                 for (Edge edge : e.getAddedSubList()) {
                     try {
-                        final EdgeView edgeView = edge2view.getValue(edge);
+                        final EdgeView edgeView = edge2view.get(edge);
                         if (edgeView != null) {
                             for (javafx.scene.Node node : edgeView.getChildren())
                                 node.setEffect(SelectionEffect.getInstance());
@@ -182,7 +182,7 @@ public class PhyloView {
                 }
                 for (Edge edge : e.getRemoved()) {
                     try {
-                        final EdgeView edgeView = edge2view.getValue(edge);
+                        final EdgeView edgeView = edge2view.get(edge);
                         if (edgeView != null) {
                             for (javafx.scene.Node node : edgeView.getChildren())
                                 node.setEffect(null);
@@ -234,7 +234,7 @@ public class PhyloView {
     }
 
     public void changeNodeShape(Node v, NodeShape nodeShape) {
-        node2view.getValue(v).changeShape(nodeShape);
+        node2view.get(v).changeShape(nodeShape);
     }
 
     public void removeNode(Node v) {
@@ -243,7 +243,7 @@ public class PhyloView {
             if (edgeView != null)
                 graphEdges.getChildren().removeAll(edgeView.getChildren());
         }
-        final NodeView nodeView = node2view.getValue(v);
+        final NodeView nodeView = node2view.get(v);
         if (nodeView != null) {
             graphNodes.getChildren().remove(nodeView.getShapeGroup());
             graphNodeLabels.getChildren().remove(nodeView.getLabel());
@@ -251,11 +251,11 @@ public class PhyloView {
     }
 
     public EdgeView addEdge(Edge e) {
-        final NodeView sourceView = node2view.getValue(e.getSource());
-        final NodeView targetView = node2view.getValue(e.getTarget());
+        final NodeView sourceView = node2view.get(e.getSource());
+        final NodeView targetView = node2view.get(e.getTarget());
 
         final EdgeView edgeView = new EdgeView(this, e, sourceView.translateXProperty(), sourceView.translateYProperty(), targetView.translateXProperty(), targetView.translateYProperty());
-        edge2view.setValue(e, edgeView);
+        edge2view.put(e, edgeView);
 
         EdgeContextMenu.setup(window.getController().getContentPane(), this, e);
 
@@ -328,7 +328,7 @@ public class PhyloView {
                         final double deltaYReshapeEdge = (mouseY - previousMousePosition[1]);
 
                         for (Edge e : u.outEdges()) {
-                            final EdgeView edgeView = edge2view.getValue(e);
+                            final EdgeView edgeView = edge2view.get(e);
 
                             if (!oldControlPointLocations.containsKey(e.getId())) {
                                 oldControlPointLocations.put(e.getId(), edgeView.getControlCoordinates());
@@ -337,7 +337,7 @@ public class PhyloView {
                             newControlPointLocations.put(e.getId(), edgeView.getControlCoordinates());
                         }
                         for (Edge e : u.inEdges()) {
-                            final EdgeView edgeView = edge2view.getValue(e);
+                            final EdgeView edgeView = edge2view.get(e);
                             if (!oldControlPointLocations.containsKey(e.getId())) {
                                 oldControlPointLocations.put(e.getId(), edgeView.getControlCoordinates());
                             }
@@ -458,15 +458,15 @@ public class PhyloView {
     }
 
     public void moveNode(Node v, double x, double y) {
-        final NodeView nodeView = node2view.getValue(v);
+        final NodeView nodeView = node2view.get(v);
         nodeView.setTranslateX(nodeView.getTranslateX() + x);
         nodeView.setTranslateY(nodeView.getTranslateY() + y);
     }
 
     private Node findNodeIfHit(double x, double y) {
         for (Node v : graph.nodes()) {
-            if (node2view.getValue(v) != null) {
-                final Shape shape = node2view.getValue(v).getShape();
+            if (node2view.get(v) != null) {
+                final Shape shape = node2view.get(v).getShape();
                 if (shape != null && shape.contains(shape.screenToLocal(x, y)))
                     return v;
             }
@@ -549,7 +549,7 @@ public class PhyloView {
     }
 
     public NodeView getNodeView(Node v) {
-        return node2view.getValue(v);
+        return node2view.get(v);
     }
 
     public double getX(Node v) {
@@ -561,7 +561,7 @@ public class PhyloView {
     }
 
     public RichTextLabel getLabel(Node v) {
-        return node2view.getValue(v).getLabel();
+        return node2view.get(v).getLabel();
     }
 
     public EdgeArray<EdgeView> getEdge2view() {
@@ -569,11 +569,11 @@ public class PhyloView {
     }
 
     public EdgeView getEdgeView(Edge e) {
-        return edge2view.getValue(e);
+        return edge2view.get(e);
     }
 
     public CubicCurve getCurve(Edge e) {
-        return edge2view.getValue(e).getCurve();
+        return edge2view.get(e).getCurve();
     }
 
     public ItemSelectionModel<Edge> getEdgeSelection() {

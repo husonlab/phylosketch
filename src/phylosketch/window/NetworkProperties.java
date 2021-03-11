@@ -319,8 +319,8 @@ public class NetworkProperties {
             final NodeArray<Set<Node>> below = new NodeArray<>(graph);
             for (Node root : findRoots(graph)) {
                 labelByDescendantsRec(root, query, below);
-                if (below.getValue(root) != null) {
-                    final Set<Node> remainingQuery = new HashSet<>(below.getValue(root));
+                if (below.get(root) != null) {
+                    final Set<Node> remainingQuery = new HashSet<>(below.get(root));
                     allStableAncestorsRec(root, remainingQuery, below, result);
                 }
             }
@@ -362,7 +362,7 @@ public class NetworkProperties {
         if (remainingQuery.size() > 0) {
             final Map<Node, Integer> count = new HashMap<>();
             for (Node w : v.children()) {
-                final Set<Node> belowW = below.getValue(w);
+                final Set<Node> belowW = below.get(w);
                 if (belowW != null) {
                     for (Node u : belowW) {
                         if (remainingQuery.contains(u)) {
