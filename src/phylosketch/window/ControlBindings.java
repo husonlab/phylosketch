@@ -1,5 +1,5 @@
 /*
- * ControlBindings.java Copyright (C) 2020. Daniel H. Huson
+ * ControlBindings.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -445,13 +445,13 @@ public class ControlBindings {
         controller.getSelectReticulateNodesMenuitem().setOnAction(e -> graph.nodeStream().filter(v -> v.getInDegree() > 1).forEach(nodeSelection::select));
         controller.getSelectReticulateNodesMenuitem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
-        controller.getSelectStableNodesMenuItem().setOnAction(e -> NetworkProperties.allCompletelyStableInternal(graph).forEach(nodeSelection::select));
+        controller.getSelectStableNodesMenuItem().setOnAction(e -> NetworkProperties.computeAllCompletelyStableInternal(graph).forEach(nodeSelection::select));
         controller.getSelectStableNodesMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
-        controller.getSelectVisibleNodesMenuItem().setOnAction(e -> NetworkProperties.allVisibleNodes(graph).forEach(nodeSelection::select));
+        controller.getSelectVisibleNodesMenuItem().setOnAction(e -> NetworkProperties.computeAllVisibleNodes(graph).forEach(nodeSelection::select));
         controller.getSelectVisibleNodesMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
-        controller.getSelectVisibleReticulationsMenuItem().setOnAction(e -> NetworkProperties.allVisibleNodes(graph).stream().filter(v -> v.getInDegree() > 1).forEach(nodeSelection::select));
+        controller.getSelectVisibleReticulationsMenuItem().setOnAction(e -> NetworkProperties.computeAllVisibleNodes(graph).stream().filter(v -> v.getInDegree() > 1).forEach(nodeSelection::select));
         controller.getSelectVisibleReticulationsMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getSelectTreeNodesMenuItem().setOnAction(e -> graph.nodeStream().filter(v -> v.getInDegree() <= 1 && v.getOutDegree() > 0).forEach(nodeSelection::select));
@@ -492,7 +492,7 @@ public class ControlBindings {
         });
         controller.getSelectAllBelowMenuItem().disableProperty().bind(nodeSelection.emptyProperty());
 
-        controller.getSelectLowestStableAncestorMenuItem().setOnAction(e -> nodeSelection.selectItems(NetworkProperties.allLowestStableAncestors(graph, nodeSelection.getSelectedItems())));
+        controller.getSelectLowestStableAncestorMenuItem().setOnAction(e -> nodeSelection.selectItems(NetworkProperties.computeAllLowestStableAncestors(graph, nodeSelection.getSelectedItems())));
         controller.getSelectLowestStableAncestorMenuItem().disableProperty().bind(nodeSelection.emptyProperty());
 
         controller.getSelectTreeEdgesMenuItem().setOnAction(c -> graph.edgeStream().filter(e -> e.getTarget().getInDegree() <= 1).forEach(edgeSelection::select));

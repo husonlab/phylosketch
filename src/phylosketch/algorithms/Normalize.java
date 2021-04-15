@@ -1,5 +1,5 @@
 /*
- * Normalize.java Copyright (C) 2020. Daniel H. Huson
+ * Normalize.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -28,6 +28,7 @@ import jloda.graph.Node;
 import jloda.graph.NodeArray;
 import jloda.phylo.PhyloTree;
 import jloda.util.Basic;
+import jloda.util.IteratorUtils;
 import jloda.util.Pair;
 import phylosketch.commands.ChangeEdgeShapeCommand;
 import phylosketch.util.NewWindow;
@@ -35,7 +36,9 @@ import phylosketch.window.MainWindow;
 import phylosketch.window.NetworkProperties;
 import phylosketch.window.PhyloView;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -44,85 +47,112 @@ import java.util.stream.Collectors;
  */
 public class Normalize {
     static public void apply(PhyloView phyloView, PhyloTree target, NodeArray<Point2D> coordinates) {
-        final PhyloTree source = phyloView.getGraph();
+        var start = System.currentTimeMillis();
+        var source = phyloView.getGraph();
 
-        final Set<Node> visibleAndLeaves = Basic.asSet(NetworkProperties.allVisibleNodes(source));
+        var visibleAndLeaves = NetworkProperties.computeAllVisibleNodes(source);
         visibleAndLeaves.addAll(source.nodeStream().filter(v -> v.getOutDegree() == 0).collect(Collectors.toList()));
 
         final NodeArray<Node> src2tar = new NodeArray<>(source);
-        final NodeArray<Node> tar2src = new NodeArray<>(target);
 
-        final List<String> srcNodeLabels = source.nodeStream().map(source::getLabel).filter(s -> s != null && s.length() > 0).collect(Collectors.toList());
-
-        final Optional<Node> sourceRoot = source.nodeStream().filter(v -> v.getInDegree() == 0).findAny();
+        var sourceRoot = source.nodeStream().filter(v -> v.getInDegree() == 0).findAny();
         if (sourceRoot.isEmpty())
             return;
 
         // setup new nodes:
-        for (Node s : visibleAndLeaves) {
-            final Node t = target.newNode();
+        for (var s : visibleAndLeaves) {
+            var t = target.newNode();
             src2tar.put(s, t);
-            tar2src.put(t, s);
             if (sourceRoot.get() == s)
                 target.setRoot(t);
             coordinates.put(t, new Point2D(phyloView.getNodeView(s).getTranslateX(), phyloView.getNodeView(s).getTranslateY()));
             target.setLabel(t, source.getLabel(s));
         }
 
-        final NodeArray<Collection<Node>> visibleBelow = new NodeArray<>(source);
+        final NodeArray<Collection<Node>> visibleAndLeavesBelow = source.newNodeArray();
 
-        allBelowRec(sourceRoot.get(), visibleAndLeaves, visibleBelow);
+        computeAllBelowRec(sourceRoot.get(), visibleAndLeaves, visibleAndLeavesBelow);
 
         // create full graph:
-        for (Node vs : visibleAndLeaves) {
-            final Node vt = src2tar.get(vs);
-            for (Node ws : visibleBelow.get(vs)) {
-                final Node wt = src2tar.get(ws);
+        for (var vs : visibleAndLeaves) {
+            var vt = src2tar.get(vs);
+            for (var ws : visibleAndLeavesBelow.get(vs)) {
+                var wt = src2tar.get(ws);
                 target.newEdge(vt, wt);
             }
         }
 
-        // transitive reduction:
-        final Collection<Edge> edgesToDelete = new HashSet<>();
-        for (Node x : target.nodes()) {
-            for (Node z : x.children()) {
-                for (Node y : x.children()) {
-                    if (y.isChild(z)) {
-                        edgesToDelete.add(x.getCommonEdge(z));
+
+        if (true) {
+            NodeArray<Set<Node>> parents = target.newNodeArray();
+            for (var v : target.nodes()) {
+                parents.put(v, IteratorUtils.asSet(v.parents()));
+            }
+
+            for (var e : target.edges()) {
+                for (var f : e.getTarget().inEdges()) {
+                    if (f != e && parents.get(f.getSource()).contains(e.getSource())) {
+                        target.deleteEdge(e);
                         break;
                     }
                 }
             }
+            //var edgesToDelete = target.edgeStream().filter(isReducible).collect(Collectors.toList());
+            //edgesToDelete.forEach(target::deleteEdge);
+        } else {
+            // transitive reduction:
+            var edgesToDelete = new HashSet<Edge>();
+            for (var x : target.nodes()) {
+                for (var z : x.children()) {
+                    for (var y : x.children()) {
+                        if (y.isChild(z)) {
+                            edgesToDelete.add(x.getCommonEdge(z));
+                            break;
+                        }
+                    }
+                }
+            }
+            edgesToDelete.forEach(target::deleteEdge);
         }
-        edgesToDelete.forEach(target::deleteEdge);
 
         // remove digons:
 
-        final Set<Node> nodesToRemove = target.nodeStream().filter(v -> v.getInDegree() == 1 && v.getOutDegree() == 1).collect(Collectors.toSet());
+        var nodesToRemove = target.nodeStream().filter(v -> v.getInDegree() == 1 && v.getOutDegree() == 1).collect(Collectors.toSet());
 
-        for (Node v : nodesToRemove) {
+        for (var v : nodesToRemove) {
             target.delDivertex(v);
         }
 
-        final Set<String> targetNodeLabels = target.nodeStream().map(target::getLabel).filter(s -> s != null && s.length() > 0).collect(Collectors.toSet());
-        final long lost = srcNodeLabels.stream().filter(s -> !targetNodeLabels.contains(s)).count();
+        var srcNodeLabels = source.nodeStream().map(source::getLabel).filter(s -> s != null && s.length() > 0).collect(Collectors.toList());
+        var targetNodeLabels = target.nodeStream().map(target::getLabel).filter(s -> s != null && s.length() > 0).collect(Collectors.toSet());
+
+        var lost = srcNodeLabels.stream().filter(s -> !targetNodeLabels.contains(s)).count();
         if (lost > 0)
             NotificationManager.showInformation("Number of labeled internal nodes removed: " + lost);
+
+        var finish = System.currentTimeMillis();
+
+        var sourceReticulations = source.nodeStream().filter(v -> v.getInDegree() > 1).count();
+        var targetReticulations = target.nodeStream().filter(v -> v.getInDegree() > 1).count();
+
+        System.err.printf("Network with %,d nodes, %,d edges and %,d reticulations -> normalization with %,d nodes, %,d edges and %,d reticulations (time: %ds)%n",
+                source.getNumberOfNodes(), source.getNumberOfEdges(), sourceReticulations, target.getNumberOfNodes(), target.getNumberOfEdges(), targetReticulations,
+                ((finish - start) / 1000));
     }
 
     /**
      * collect all visible nodes below a given node
      *
-     * @param v
-     * @param visible
-     * @param visibleBelow
-     * @return all below
+     * @param v            the current node
+     * @param visible      the set of all visible or leaf nodes
+     * @param visibleBelow the mapping of v to all below
+     * @return the set of all below v
      */
-    private static Set<Node> allBelowRec(Node v, Set<Node> visible, NodeArray<Collection<Node>> visibleBelow) {
-        final Set<Node> set = new HashSet<>();
+    private static Set<Node> computeAllBelowRec(Node v, Set<Node> visible, NodeArray<Collection<Node>> visibleBelow) {
+        var set = new HashSet<Node>();
 
-        for (Node w : v.children()) {
-            set.addAll(allBelowRec(w, visible, visibleBelow));
+        for (var w : v.children()) {
+            set.addAll(computeAllBelowRec(w, visible, visibleBelow));
             if (visible.contains(w))
                 set.add(w);
         }
@@ -131,29 +161,26 @@ public class Normalize {
     }
 
     public static void runNormalize(MainWindow mainWindow) {
-        final MainWindow newWindow = NewWindow.apply();
+        var newWindow = NewWindow.apply();
 
         newWindow.getView().setFileName(Basic.replaceFileSuffix(mainWindow.getView().getFileName(), "-normalized.sptree5"));
 
         final AService<Pair<PhyloTree, NodeArray<Point2D>>> service = new AService<>(newWindow.getController().getStatusFlowPane());
 
         service.setCallable(() -> {
-            final PhyloTree phyloTree = new PhyloTree();
-            final NodeArray<Point2D> coordinates = new NodeArray<>(phyloTree);
+            var phyloTree = new PhyloTree();
+            var coordinates = new NodeArray<Point2D>(phyloTree);
             Normalize.apply(mainWindow.getView(), phyloTree, coordinates);
             return new Pair<>(phyloTree, coordinates);
         });
 
-        service.setOnFailed(c -> {
-            NotificationManager.showError("Normalization failed: " + service.getException());
-        });
+        service.setOnFailed(c -> NotificationManager.showError("Normalization failed: " + service.getException()));
 
         service.setOnSucceeded(c -> {
-            final PhyloView view = newWindow.getView();
-            final PhyloTree graph = service.getValue().getFirst();
-            final NodeArray<Point2D> coordinates = service.getValue().getSecond();
-
-            final NodeArray<Node> old2new = new NodeArray<>(graph);
+            var view = newWindow.getView();
+            var graph = service.getValue().getFirst();
+            var coordinates = service.getValue().getSecond();
+            NodeArray<Node> old2new = graph.newNodeArray();
             view.getGraph().copy(graph, old2new, null);
 
             graph.nodes().forEach(v -> view.addNode(old2new.get(v), newWindow.getController().getContentPane(), coordinates.get(v).getX(), coordinates.get(v).getY()));

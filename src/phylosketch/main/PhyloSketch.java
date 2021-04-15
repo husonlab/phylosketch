@@ -1,6 +1,6 @@
 
 /*
- * PhyloSketch.java Copyright (C) 2020. Daniel H. Huson
+ * PhyloSketch.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -65,7 +65,7 @@ public class PhyloSketch extends Application {
         ProgramProperties.setProgramName(Version.NAME);
         ProgramProperties.setProgramVersion(Version.SHORT_DESCRIPTION);
 
-        ProgramProperties.setProgramLicence("Copyright (C) 2020 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.\n" +
+        ProgramProperties.setProgramLicence("Copyright (C) 2021 Daniel H. Huson. This program comes with ABSOLUTELY NO WARRANTY.\n" +
                 "This is free software, licensed under the terms of the GNU General Public License, Version 3.\n" +
                 "Sources available at: https://github.com/husonlab/phylosketch\n");
 

@@ -1,5 +1,5 @@
 /*
- * Version.java Copyright (C) 2020. Daniel H. Huson
+ * Version.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -22,7 +22,7 @@ package phylosketch.main;
 
 public class Version {
     static public final String NAME = "PhyloSketch";
-    static public final String SHORT_DESCRIPTION = "PhyloSketch (version 0.1.5_alpha, built 8 Sep 2020)";
+    static public final String SHORT_DESCRIPTION = "PhyloSketch (version 0.0.13_beta, built 15 Apr 2021)";
     static public final String VERSION = "0.0.1-alpha";
 
 }
