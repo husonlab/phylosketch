@@ -91,9 +91,6 @@ public class MainWindow implements IMainWindow {
 
         ControlBindings.setup(this);
 
-        final MemoryUsage memoryUsage = MemoryUsage.getInstance();
-        //controller.getMemoryUsageLabel().textProperty().bind(memoryUsage.memoryUsageStringProperty());
-
         view.fileNameProperty().addListener(c -> stage.setTitle(Basic.getFileNameWithoutPath(view.getFileName()) + (view.isDirty() ? "*" : "")
                 + " - " + ProgramProperties.getProgramName()));
 

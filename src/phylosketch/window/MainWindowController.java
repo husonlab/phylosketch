@@ -225,6 +225,9 @@ public class MainWindowController {
     private MenuItem reshapeEdgesMenuItem;
 
     @FXML
+    private CheckMenuItem useDarkThemeCheckMenuItem;
+
+    @FXML
     private MenuItem increaseFontSizeMenuItem;
 
     @FXML
@@ -914,5 +917,9 @@ public class MainWindowController {
 
     public MenuItem getRotateLabelsAnticlockwiseButton() {
         return rotateLabelsAnticlockwiseButton;
+    }
+
+    public CheckMenuItem getUseDarkThemeCheckMenuItem() {
+        return useDarkThemeCheckMenuItem;
     }
 }
