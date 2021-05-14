@@ -27,6 +27,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
@@ -211,9 +212,20 @@ public class ControlBindings {
         controller.getUndoMenuItem().setOnAction(e -> undoManager.undo());
         controller.getUndoMenuItem().disableProperty().bind(undoManager.undoableProperty().not());
         controller.getUndoMenuItem().textProperty().bind(undoManager.undoNameProperty());
+
+        controller.getUndoButton().setOnAction(e -> undoManager.undo());
+        controller.getUndoButton().disableProperty().bind(undoManager.undoableProperty().not());
+        controller.getUndoButton().setTooltip(new Tooltip());
+        controller.getUndoButton().getTooltip().textProperty().bind(undoManager.undoNameProperty());
+
         controller.getRedoMenuItem().setOnAction(e -> undoManager.redo());
         controller.getRedoMenuItem().disableProperty().bind(undoManager.redoableProperty().not());
         controller.getRedoMenuItem().textProperty().bind(undoManager.redoNameProperty());
+
+        controller.getRedoButton().setOnAction(e -> undoManager.redo());
+        controller.getRedoButton().disableProperty().bind(undoManager.redoableProperty().not());
+        controller.getRedoButton().setTooltip(new Tooltip());
+        controller.getRedoButton().getTooltip().textProperty().bind(undoManager.redoNameProperty());
 
 
         controller.getPasteMenuItem().setOnAction(e -> {

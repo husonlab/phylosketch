@@ -397,6 +397,12 @@ public class MainWindowController {
     @FXML
     private MenuItem normalizationMenuItem;
 
+    @FXML
+    private Button undoButton;
+
+    @FXML
+    private Button redoButton;
+
     private ZoomableScrollPane zoomableScrollPane;
 
     @FXML
@@ -921,5 +927,13 @@ public class MainWindowController {
 
     public CheckMenuItem getUseDarkThemeCheckMenuItem() {
         return useDarkThemeCheckMenuItem;
+    }
+
+    public Button getUndoButton() {
+        return undoButton;
+    }
+
+    public Button getRedoButton() {
+        return redoButton;
     }
 }
