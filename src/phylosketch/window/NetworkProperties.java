@@ -35,13 +35,16 @@ import javafx.scene.text.Text;
 import jloda.fx.graph.GraphFX;
 import jloda.fx.util.AService;
 import jloda.graph.*;
+import jloda.graph.algorithms.CutPoints;
 import jloda.phylo.PhyloTree;
 import jloda.util.Basic;
+import jloda.util.BitSetUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.Single;
 import splitstree5.treebased.OffspringGraphMatching;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -260,13 +263,47 @@ public class NetworkProperties {
         return true;
     }
 
+    public static NodeSet computeAllVisibleNodes(PhyloTree graph) {
+        var result = graph.newNodeSet();
+
+        for (var root : graph.nodeStream().filter(v -> v.getInDegree() == 0).collect(Collectors.toList())) {
+            result.add(root);
+
+            NodeArray<BitSet> leavesBelow = graph.newNodeArray();
+            depthFirstDAG(root, v -> {
+                if (v.getOutDegree() == 0) {
+                    leavesBelow.put(v, BitSetUtils.asBitSet(v.getId()));
+                    result.add(v);
+                } else {
+                    var set = new BitSet();
+                    for (var w : v.children()) {
+                        set.or(leavesBelow.get(w));
+                    }
+                    leavesBelow.put(v, set);
+                }
+            });
+
+            for (var nodeId : BitSetUtils.members(leavesBelow.get(root))) {
+                result.addAll(CutPoints.apply(graph, v -> leavesBelow.get(v).get(nodeId)));
+            }
+        }
+        return result;
+    }
+
+    public static void depthFirstDAG(Node root, Consumer<Node> calculation) {
+        for (var w : root.children()) {
+            depthFirstDAG(w, calculation);
+        }
+        calculation.accept(root);
+    }
+
     /**
-     * determines all visible reticulations, which are nodes that have a tree path to a leaf or to a stable node
+     * determines all visible nodes that are unavoidable in any path from the root to at least one leaf
      *
      * @param graph
      * @return
      */
-    public static NodeSet computeAllVisibleNodes(PhyloTree graph) {
+    public static NodeSet computeAllVisibleNodesOld(PhyloTree graph) {
         var result = graph.newNodeSet();
         if (isNonEmptyDAG(graph)) {
 
