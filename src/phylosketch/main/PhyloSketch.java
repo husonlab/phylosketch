@@ -21,7 +21,6 @@
 
 package phylosketch.main;
 
-import com.briksoftware.javafx.platform.osx.OSXIntegration;
 import javafx.application.Application;
 import javafx.geometry.Point2D;
 import javafx.stage.Stage;
@@ -142,18 +141,6 @@ public class PhyloSketch extends Application {
 
             mainWindow.show(stage, windowGeometry.getX(), windowGeometry.getY(), windowGeometry.getWidth(), windowGeometry.getHeight());
 
-            // setup about and preferences menu for apple:
-            if (false) {
-                OSXIntegration.init();
-                OSXIntegration.populateAppleMenu(() -> SplashScreen.showSplash(Duration.ofMinutes(1)), () -> System.err.println("Preferences"));
-
-                // open files by double-click under Mac OS: // untested
-                OSXIntegration.setOpenFilesHandler(files -> {
-                    for (File file : files) {
-                        System.err.println("Open file " + file + ": not implemented");
-                    }
-                });
-            }
             MainWindowManager.getInstance().addMainWindow(mainWindow);
 
         } catch (Exception ex) {

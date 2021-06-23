@@ -7,7 +7,6 @@ module phylosketch {
     requires transitive javafx.fxml;
     requires transitive java.desktop;
 
-    requires fx.platform.utils;
     requires com.install4j.runtime;
 
     exports phylosketch.main;

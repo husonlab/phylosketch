@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="8.0.4" transformSequenceNumber="8">
   <directoryPresets config="../../javafx-jmods" />
-  <application name="PhyloSketch" applicationId="6936-1140-5584-9278" mediaDir="../../../builds" shortName="PhyloSketch" publisher="Daniel Huson and Mike Steel" publisherWeb="http://www.husonlab.org/phylosketch" version="0.0.1_alpha" allPathsRelative="true" macVolumeId="b8c0a1154e563a9a" javaMinVersion="11">
+  <application name="PhyloSketch" applicationId="6936-1140-5584-9278" mediaDir="../../../builds" shortName="PhyloSketch" publisher="Daniel Huson and Mike Steel" publisherWeb="http://www.husonlab.org/phylosketch" version="0.0.1_alpha" allPathsRelative="true" macVolumeId="b8c0a1154e563a9a" javaMinVersion="13">
     <codeSigning macEnabled="true" macPkcs12File="../../../../etc/application.p12" windowsEnabled="true" windowsPkcs12File="../../../../etc/windows.pfx" macNotarize="true" appleId="daniel@huson.de">
       <macSearchedJars>
         <entry>jna-*</entry>
@@ -9,7 +9,7 @@
         <entry>sqlite-*</entry>
       </macSearchedJars>
     </codeSigning>
-    <jreBundles jdkProviderId="AdoptOpenJDK" release="openjdk14/jdk-14.0.1+7">
+    <jreBundles jdkProviderId="AdoptOpenJDK" release="openjdk16/jdk-16+36">
       <modules />
     </jreBundles>
   </application>
@@ -69,10 +69,8 @@
       <executable name="PhyloSketch" iconSet="true" executableMode="gui" changeWorkingDirectory="false" singleInstance="true" dpiAware="false">
         <versionInfo include="true" fileDescription="PhyloSketch phylogenetic tree and network sketch program" legalCopyright="Copyright (C)  2020 ${compiler:sys.publisher}" internalName="PhyloSketch" />
       </executable>
-      <java mainClass="phylosketch/phylosketch.main.PhyloSketch" mainMode="module" vmParameters="-server -Duser.language=en -Duser.region=US --add-modules=phylosketch">
+      <java mainClass="phylosketch/phylosketch.main.PhyloSketch" mainMode="module" vmParameters="-server -Dapple.laf.useScreenMenuBar=true -Duser.language=en -Duser.region=US --add-modules=phylosketch">
         <modulePath>
-          <directory location="jars" failOnError="false" />
-          <directory location="openjfx/${compiler:sys.platform}/lib" failOnError="false" />
           <directory location="jars" failOnError="false" />
         </modulePath>
       </java>
@@ -1105,11 +1103,7 @@ return true;</property>
         </modules>
       </jreBundle>
     </unixInstaller>
-    <macosFolder name="Mac OS X Folder" id="1691242165" installDir="PhyloSketch" overridePrincipalLanguage="true" compressDmg="true" signLaunchers="true">
-      <exclude>
-        <entry location="openjfx/unix" />
-        <entry location="openjfx/windows-x64" />
-      </exclude>
+    <macosFolder name="Mac OS X Folder" id="1691242165" installDir="PhyloSketch" overridePrincipalLanguage="true" includeAllDownloadableComponents="true" compressDmg="true" signLaunchers="true">
       <variables>
         <variable name="jfxlib" value="openjfx/osx/lib" />
       </variables>
@@ -1139,5 +1133,5 @@ return true;</property>
   <buildIds>
     <mediaSet refId="1691242165" />
   </buildIds>
-  <buildOptions disableSigning="true" disableNotarization="true" />
+  <buildOptions verbose="true" disableSigning="true" disableNotarization="true" />
 </install4j>
