@@ -422,8 +422,7 @@ public class ControlBindings {
         controller.getFormatBorderPane().setCenter(new FormatTab(window));
         controller.getFormatTitledPane().setExpanded(false);
 
-        controller.getUseDarkThemeCheckMenuItem().selectedProperty().addListener(MainWindowManager.getUseDarkThemeListener(window));
-        controller.getUseDarkThemeCheckMenuItem().setSelected(MainWindowManager.isUseDarkTheme());
+        controller.getUseDarkThemeCheckMenuItem().selectedProperty().bindBidirectional(MainWindowManager.useDarkThemeProperty());
     }
 
     public static void setupSelect(PhyloView view, MainWindowController controller) {
