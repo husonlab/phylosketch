@@ -16,7 +16,7 @@
 	~  You should have received a copy of the GNU General Public License
 	~  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<project name="CatlyNet" default="jar" basedir=".">
+<project name="PhyloSketch" default="jar" basedir=".">
 
     <property name="ant.build.javac.source" value="13"/>
     <property name="ant.build.javac.target" value="13"/>
