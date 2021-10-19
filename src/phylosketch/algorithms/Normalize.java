@@ -27,7 +27,7 @@ import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.graph.NodeArray;
 import jloda.phylo.PhyloTree;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.IteratorUtils;
 import jloda.util.Pair;
 import phylosketch.commands.ChangeEdgeShapeCommand;
@@ -163,7 +163,7 @@ public class Normalize {
     public static void runNormalize(MainWindow mainWindow) {
         var newWindow = NewWindow.apply();
 
-        newWindow.getView().setFileName(Basic.replaceFileSuffix(mainWindow.getView().getFileName(), "-normalized.sptree5"));
+		newWindow.getView().setFileName(FileUtils.replaceFileSuffix(mainWindow.getView().getFileName(), "-normalized.sptree5"));
 
         final AService<Pair<PhyloTree, NodeArray<Point2D>>> service = new AService<>(newWindow.getController().getStatusFlowPane());
 
@@ -186,7 +186,7 @@ public class Normalize {
             graph.nodes().forEach(v -> view.addNode(old2new.get(v), newWindow.getController().getContentPane(), coordinates.get(v).getX(), coordinates.get(v).getY()));
             view.getGraph().edges().forEach(view::addEdge);
 
-            view.getUndoManager().doAndAdd(new ChangeEdgeShapeCommand(view, Basic.asList(view.getGraph().edges()), ChangeEdgeShapeCommand.EdgeShape.Reshape));
+			view.getUndoManager().doAndAdd(new ChangeEdgeShapeCommand(view, IteratorUtils.asList(view.getGraph().edges()), ChangeEdgeShapeCommand.EdgeShape.Reshape));
 
             view.setDirty(true);
         });

@@ -34,7 +34,9 @@ import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
 import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 import org.xml.sax.SAXException;
 import phylosketch.embed.RootedNetworkEmbedder;
@@ -125,7 +127,7 @@ public class PhyloSketchIO {
         final TaxaNexusOutput taxaOutput = new TaxaNexusOutput();
         final NetworkNexusOutput networkOutput = new NetworkNexusOutput();
 
-        networkBlock.setName(Basic.replaceFileSuffix(selectedFile.getName(), ""));
+		networkBlock.setName(FileUtils.replaceFileSuffix(selectedFile.getName(), ""));
         try (BufferedWriter w = new BufferedWriter(new FileWriter(selectedFile))) {
             w.write("#nexus [SplitsTree5 compatible]\n\n");
             taxaOutput.write(w, taxaBlock);
@@ -158,7 +160,7 @@ public class PhyloSketchIO {
             final NodeView nodeView = editor.addNode(v, mainPane, Basic.parseDouble(nodeData.get("x")), Basic.parseDouble(nodeData.get("y")));
 
             if (nodeData.get("type") != null) {
-                NodeShape nodeShape = Basic.valueOfMatchingSubsequence(NodeShape.class, nodeData.get("type"));
+				NodeShape nodeShape = StringUtils.valueOfMatchingSubsequence(NodeShape.class, nodeData.get("type"));
                 if (nodeShape != null && nodeShape != editor.getNodeView(v).getNodeShape())
                     nodeView.changeShape(nodeShape);
                 if (nodeShape == NodeShape.None) {
@@ -187,7 +189,7 @@ public class PhyloSketchIO {
                 label.setLayoutY(Basic.parseDouble(nodeData.get("ly")));
 
                 if (nodeData.get("font") != null) {
-                    final String[] tokens = Basic.split(nodeData.get("font"), ',');
+					final String[] tokens = StringUtils.split(nodeData.get("font"), ',');
                     if (tokens.length == 3 && Basic.isDouble(tokens[2])) {
                         label.setFont(FontUtils.font(tokens[0], tokens[1], Basic.parseDouble(tokens[2])));
                     }
@@ -253,8 +255,8 @@ public class PhyloSketchIO {
         final FileChooser fileChooser = new FileChooser();
         if (previousDir.isDirectory())
             fileChooser.setInitialDirectory(previousDir);
-        fileChooser.setInitialFileName(Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(editor.getFileName()), ".newick"));
-        fileChooser.setTitle("Export File");
+		fileChooser.setInitialFileName(FileUtils.replaceFileSuffix(FileUtils.getFileNameWithoutPath(editor.getFileName()), ".newick"));
+		fileChooser.setTitle("Export File");
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Extended Newick", "*.newick", "*.new", "*.tree", "*.tre"),
                 new FileChooser.ExtensionFilter("Text", "*.txt"));
         File selectedFile = fileChooser.showSaveDialog(owner);

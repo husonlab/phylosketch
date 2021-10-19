@@ -42,7 +42,7 @@ import jloda.fx.util.GeometryUtilsFX;
 import jloda.fx.util.SelectionEffect;
 import jloda.graph.*;
 import jloda.phylo.PhyloTree;
-import jloda.util.Basic;
+import jloda.util.IteratorUtils;
 import jloda.util.Single;
 import phylosketch.commands.MoveNodeLabelCommand;
 import phylosketch.commands.MoveSelectedNodesCommand;
@@ -534,14 +534,14 @@ public class PhyloView {
         if (getNodeSelection().size() > 0)
             return getNodeSelection().getSelectedItems();
         else
-            return Basic.asList(graph.nodes());
+			return IteratorUtils.asList(graph.nodes());
     }
 
     public Collection<Edge> selectedOrAllEdges() {
         if (getEdgeSelection().size() > 0)
             return getEdgeSelection().getSelectedItems();
         else
-            return Basic.asList(graph.edges());
+			return IteratorUtils.asList(graph.edges());
     }
 
     public NodeArray<NodeView> getNode2View() {

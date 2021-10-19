@@ -27,10 +27,7 @@ import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Edge;
 import jloda.graph.Graph;
 import jloda.graph.Node;
-import jloda.util.Basic;
-import jloda.util.Pair;
-import jloda.util.ProgramProperties;
-import jloda.util.Triplet;
+import jloda.util.*;
 import phylosketch.window.NodeView;
 import phylosketch.window.PhyloView;
 
@@ -48,8 +45,8 @@ public class FlipGraphCommand extends UndoableRedoableCommand {
     public FlipGraphCommand(final PhyloView view, boolean horizontally) {
         super("Flip graph " + (horizontally ? "horizontally" : "vertically"));
 
-        final PositionNodeLabelsCommand positionNodeLabelsCommand = new PositionNodeLabelsCommand(view, Basic.asList(view.getGraph().nodes()),
-                PositionNodeLabelsCommand.Position.getDefault(view.computeRootLocation().opposite(horizontally)));
+		final PositionNodeLabelsCommand positionNodeLabelsCommand = new PositionNodeLabelsCommand(view, IteratorUtils.asList(view.getGraph().nodes()),
+				PositionNodeLabelsCommand.Position.getDefault(view.computeRootLocation().opposite(horizontally)));
 
         undo = () -> {
             flipAnimated(view, horizontally);

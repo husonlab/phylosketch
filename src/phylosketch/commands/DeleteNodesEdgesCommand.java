@@ -27,7 +27,7 @@ import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
-import jloda.util.Basic;
+import jloda.util.IteratorUtils;
 import phylosketch.window.EdgeView;
 import phylosketch.window.NodeView;
 import phylosketch.window.PhyloView;
@@ -57,8 +57,8 @@ public class DeleteNodesEdgesCommand extends UndoableRedoableCommand {
         final Set<Edge> edgeSet = new HashSet<>(edges);
 
         for (Node v : nodes) {
-            nodeDataList.add(new NodeData(v.getId(), view.getNodeView(v)));
-            edgeSet.addAll(Basic.asList(v.adjacentEdges()));
+			nodeDataList.add(new NodeData(v.getId(), view.getNodeView(v)));
+			edgeSet.addAll(IteratorUtils.asList(v.adjacentEdges()));
         }
 
         for (Edge e : edgeSet) {

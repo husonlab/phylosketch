@@ -29,8 +29,8 @@ import jloda.fx.util.ExtendedFXMLLoader;
 import jloda.fx.util.MemoryUsage;
 import jloda.fx.window.IMainWindow;
 import jloda.fx.window.MainWindowManager;
-import jloda.util.Basic;
-import jloda.util.FileOpenManager;
+import jloda.fx.util.FileOpenManager;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 import phylosketch.io.PhyloSketchFileOpener;
 
@@ -82,25 +82,25 @@ public class MainWindow implements IMainWindow {
 
         final Scene scene = new Scene(root, width, height);
 
-        stage.setScene(scene);
-        stage.sizeToScene();
-        stage.setX(screenX);
-        stage.setY(screenY);
+		stage.setScene(scene);
+		stage.sizeToScene();
+		stage.setX(screenX);
+		stage.setY(screenY);
 
-        getStage().titleProperty().addListener((e) -> MainWindowManager.getInstance().fireChanged());
+		getStage().titleProperty().addListener((e) -> MainWindowManager.getInstance().fireChanged());
 
-        ControlBindings.setup(this);
+		ControlBindings.setup(this);
 
-        view.fileNameProperty().addListener(c -> stage.setTitle(Basic.getFileNameWithoutPath(view.getFileName()) + (view.isDirty() ? "*" : "")
-                + " - " + ProgramProperties.getProgramName()));
+		view.fileNameProperty().addListener(c -> stage.setTitle(FileUtils.getFileNameWithoutPath(view.getFileName()) + (view.isDirty() ? "*" : "")
+																+ " - " + ProgramProperties.getProgramName()));
 
-        view.dirtyProperty().addListener(c -> stage.setTitle(Basic.getFileNameWithoutPath(view.getFileName()) + (view.isDirty() ? "*" : "")
-                + " - " + ProgramProperties.getProgramName()));
+		view.dirtyProperty().addListener(c -> stage.setTitle(FileUtils.getFileNameWithoutPath(view.getFileName()) + (view.isDirty() ? "*" : "")
+															 + " - " + ProgramProperties.getProgramName()));
 
-        view.setFileName("Untitled.nexus");
+		view.setFileName("Untitled.nexus");
 
-        stage.show();
-    }
+		stage.show();
+	}
 
     @Override
     public boolean isEmpty() {

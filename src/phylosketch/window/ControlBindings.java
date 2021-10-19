@@ -49,9 +49,9 @@ import jloda.fx.window.WindowGeometry;
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
-import jloda.util.Basic;
-import jloda.util.FileOpenManager;
+import jloda.fx.util.FileOpenManager;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 import phylosketch.algorithms.Normalize;
 import phylosketch.commands.*;
 import phylosketch.formattab.FormatTab;
@@ -198,8 +198,8 @@ public class ControlBindings {
             if (view.getNodeSelection().size() > 0) {
                 final List<String> labels = graph.nodeStream().map(view::getLabel).filter(a -> a.getText().length() > 0).map(RichTextLabel::getText).collect(Collectors.toList());
                 final ClipboardContent clipboardContent = new ClipboardContent();
-                clipboardContent.putString(Basic.toString(labels, "\n"));
-                Clipboard.getSystemClipboard().setContent(clipboardContent);
+				clipboardContent.putString(StringUtils.toString(labels, "\n"));
+				Clipboard.getSystemClipboard().setContent(clipboardContent);
             } else if (graph.getNumberOfNodes() > 0) {
                 final Image snapshot = contentPane.snapshot(null, null);
                 final ClipboardContent clipboardContent = new ClipboardContent();

@@ -24,7 +24,7 @@ package phylosketch.io;
 import jloda.fx.util.RecentFilesManager;
 import jloda.fx.window.MainWindowManager;
 import jloda.fx.window.NotificationManager;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import phylosketch.util.NewWindow;
 import phylosketch.window.MainWindow;
 
@@ -45,7 +45,7 @@ public class PhyloSketchFileOpener implements Consumer<String> {
         if (window == null || !window.isEmpty())
             window = NewWindow.apply();
 
-        String firstLine = Objects.requireNonNull(Basic.getFirstLineFromFile(new File(fileName))).trim().toLowerCase();
+		String firstLine = Objects.requireNonNull(FileUtils.getFirstLineFromFile(new File(fileName))).trim().toLowerCase();
         try {
             if (firstLine.startsWith("#nexus"))
                 PhyloSketchIO.open(window.getController().getContentPane(), window.getView(), new File(fileName));

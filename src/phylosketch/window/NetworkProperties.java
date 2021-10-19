@@ -37,10 +37,7 @@ import jloda.fx.util.AService;
 import jloda.graph.*;
 import jloda.graph.algorithms.CutPoints;
 import jloda.phylo.PhyloTree;
-import jloda.util.Basic;
-import jloda.util.BitSetUtils;
-import jloda.util.ProgramProperties;
-import jloda.util.Single;
+import jloda.util.*;
 import splitstree5.treebased.OffspringGraphMatching;
 
 import java.util.*;
@@ -130,8 +127,8 @@ public class NetworkProperties {
                     else
                         Platform.runLater(() -> statusFlowPane.getChildren().add(newText("unlabeled leaves: " + numberOfUnlabeledLeaves + ",")));
 
-                    if (getLabel2Node(graph).size() != Basic.size(getNode2Label(graph).values()))
-                        Platform.runLater(() -> statusFlowPane.getChildren().add(newText("multi-labeled")));
+					if (getLabel2Node(graph).size() != IteratorUtils.size(getNode2Label(graph).values()))
+						Platform.runLater(() -> statusFlowPane.getChildren().add(newText("multi-labeled")));
 
                     progress.incrementProgress();
                     final boolean isDAG = isNonEmptyDAG(graph);
@@ -191,7 +188,7 @@ public class NetworkProperties {
                 return false;
             else
                 visited.add(w);
-            queue.addAll(Basic.asList(w.children()));
+			queue.addAll(IteratorUtils.asList(w.children()));
         }
         return true;
     }
@@ -349,8 +346,8 @@ public class NetworkProperties {
      */
     private static void computeAllCompletelyStableInternalRec(Node v, Set<Node> below, Set<Node> parentsOfBelow, NodeSet result) {
         if (v.getOutDegree() == 0) {
-            below.add(v);
-            parentsOfBelow.addAll(Basic.asList(v.parents()));
+			below.add(v);
+			parentsOfBelow.addAll(IteratorUtils.asList(v.parents()));
         } else {
             var belowV = new HashSet<Node>();
             var parentsOfBelowV = new HashSet<Node>();
@@ -358,8 +355,8 @@ public class NetworkProperties {
             for (var w : v.children()) {
                 computeAllCompletelyStableInternalRec(w, belowV, parentsOfBelowV, result);
             }
-            belowV.forEach(u -> parentsOfBelowV.addAll(Basic.asList(u.parents())));
-            belowV.add(v);
+			belowV.forEach(u -> parentsOfBelowV.addAll(IteratorUtils.asList(u.parents())));
+			belowV.add(v);
 
             if (belowV.containsAll(parentsOfBelowV)) {
                 result.add(v);
