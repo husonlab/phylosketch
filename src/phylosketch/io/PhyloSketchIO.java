@@ -33,10 +33,7 @@ import jloda.fx.util.FontUtils;
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
-import jloda.util.Basic;
-import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
-import jloda.util.StringUtils;
+import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
 import org.xml.sax.SAXException;
 import phylosketch.embed.RootedNetworkEmbedder;
@@ -87,9 +84,9 @@ public class PhyloSketchIO {
             nodeData.put("y", String.format("%.2f", nodeView.getTranslateY()));
             nodeData.put("w", String.format("%.2f", nodeView.getWidth()));
             nodeData.put("h", String.format("%.2f", nodeView.getHeight()));
-            if (!Basic.equals(nodeView.getLabel().getRotate(), 0, 0.00001)) {
-                nodeData.put("lr", String.format("%.0f", nodeView.getLabel().getRotate()));
-            }
+			if (!NumberUtils.equals(nodeView.getLabel().getRotate(), 0, 0.00001)) {
+				nodeData.put("lr", String.format("%.0f", nodeView.getLabel().getRotate()));
+			}
 
             nodeData.put("type", NodeShape.getCode(nodeView.getShape()));
             if (!nodeView.getShape().getFill().equals(Color.WHITE))
@@ -156,8 +153,8 @@ public class PhyloSketchIO {
         }
 
         for (Node v : graph.nodes()) {
-            final NetworkBlock.NodeData nodeData = networkBlock.getNodeData(v);
-            final NodeView nodeView = editor.addNode(v, mainPane, Basic.parseDouble(nodeData.get("x")), Basic.parseDouble(nodeData.get("y")));
+			final NetworkBlock.NodeData nodeData = networkBlock.getNodeData(v);
+			final NodeView nodeView = editor.addNode(v, mainPane, NumberUtils.parseDouble(nodeData.get("x")), NumberUtils.parseDouble(nodeData.get("y")));
 
             if (nodeData.get("type") != null) {
 				NodeShape nodeShape = StringUtils.valueOfMatchingSubsequence(NodeShape.class, nodeData.get("type"));
@@ -167,13 +164,13 @@ public class PhyloSketchIO {
                     nodeView.setWidth(1);
                     nodeView.setHeight(1);
                 } else {
-                    final double w = Basic.parseDouble(nodeData.get("w"));
-                    final double h = Basic.parseDouble(nodeData.get("h"));
-                    if (w > 0)
-                        nodeView.setWidth(w);
-                    if (h > 0)
-                        nodeView.setHeight(h);
-                }
+					final double w = NumberUtils.parseDouble(nodeData.get("w"));
+					final double h = NumberUtils.parseDouble(nodeData.get("h"));
+					if (w > 0)
+						nodeView.setWidth(w);
+					if (h > 0)
+						nodeView.setHeight(h);
+				}
             }
 
             if (nodeData.get("clr") != null) {
@@ -182,24 +179,24 @@ public class PhyloSketchIO {
 
 
             if (nodeData.get("text") != null) {
-                final RichTextLabel label = nodeView.getLabel();
-                label.setText(nodeData.get("text"));
+				final RichTextLabel label = nodeView.getLabel();
+				label.setText(nodeData.get("text"));
 
-                label.setLayoutX(Basic.parseDouble(nodeData.get("lx")));
-                label.setLayoutY(Basic.parseDouble(nodeData.get("ly")));
+				label.setLayoutX(NumberUtils.parseDouble(nodeData.get("lx")));
+				label.setLayoutY(NumberUtils.parseDouble(nodeData.get("ly")));
 
-                if (nodeData.get("font") != null) {
+				if (nodeData.get("font") != null) {
 					final String[] tokens = StringUtils.split(nodeData.get("font"), ',');
-                    if (tokens.length == 3 && Basic.isDouble(tokens[2])) {
-                        label.setFont(FontUtils.font(tokens[0], tokens[1], Basic.parseDouble(tokens[2])));
-                    }
-                }
-                if (nodeData.get("lclr") != null) {
-                    label.setTextFill(Color.valueOf(nodeData.get("lclr")));
-                }
+					if (tokens.length == 3 && NumberUtils.isDouble(tokens[2])) {
+						label.setFont(FontUtils.font(tokens[0], tokens[1], NumberUtils.parseDouble(tokens[2])));
+					}
+				}
+				if (nodeData.get("lclr") != null) {
+					label.setTextFill(Color.valueOf(nodeData.get("lclr")));
+				}
 
                 if (nodeData.get("lr") != null) {
-                    label.setRotate(Basic.parseDouble(nodeData.get("lr")));
+					label.setRotate(NumberUtils.parseDouble(nodeData.get("lr")));
                 }
             }
         }
@@ -207,25 +204,25 @@ public class PhyloSketchIO {
         for (Edge e : graph.edges()) {
             final NetworkBlock.EdgeData edgeData = networkBlock.getEdgeData(e);
             if (edgeData.get("type").equals("CC")) {
-                editor.addEdge(e);
-                final EdgeView edgeView = editor.getEdgeView(e);
-                final double c1x = Basic.parseDouble(edgeData.get("c1x"));
-                final double c1y = Basic.parseDouble(edgeData.get("c1y"));
-                final double c2x = Basic.parseDouble(edgeData.get("c2x"));
-                final double c2y = Basic.parseDouble(edgeData.get("c2y"));
-                edgeView.setControlCoordinates(new double[]{c1x, c1y, c2x, c2y});
+				editor.addEdge(e);
+				final EdgeView edgeView = editor.getEdgeView(e);
+				final double c1x = NumberUtils.parseDouble(edgeData.get("c1x"));
+				final double c1y = NumberUtils.parseDouble(edgeData.get("c1y"));
+				final double c2x = NumberUtils.parseDouble(edgeData.get("c2x"));
+				final double c2y = NumberUtils.parseDouble(edgeData.get("c2y"));
+				edgeView.setControlCoordinates(new double[]{c1x, c1y, c2x, c2y});
 
-                if (edgeData.get("clr") != null) {
-                    edgeView.getCurve().setStroke(Color.valueOf(edgeData.get("clr")));
-                }
+				if (edgeData.get("clr") != null) {
+					edgeView.getCurve().setStroke(Color.valueOf(edgeData.get("clr")));
+				}
 
-                if (edgeData.get("sw") != null) {
-                    final double sw = Basic.parseDouble(edgeData.get("sw"));
-                    if (sw > 0)
-                        edgeView.getCurve().setStrokeWidth(sw);
+				if (edgeData.get("sw") != null) {
+					final double sw = NumberUtils.parseDouble(edgeData.get("sw"));
+					if (sw > 0)
+						edgeView.getCurve().setStrokeWidth(sw);
                 }
                 if (edgeData.get("arw") != null) {
-                    edgeView.getArrowHead().setVisible(Basic.parseBoolean(edgeData.get("arw")));
+					edgeView.getArrowHead().setVisible(NumberUtils.parseBoolean(edgeData.get("arw")));
                 }
             }
         }

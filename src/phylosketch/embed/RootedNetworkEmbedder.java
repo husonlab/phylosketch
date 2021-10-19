@@ -24,7 +24,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.CubicCurve;
 import jloda.graph.*;
 import jloda.phylo.PhyloTree;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import phylosketch.window.EdgeView;
 import phylosketch.window.PhyloView;
 
@@ -47,9 +47,9 @@ public class RootedNetworkEmbedder {
         Optional<Node> root = graph.nodeStream().filter(v -> v.getInDegree() == 0).findFirst();
         if (root.isPresent()) {
             graph.setRoot(root.get());
-            NodeIntArray levels = computeLevels(graph, node2LSAChildren, 1);
-            final int maxLevel = Basic.max(levels.values());
-            NodeDoubleArray yCoord = computeYCoordinates(graph, node2LSAChildren, graph.getRoot());
+			NodeIntArray levels = computeLevels(graph, node2LSAChildren, 1);
+			final int maxLevel = NumberUtils.max(levels.values());
+			NodeDoubleArray yCoord = computeYCoordinates(graph, node2LSAChildren, graph.getRoot());
 
             computeCoordinatesCladogramRec(mainPane, view, graph.getRoot(), node2LSAChildren, yCoord, maxLevel, levels);
             computeEdges(view);

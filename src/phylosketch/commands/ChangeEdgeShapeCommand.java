@@ -26,7 +26,7 @@ import javafx.geometry.Point2D;
 import javafx.util.Duration;
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Edge;
-import jloda.util.Basic;
+import jloda.util.CollectionUtils;
 import jloda.util.ProgramProperties;
 import phylosketch.window.PhyloView;
 
@@ -112,7 +112,7 @@ public class ChangeEdgeShapeCommand extends UndoableRedoableCommand {
                 protected void interpolate(double p) {
                     final double q = 1.0 - p;
                     for (Integer id : id2oldCoordinates.keySet()) {
-                        view.getEdgeView(view.getGraph().findEdgeById(id)).setControlCoordinates(Basic.weightedSum(p, id2newCoordinates.get(id), q, id2oldCoordinates.get(id)));
+						view.getEdgeView(view.getGraph().findEdgeById(id)).setControlCoordinates(CollectionUtils.weightedSum(p, id2newCoordinates.get(id), q, id2oldCoordinates.get(id)));
                     }
                 }
             };
