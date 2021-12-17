@@ -1,5 +1,5 @@
 /*
- * LSATree.java Copyright (C) 2021. Daniel H. Huson
+ * LSATreeUtilities.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -27,109 +27,21 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Computes the lsa consensus
+ * LSA utilities
  * Daniel Huson, 7.2007
  */
-public class LSATree {
-    /**
-     * given a rooted phylogenetic network, returns the LSA tree
-     *
-     * @param network
-     * @return LSA tree
-     */
-    public static PhyloTree computeLSA(PhyloTree network) {
-        PhyloTree tree = (PhyloTree) network.clone();
+public class LSATreeUtilities {
+	/**
+	 * given a reticulate network, returns a mapping of each node to a list of its children in the LSA tree
+	 *
+	 * @param tree
+	 */
+	public static NodeArray<Node> computeLSAOrdering(PhyloTree tree) {
+		NodeArray<Node> reticulation2LSA = new NodeArray<>(tree);
+		computeLSAOrdering(tree, reticulation2LSA);
+		return reticulation2LSA;
+	}
 
-        if (tree.getRoot() != null) {
-            // first we compute the reticulate node to lsa node mapping:
-            NodeArray<Node> reticulation2LSA = new NodeArray<>(tree);
-            var reticulation2LSAEdgeLength = tree.newNodeDoubleArray();
-            computeReticulation2LSA(tree, reticulation2LSA, reticulation2LSAEdgeLength);
-
-            // check that all reticulation nodes have a LSA:
-            for (Node v = tree.getFirstNode(); v != null; v = v.getNext()) {
-                if (v.getInDegree() >= 2) {
-                    Node lsa = reticulation2LSA.get(v);
-                    if (lsa == null)
-                        System.err.println("WARNING: no LSA found for node: " + v);
-                }
-            }
-
-            List<Edge> toDelete = new LinkedList<>();
-            for (Node v = tree.getFirstNode(); v != null; v = v.getNext()) {
-                Node lsa = reticulation2LSA.get(v);
-
-                if (lsa != null) {
-                    for (Edge e = v.getFirstInEdge(); e != null; e = v.getNextInEdge(e))
-                        toDelete.add(e);
-                    Edge e = tree.newEdge(lsa, v);
-                    tree.setWeight(e, reticulation2LSAEdgeLength.get(v));
-                    // System.err.println("WEIGHT: " + (float) reticulation2LSAEdgeLength.get(v));
-                    // tree.setLabel(v,tree.getLabel(v)!=null?tree.getLabel(v)+"/"+(float)tree.getWeight(e):""+(float)tree.getWeight(e));
-                }
-            }
-            for (Edge e : toDelete)
-                tree.deleteEdge(e);
-
-            boolean changed = true;
-            while (changed) {
-                changed = false;
-                List<Node> falseLeaves = new LinkedList<>();
-                for (Node v = tree.getFirstNode(); v != null; v = v.getNext()) {
-                    if (v.getInDegree() == 1 && v.getOutDegree() == 0 && (tree.getLabel(v) == null || tree.getLabel(v).length() == 0))
-                        falseLeaves.add(v);
-                }
-                if (falseLeaves.size() > 0) {
-                    for (Node u : falseLeaves)
-                        tree.deleteNode(u);
-                    changed = true;
-                }
-
-                List<Node> divertices = new LinkedList<>();
-                for (Node v = tree.getFirstNode(); v != null; v = v.getNext()) {
-                    if (v.getInDegree() == 1 && v.getOutDegree() == 1 && v != tree.getRoot() && (tree.getLabel(v) == null || tree.getLabel(v).length() == 0))
-                        divertices.add(v);
-                }
-                if (divertices.size() > 0) {
-                    for (Node u : divertices)
-                        tree.delDivertex(u);
-                    changed = true;
-                }
-            }
-        }
-
-        // make sure special attribute is set correctly:
-        for (Edge e = tree.getFirstEdge(); e != null; e = e.getNext()) {
-            boolean shouldBe = e.getTarget().getInDegree() > 1;
-            if (shouldBe != tree.isSpecial(e)) {
-                System.err.println("WARNING: bad special state, fixing (to: " + shouldBe + ") for e=" + e);
-                tree.setSpecial(e, shouldBe);
-            }
-        }
-        // making sure leaves have labels:
-
-        for (Node v = tree.getFirstNode(); v != null; v = v.getNext()) {
-            {
-                if (v.getOutDegree() == 0 && (tree.getLabel(v) == null || tree.getLabel(v).trim().length() == 0)) {
-                    System.err.println("WARNING: adding label to naked leaf: " + v);
-                    tree.setLabel(v, "V" + v.getId());
-                }
-            }
-        }
-        //System.err.println("tree: " + tree.toBracketString());
-        return tree;
-    }
-
-    /**
-     * given a reticulate network, returns a mapping of each node to a list of its children in the LSA tree
-     *
-     * @param tree
-     */
-    public static NodeArray<Node> computeLSAOrdering(PhyloTree tree) {
-        NodeArray<Node> reticulation2LSA = new NodeArray<>(tree);
-        computeLSAOrdering(tree, reticulation2LSA);
-        return reticulation2LSA;
-    }
 
     /**
      * given a rooted network, returns a mapping of each node to a list of its children in the LSA tree
@@ -138,7 +50,7 @@ public class LSATree {
      * @param reticulation2LSA is returned here
      */
     public static void computeLSAOrdering(PhyloTree tree, NodeArray<Node> reticulation2LSA) {
-        computeLSAOrdering(tree, reticulation2LSA, tree.getNode2GuideTreeChildren());
+		computeLSAOrdering(tree, reticulation2LSA, tree.getLSAChildrenMap());
     }
 
     /**
@@ -311,14 +223,103 @@ public class LSATree {
                     var w = f.getTarget();
                     length += node2Dist.get(w);
                     if (!tree.isSpecial(f))
-                        length += tree.getWeight(f);
-                }
-                if (v.getOutDegree() > 0)
-                    length /= v.getOutDegree();
-                node2Dist.put(v, length);
-                if (reticulation2LSA.get(r) == v)
-                    ret2length.put(r, length);
-            }
-        }
-    }
+						length += tree.getWeight(f);
+				}
+				if (v.getOutDegree() > 0)
+					length /= v.getOutDegree();
+				node2Dist.put(v, length);
+				if (reticulation2LSA.get(r) == v)
+					ret2length.put(r, length);
+			}
+		}
+	}
+
+	/**
+	 * given a rooted phylogenetic network, returns the LSA tree
+	 *
+	 * @param network
+	 * @return LSA tree
+	 */
+	public static PhyloTree computeLSA(PhyloTree network) {
+		PhyloTree tree = (PhyloTree) network.clone();
+
+		if (tree.getRoot() != null) {
+			// first we compute the reticulate node to lsa node mapping:
+			NodeArray<Node> reticulation2LSA = new NodeArray<>(tree);
+			var reticulation2LSAEdgeLength = tree.newNodeDoubleArray();
+			computeReticulation2LSA(tree, reticulation2LSA, reticulation2LSAEdgeLength);
+
+			// check that all reticulation nodes have a LSA:
+			for (Node v = tree.getFirstNode(); v != null; v = v.getNext()) {
+				if (v.getInDegree() >= 2) {
+					Node lsa = reticulation2LSA.get(v);
+					if (lsa == null)
+						System.err.println("WARNING: no LSA found for node: " + v);
+				}
+			}
+
+			List<Edge> toDelete = new LinkedList<>();
+			for (Node v = tree.getFirstNode(); v != null; v = v.getNext()) {
+				Node lsa = reticulation2LSA.get(v);
+
+				if (lsa != null) {
+					for (Edge e = v.getFirstInEdge(); e != null; e = v.getNextInEdge(e))
+						toDelete.add(e);
+					Edge e = tree.newEdge(lsa, v);
+					tree.setWeight(e, reticulation2LSAEdgeLength.get(v));
+					// System.err.println("WEIGHT: " + (float) reticulation2LSAEdgeLength.get(v));
+					// tree.setLabel(v,tree.getLabel(v)!=null?tree.getLabel(v)+"/"+(float)tree.getWeight(e):""+(float)tree.getWeight(e));
+				}
+			}
+			for (Edge e : toDelete)
+				tree.deleteEdge(e);
+
+			boolean changed = true;
+			while (changed) {
+				changed = false;
+				List<Node> falseLeaves = new LinkedList<>();
+				for (Node v = tree.getFirstNode(); v != null; v = v.getNext()) {
+					if (v.getInDegree() == 1 && v.getOutDegree() == 0 && (tree.getLabel(v) == null || tree.getLabel(v).length() == 0))
+						falseLeaves.add(v);
+				}
+				if (falseLeaves.size() > 0) {
+					for (Node u : falseLeaves)
+						tree.deleteNode(u);
+					changed = true;
+				}
+
+				List<Node> divertices = new LinkedList<>();
+				for (Node v = tree.getFirstNode(); v != null; v = v.getNext()) {
+					if (v.getInDegree() == 1 && v.getOutDegree() == 1 && v != tree.getRoot() && (tree.getLabel(v) == null || tree.getLabel(v).length() == 0))
+						divertices.add(v);
+				}
+				if (divertices.size() > 0) {
+					for (Node u : divertices)
+						tree.delDivertex(u);
+					changed = true;
+				}
+			}
+		}
+
+		// make sure special attribute is set correctly:
+		for (Edge e = tree.getFirstEdge(); e != null; e = e.getNext()) {
+			boolean shouldBe = e.getTarget().getInDegree() > 1;
+			if (shouldBe != tree.isSpecial(e)) {
+				System.err.println("WARNING: bad special state, fixing (to: " + shouldBe + ") for e=" + e);
+				tree.setSpecial(e, shouldBe);
+			}
+		}
+		// making sure leaves have labels:
+
+		for (Node v = tree.getFirstNode(); v != null; v = v.getNext()) {
+			{
+				if (v.getOutDegree() == 0 && (tree.getLabel(v) == null || tree.getLabel(v).trim().length() == 0)) {
+					System.err.println("WARNING: adding label to naked leaf: " + v);
+					tree.setLabel(v, "V" + v.getId());
+				}
+			}
+		}
+		//System.err.println("tree: " + tree.toBracketString());
+		return tree;
+	}
 }

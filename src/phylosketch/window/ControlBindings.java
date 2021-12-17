@@ -41,6 +41,7 @@ import jloda.fx.find.FindToolBar;
 import jloda.fx.find.GraphSearcher;
 import jloda.fx.undo.UndoManager;
 import jloda.fx.util.BasicFX;
+import jloda.fx.util.FileOpenManager;
 import jloda.fx.util.Print;
 import jloda.fx.util.RecentFilesManager;
 import jloda.fx.window.MainWindowManager;
@@ -49,7 +50,6 @@ import jloda.fx.window.WindowGeometry;
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
-import jloda.fx.util.FileOpenManager;
 import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 import phylosketch.algorithms.Normalize;
@@ -287,7 +287,6 @@ public class ControlBindings {
                 controller.getScrollPane().ensureVisible(view.getLabel(n));
             }
         });
-
 
         controller.getTopVBox().getChildren().add(graphFindToolBar);
         controller.getFindMenuItem().setOnAction(c -> graphFindToolBar.setShowFindToolBar(true));

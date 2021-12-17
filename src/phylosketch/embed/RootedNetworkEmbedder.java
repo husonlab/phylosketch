@@ -42,7 +42,7 @@ public class RootedNetworkEmbedder {
 
         final NodeArray<Node> reticulation2LSA = new NodeArray<>(graph);
         final NodeArray<List<Node>> node2LSAChildren = new NodeArray<>(graph);
-        LSATree.computeLSAOrdering(graph, reticulation2LSA, node2LSAChildren);
+        LSATreeUtilities.computeLSAOrdering(graph, reticulation2LSA, node2LSAChildren);
 
         Optional<Node> root = graph.nodeStream().filter(v -> v.getInDegree() == 0).findFirst();
         if (root.isPresent()) {
