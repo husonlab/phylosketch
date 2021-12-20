@@ -118,7 +118,7 @@ public class ControlBindings {
                 for (Edge e : c.getAddedSubList()) {
                     if (e.getTarget().getInDegree() > 1) {
                         for (Edge f : e.getTarget().inEdges()) {
-                            graph.setSpecial(f, true);
+                            graph.setReticulated(f, true);
                             graph.setWeight(f, 0);
                         }
                     }
@@ -126,7 +126,7 @@ public class ControlBindings {
                 for (Edge e : c.getRemoved()) {
                     if (e.getTarget().getInDegree() <= 1) {
                         for (Edge f : e.getTarget().inEdges()) {
-                            graph.setSpecial(f, false);
+                            graph.setReticulated(f, false);
                             graph.setWeight(f, 1);
                         }
                     }

@@ -150,7 +150,7 @@ public class RootedNetworkEmbedder {
         final NodeDoubleArray yCoord = new NodeDoubleArray(graph);
         final List<Node> leafOrder = new ArrayList<>();
         computeYCoordinateOfLeavesRec(root, node2LSAChildren, 0, yCoord, leafOrder);
-        if (graph.getNumberSpecialEdges() > 0)
+        if (graph.getNumberReticulateEdges() > 0)
             fixSpacing(leafOrder, yCoord);
         computeYCoordinateOfInternalRec(root, node2LSAChildren, yCoord);
         return yCoord;
