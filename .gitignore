@@ -10,11 +10,8 @@
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
-# intellij
-.idea
-*.iml
-
 # Package Files #
+*.jar
 *.war
 *.nar
 *.ear
@@ -24,3 +21,29 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+#Mac:
+.DS_Store
+
+# antbuild:
+antbuild/
+!antbuild/build.xml
+
+# intellij
+*.iml
+.idea
+
+#eclipse
+.settings
+.classpath
+.project
+
+# LaTeX auxiliary files
+*.aux
+*.blg
+*.idx
+*.ilg
+*.ind
+*.out
+*.toc
+
