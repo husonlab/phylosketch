@@ -33,12 +33,12 @@ import jloda.fx.util.FontUtils;
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
+import jloda.phylo.algorithms.RootedNetworkProperties;
 import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
 import org.xml.sax.SAXException;
 import phylosketch.embed.RootedNetworkEmbedder;
 import phylosketch.window.EdgeView;
-import phylosketch.window.NetworkProperties;
 import phylosketch.window.NodeView;
 import phylosketch.window.PhyloView;
 import splitstree5.core.datablocks.NetworkBlock;
@@ -69,7 +69,7 @@ public class PhyloSketchIO {
     public static void save(File selectedFile, PhyloView editor) {
         final TaxaBlock taxaBlock = new TaxaBlock();
 
-        final Map<String, Node> label2node = NetworkProperties.getLabel2Node(editor.getGraph());
+		final Map<String, Node> label2node = RootedNetworkProperties.getLabel2Node(editor.getGraph());
         taxaBlock.addTaxaByNames(label2node.keySet());
 
         final PhyloTree graph = editor.getGraph();
@@ -259,11 +259,11 @@ public class PhyloSketchIO {
         File selectedFile = fileChooser.showSaveDialog(owner);
         if (selectedFile != null) {
             try (BufferedWriter w = new BufferedWriter(new FileWriter(selectedFile))) {
-                for (Node root : NetworkProperties.findRoots(editor.getGraph())) {
-                    editor.getGraph().setRoot(root);
-                    editor.getGraph().write(w, false);
-                    w.write(";\n");
-                }
+				for (Node root : RootedNetworkProperties.findRoots(editor.getGraph())) {
+					editor.getGraph().setRoot(root);
+					editor.getGraph().write(w, false);
+					w.write(";\n");
+				}
                 final ClipboardContent clipboardContent = new ClipboardContent();
                 clipboardContent.putString(w.toString());
                 Clipboard.getSystemClipboard().setContent(clipboardContent);

@@ -50,9 +50,10 @@ import jloda.fx.window.WindowGeometry;
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
+import jloda.phylo.algorithms.RootedNetworkProperties;
 import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
-import phylosketch.algorithms.Normalize;
+import phylosketch.algorithms.RunNormalize;
 import phylosketch.commands.*;
 import phylosketch.formattab.FormatTab;
 import phylosketch.io.*;
@@ -111,7 +112,7 @@ public class ControlBindings {
                 edgeSelection, v -> view.getNodeView(v).getShape(), view::getCurve));
 
         final BooleanProperty isLeafLabeledDAG = new SimpleBooleanProperty(false);
-        NetworkProperties.setup(controller.getStatusFlowPane(), view.getGraphFX(), isLeafLabeledDAG);
+        SetupNetworkProperties.setup(controller.getStatusFlowPane(), view.getGraphFX(), isLeafLabeledDAG);
 
         view.getGraphFX().getEdgeList().addListener((ListChangeListener<Edge>) c -> {
             while (c.next()) {
@@ -236,7 +237,7 @@ public class ControlBindings {
             }
         });
 
-        controller.getNormalizationMenuItem().setOnAction(c -> Normalize.runNormalize(window));
+        controller.getNormalizationMenuItem().setOnAction(c -> RunNormalize.apply(window));
         controller.getNormalizationMenuItem().disableProperty().bind(isLeafLabeledDAG.not());
 
         controller.getRemoveBackgroundImageMenuItem().setOnAction(e -> undoManager.doAndAdd(new SetImageCommand(window.getStage(), controller.getContentPane(), null)));
@@ -265,7 +266,7 @@ public class ControlBindings {
 
         controller.getCopyNewickMenuItem().setOnAction(e -> {
             try (StringWriter w = new StringWriter()) {
-                for (Node root : NetworkProperties.findRoots(graph)) {
+                for (Node root : RootedNetworkProperties.findRoots(graph)) {
                     graph.setRoot(root);
                     graph.write(w, false);
                     w.write(";\n");
@@ -457,13 +458,13 @@ public class ControlBindings {
         controller.getSelectReticulateNodesMenuitem().setOnAction(e -> graph.nodeStream().filter(v -> v.getInDegree() > 1).forEach(nodeSelection::select));
         controller.getSelectReticulateNodesMenuitem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
-        controller.getSelectStableNodesMenuItem().setOnAction(e -> NetworkProperties.computeAllCompletelyStableInternal(graph).forEach(nodeSelection::select));
+        controller.getSelectStableNodesMenuItem().setOnAction(e -> RootedNetworkProperties.computeAllCompletelyStableInternal(graph).forEach(nodeSelection::select));
         controller.getSelectStableNodesMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
-        controller.getSelectVisibleNodesMenuItem().setOnAction(e -> NetworkProperties.computeAllVisibleNodes(graph).forEach(nodeSelection::select));
+        controller.getSelectVisibleNodesMenuItem().setOnAction(e -> RootedNetworkProperties.computeAllVisibleNodes(graph, null).forEach(nodeSelection::select));
         controller.getSelectVisibleNodesMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
-        controller.getSelectVisibleReticulationsMenuItem().setOnAction(e -> NetworkProperties.computeAllVisibleNodes(graph).stream().filter(v -> v.getInDegree() > 1).forEach(nodeSelection::select));
+        controller.getSelectVisibleReticulationsMenuItem().setOnAction(e -> RootedNetworkProperties.computeAllVisibleNodes(graph, null).stream().filter(v -> v.getInDegree() > 1).forEach(nodeSelection::select));
         controller.getSelectVisibleReticulationsMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getSelectTreeNodesMenuItem().setOnAction(e -> graph.nodeStream().filter(v -> v.getInDegree() <= 1 && v.getOutDegree() > 0).forEach(nodeSelection::select));
@@ -504,7 +505,7 @@ public class ControlBindings {
         });
         controller.getSelectAllBelowMenuItem().disableProperty().bind(nodeSelection.emptyProperty());
 
-        controller.getSelectLowestStableAncestorMenuItem().setOnAction(e -> nodeSelection.selectItems(NetworkProperties.computeAllLowestStableAncestors(graph, nodeSelection.getSelectedItems())));
+        controller.getSelectLowestStableAncestorMenuItem().setOnAction(e -> nodeSelection.selectItems(RootedNetworkProperties.computeAllLowestStableAncestors(graph, nodeSelection.getSelectedItems())));
         controller.getSelectLowestStableAncestorMenuItem().disableProperty().bind(nodeSelection.emptyProperty());
 
         controller.getSelectTreeEdgesMenuItem().setOnAction(c -> graph.edgeStream().filter(e -> e.getTarget().getInDegree() <= 1).forEach(edgeSelection::select));
