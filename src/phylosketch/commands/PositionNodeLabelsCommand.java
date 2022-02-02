@@ -64,9 +64,7 @@ public class PositionNodeLabelsCommand extends UndoableRedoableCommand {
     /**
      * change node positions
      *
-     * @param view
-     * @param position
-     */
+	 */
     public PositionNodeLabelsCommand(PhyloView view, Collection<Node> nodes, Position position) {
         super("Label Position");
 
@@ -86,7 +84,7 @@ public class PositionNodeLabelsCommand extends UndoableRedoableCommand {
                         break;
                     }
                     case Below: {
-                        dataList.add(new Data(v.getId(), label.getLayoutX(), -0.5 * label.getWidth(), label.getLayoutY(), +(0.5 * nodeHeight + 5)));
+						dataList.add(new Data(v.getId(), label.getLayoutX(), -0.5 * label.getWidth(), label.getLayoutY(), (0.5 * nodeHeight + 5)));
                         break;
                     }
                     case Left: {

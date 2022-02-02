@@ -42,7 +42,7 @@ import phylosketch.window.NodeView;
 import phylosketch.window.PhyloView;
 import splitstree5.core.datablocks.NetworkBlock;
 import splitstree5.core.datablocks.TaxaBlock;
-import splitstree5.io.imports.NeXML.handlers.NexmlTreesHandler;
+import splitstree5.io.imports.nexml.handlers.NexmlTreesHandler;
 import splitstree5.io.nexus.NetworkNexusInput;
 import splitstree5.io.nexus.NetworkNexusOutput;
 import splitstree5.io.nexus.TaxaNexusInput;
@@ -62,9 +62,7 @@ public class PhyloSketchIO {
     /**
      * save network with all coordinates
      *
-     * @param selectedFile
-     * @param editor
-     */
+	 */
     public static void save(File selectedFile, PhyloView editor) {
         final TaxaBlock taxaBlock = new TaxaBlock();
 
@@ -243,9 +241,7 @@ public class PhyloSketchIO {
     /**
      * export in extended Newick format
      *
-     * @param owner
-     * @param editor
-     */
+	 */
     public static void exportNewick(final Stage owner, PhyloView editor) {
         final File previousDir = new File(ProgramProperties.get("ExportDir", ""));
         final FileChooser fileChooser = new FileChooser();
@@ -276,11 +272,7 @@ public class PhyloSketchIO {
     /**
      * Import NeXML tree
      *
-     * @param contentPane
-     * @param view
-     * @param selectedFile
-     * @throws IOException
-     */
+	 */
     public static void importNeXML(Pane contentPane, PhyloView view, File selectedFile) throws IOException {
 
         PhyloTree tree = new PhyloTree();

@@ -33,7 +33,6 @@ public class LSATreeUtilities {
 	/**
 	 * given a reticulate network, returns a mapping of each node to a list of its children in the LSA tree
 	 *
-	 * @param tree
 	 */
 	public static NodeArray<Node> computeLSAOrdering(PhyloTree tree) {
 		NodeArray<Node> reticulation2LSA = new NodeArray<>(tree);
@@ -45,7 +44,6 @@ public class LSATreeUtilities {
     /**
      * given a rooted network, returns a mapping of each node to a list of its children in the LSA tree
      *
-     * @param tree
      * @param reticulation2LSA is returned here
      */
     public static void computeLSAOrdering(PhyloTree tree, NodeArray<Node> reticulation2LSA) {
@@ -55,7 +53,6 @@ public class LSATreeUtilities {
     /**
      * given a rooted network, returns a mapping of each node to a list of its children in the LSA tree
      *
-     * @param tree
      * @param reticulation2LSA is returned here
      */
     public static void computeLSAOrdering(PhyloTree tree, NodeArray<Node> reticulation2LSA, NodeArray<List<Node>> node2LSAChildren) {
@@ -80,9 +77,7 @@ public class LSATreeUtilities {
     /**
      * compute the reticulate node to lsa node mapping
      *
-     * @param network
-     * @param reticulation2LSA
-     */
+	 */
     public static void computeReticulation2LSA(PhyloTree network, NodeArray<Node> reticulation2LSA, NodeDoubleArray reticulation2LSAEdgeLength) {
         reticulation2LSA.clear();
         var ret2PathSet = new NodeArray<BitSet>(network);
@@ -236,7 +231,6 @@ public class LSATreeUtilities {
 	/**
 	 * given a rooted phylogenetic network, returns the LSA tree
 	 *
-	 * @param network
 	 * @return LSA tree
 	 */
 	public static PhyloTree computeLSA(PhyloTree network) {

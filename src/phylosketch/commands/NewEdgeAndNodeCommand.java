@@ -41,13 +41,7 @@ public class NewEdgeAndNodeCommand extends UndoableRedoableCommand {
     /**
      * construct
      *
-     * @param pane
-     * @param editor
-     * @param a
-     * @param b
-     * @param x
-     * @param y
-     */
+	 */
     public NewEdgeAndNodeCommand(Pane pane, PhyloView editor, Node a, final Node b, double x, double y) {
         super("Add Edge");
         final Graph graph = editor.getGraph();

@@ -42,13 +42,7 @@ public class MoveSelectedNodesCommand extends UndoableRedoableCommand {
     /**
      * constructor
      *
-     * @param dx
-     * @param dy
-     * @param editor
-     * @param selectedItems
-     * @param oldEdgeControlCoordinates0
-     * @param newEdgeControlCoordinates0
-     */
+	 */
     public MoveSelectedNodesCommand(double dx, double dy, PhyloView editor, ObservableList<Node> selectedItems,
                                     Map<Integer, double[]> oldEdgeControlCoordinates0, Map<Integer, double[]> newEdgeControlCoordinates0) {
         super("Move");

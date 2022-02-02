@@ -33,8 +33,6 @@ import phylosketch.main.PhyloSketch;
 import phylosketch.window.MainWindow;
 import phylosketch.window.PhyloView;
 
-import java.io.IOException;
-
 /**
  * style tab for setting fonts etc
  * Daniel Huson, 1.2018
@@ -45,9 +43,7 @@ public class FormatTab extends StackPane {
     /**
      * constructor
      *
-     * @param window
-     * @throws IOException
-     */
+	 */
     public FormatTab(MainWindow window) {
         {
             final ExtendedFXMLLoader<FormatTabController> extendedFXMLLoader = new ExtendedFXMLLoader<>(this.getClass());

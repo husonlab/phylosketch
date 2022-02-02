@@ -34,8 +34,7 @@ public class ImportDialog {
     /**
      * open a file
      *
-     * @param owner
-     */
+	 */
     public static void apply(final Stage owner) {
 
         final File previousDir = new File(ProgramProperties.get("OpenDir", ""));

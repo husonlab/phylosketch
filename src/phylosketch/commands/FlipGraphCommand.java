@@ -63,9 +63,7 @@ public class FlipGraphCommand extends UndoableRedoableCommand {
     /**
      * flip the graph and animate
      *
-     * @param phyloView
-     * @param horizontally
-     */
+	 */
     private void flipAnimated(PhyloView phyloView, boolean horizontally) {
         final Graph graph = phyloView.getGraph();
 
@@ -103,11 +101,7 @@ public class FlipGraphCommand extends UndoableRedoableCommand {
     /**
      * flip the graph
      *
-     * @param phyloView
-     * @param node2coordinates
-     * @param edge2coordinates
-     * @param p
-     */
+	 */
     private void flip(PhyloView phyloView, List<Triplet<Node, Double, Double>> node2coordinates, List<Pair<Edge, double[]>> edge2coordinates, boolean horizontally, double p) {
         final double q = 1.0 - p;
         for (Triplet<Node, Double, Double> triplet : node2coordinates) {

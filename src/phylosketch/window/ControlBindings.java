@@ -196,7 +196,7 @@ public class ControlBindings {
 
         controller.getCopyMenuItem().setOnAction(e -> {
             if (view.getNodeSelection().size() > 0) {
-                final List<String> labels = graph.nodeStream().map(view::getLabel).filter(a -> a.getText().length() > 0).map(RichTextLabel::getText).collect(Collectors.toList());
+                final List<String> labels = graph.nodeStream().map(view::getLabel).map(RichTextLabel::getText).filter(text -> text.length() > 0).collect(Collectors.toList());
                 final ClipboardContent clipboardContent = new ClipboardContent();
 				clipboardContent.putString(StringUtils.toString(labels, "\n"));
 				Clipboard.getSystemClipboard().setContent(clipboardContent);

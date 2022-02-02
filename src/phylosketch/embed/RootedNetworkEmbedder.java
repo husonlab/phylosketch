@@ -70,8 +70,7 @@ public class RootedNetworkEmbedder {
     /**
      * compute edges
      *
-     * @param view
-     */
+	 */
     private static void computeEdges(PhyloView view) {
         for (Edge e : view.getGraph().edges()) {
             final Node v = e.getSource();
@@ -97,7 +96,6 @@ public class RootedNetworkEmbedder {
     /**
      * compute the levels in the tree or network (max number of edges from node to a leaf)
      *
-     * @param add
      * @return levels
      */
     private static NodeIntArray computeLevels(PhyloTree graph, NodeArray<List<Node>> node2GuideTreeChildren, int add) {
@@ -109,11 +107,7 @@ public class RootedNetworkEmbedder {
     /**
      * compute node levels
      *
-     * @param v
-     * @param levels
-     * @param add
-     * @return max height
-     */
+	 */
     private static void computeLevelsRec(PhyloTree graph, NodeArray<List<Node>> node2GuideTreeChildren, Node v, NodeIntArray levels, int add, Set<Node> path) {
         path.add(v);
         int level = 0;
@@ -142,7 +136,6 @@ public class RootedNetworkEmbedder {
     /**
      * compute the y-coordinates for the parallel view
      *
-     * @param root
      * @return y-coordinates
      */
     public static NodeDoubleArray computeYCoordinates(PhyloTree graph, NodeArray<List<Node>> node2LSAChildren, Node root) {
@@ -158,7 +151,6 @@ public class RootedNetworkEmbedder {
     /**
      * recursively compute the y coordinate for a parallel or triangular diagram
      *
-     * @param v
      * @param leafNumber rank of leaf in vertical ordering
      * @return index of last leaf
      */
@@ -181,9 +173,7 @@ public class RootedNetworkEmbedder {
     /**
      * recursively compute the y coordinate for the internal nodes of a parallel diagram
      *
-     * @param v
-     * @param yCoord
-     */
+	 */
     private static void computeYCoordinateOfInternalRec(Node v, NodeArray<List<Node>> node2LSAChildren, NodeDoubleArray yCoord) {
         if (v.getOutDegree() > 0) {
             double first = Double.NEGATIVE_INFINITY;
@@ -206,8 +196,7 @@ public class RootedNetworkEmbedder {
     /**
      * fix spacing so that space between any two true leaves is 1
      *
-     * @param leafOrder
-     */
+	 */
     private static void fixSpacing(List<Node> leafOrder, NodeDoubleArray yCoord) {
         final Node[] nodes = leafOrder.toArray(new Node[0]);
         double leafPos = 0;

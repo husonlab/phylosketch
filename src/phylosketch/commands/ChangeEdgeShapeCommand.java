@@ -46,9 +46,7 @@ public class ChangeEdgeShapeCommand extends UndoableRedoableCommand {
     /**
      * constructor
      *
-     * @param view
-     * @param shape
-     */
+	 */
     public ChangeEdgeShapeCommand(PhyloView view, Collection<Edge> edges, EdgeShape shape) {
         super("Edge Shape");
 

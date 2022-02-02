@@ -78,9 +78,7 @@ public class RotateGraphCommand extends UndoableRedoableCommand {
     /**
      * rotate the graph
      *
-     * @param phyloView
-     * @param alpha
-     */
+	 */
     private void rotate(PhyloView phyloView, double alpha) {
         phyloView.getGraph().nodeStream().map(phyloView::getNodeView).forEach(nv -> {
             final Point2D point = GeometryUtilsFX.rotate(nv.getTranslateX(), nv.getTranslateY(), alpha);

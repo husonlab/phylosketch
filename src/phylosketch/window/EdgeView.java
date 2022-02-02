@@ -54,12 +54,6 @@ public class EdgeView {
     /**
      * constructor
      *
-     * @param view
-     * @param edge
-     * @param aX
-     * @param aY
-     * @param bX
-     * @param bY
      */
     public EdgeView(PhyloView view, Edge edge, ReadOnlyDoubleProperty aX, ReadOnlyDoubleProperty aY, ReadOnlyDoubleProperty bX, ReadOnlyDoubleProperty bY) {
         curve = new CubicCurve();
@@ -99,9 +93,7 @@ public class EdgeView {
         };
 
         final BooleanProperty isSelected = new SimpleBooleanProperty(view.getEdgeSelection().isSelected(edge));
-        view.getEdgeSelection().getSelectedItems().addListener((InvalidationListener) c -> {
-            isSelected.set(view.getEdgeSelection().isSelected(edge));
-        });
+        view.getEdgeSelection().getSelectedItems().addListener((InvalidationListener) c -> isSelected.set(view.getEdgeSelection().isSelected(edge)));
 
         MouseDragClosestNode.setup(curve, isSelected, view.getNode2View().get(edge.getSource()).getShapeGroup(), circle1,
                 view.getNode2View().get(edge.getTarget()).getShapeGroup(), circle2,

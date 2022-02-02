@@ -52,9 +52,6 @@ public class SetupNetworkProperties {
 	/**
 	 * setup network properties
 	 *
-	 * @param statusFlowPane
-	 * @param graphFX
-	 * @param <G>
 	 */
 	public static <G extends Graph> void setup(FlowPane statusFlowPane, GraphFX<G> graphFX, BooleanProperty leafLabeledDAGProperty) {
 		if (fontSize.get() < 2)

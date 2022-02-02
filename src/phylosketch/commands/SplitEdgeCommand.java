@@ -45,11 +45,7 @@ public class SplitEdgeCommand extends UndoableRedoableCommand {
     /**
      * constructor
      *
-     * @param pane
-     * @param view
-     * @param e
-     * @param location
-     */
+	 */
     public SplitEdgeCommand(Pane pane, PhyloView view, Edge e, Point2D location) {
         super("Split Edge");
 

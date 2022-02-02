@@ -37,10 +37,7 @@ public class NodeView {
     /**
      * constructor
      *
-     * @param font
-     * @param x
-     * @param y
-     */
+	 */
     public NodeView(Font font, double x, double y) {
         changeShape(NodeShape.Circle);
 

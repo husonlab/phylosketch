@@ -26,7 +26,6 @@ import jloda.util.ProgramProperties;
 import phylosketch.window.MainWindow;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * save file
@@ -36,10 +35,7 @@ public class Save {
     /**
      * save file
      *
-     * @param file
-     * @param window
-     * @throws IOException
-     */
+	 */
     public static void apply(File file, MainWindow window) {
         PhyloSketchIO.save(file, window.getView());
     }
@@ -47,7 +43,6 @@ public class Save {
     /**
      * show save dialog
      *
-     * @param window
      * @return true, if saved
      */
     public static boolean showSaveDialog(MainWindow window) {

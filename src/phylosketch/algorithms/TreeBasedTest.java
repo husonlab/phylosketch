@@ -43,10 +43,7 @@ public class TreeBasedTest {
     /**
      * main program
      *
-     * @param args
-     * @throws IOException
-     * @throws UsageException
-     */
+	 */
     public static void main(String[] args) throws IOException, UsageException {
         if (args.length != 1)
             throw new UsageException("Expected input file");

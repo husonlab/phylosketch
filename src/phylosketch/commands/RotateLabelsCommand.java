@@ -69,13 +69,9 @@ public class RotateLabelsCommand extends UndoableRedoableCommand {
     /**
      * rotate the labels
      *
-     * @param phyloView
-     * @param alpha
      */
     private void rotate(PhyloView phyloView, Collection<Node> nodes, double alpha) {
-        nodes.stream().map(phyloView::getNodeView).forEach(nv -> {
-            nv.setLabelAngle(GeometryUtilsFX.modulo360(nv.getLabelAngle() + alpha));
-        });
+        nodes.stream().map(phyloView::getNodeView).forEach(nv -> nv.setLabelAngle(GeometryUtilsFX.modulo360(nv.getLabelAngle() + alpha)));
     }
 
     @Override
