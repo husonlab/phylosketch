@@ -108,6 +108,7 @@ public class PhyloSketch extends Application {
         ProgramExecutorService.setNumberOfCoresToUse(options.getOption("-t", "threads", "Maximum number of threads to use in a parallel algorithm (0=all available)", 0));
 
         enableExperimental = options.getOption("-x", "experimental", "Enable experimental features", false);
+        ProgramProperties.setConfirmQuit(options.getOption("-q", "confirmQuit", "Confirm quit on exit", ProgramProperties.isConfirmQuit()));
 
         options.done();
 
