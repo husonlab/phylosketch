@@ -43,6 +43,8 @@ public class PhyloSketchFileOpener implements Consumer<String> {
         MainWindow window = (MainWindow) MainWindowManager.getInstance().getLastFocusedMainWindow();
         if (window == null || !window.isEmpty())
             window = NewWindow.apply();
+        else
+            window.getView().getUndoManager().clear();
 
 		String firstLine = Objects.requireNonNull(FileUtils.getFirstLineFromFile(new File(fileName))).trim().toLowerCase();
         try {
@@ -58,6 +60,5 @@ public class PhyloSketchFileOpener implements Consumer<String> {
         } catch (IOException e) {
             NotificationManager.showError("Open file failed: " + e.getMessage());
         }
-
     }
 }
