@@ -221,32 +221,32 @@ public class PhyloSketchIO {
                 if (edgeData.get("arw") != null) {
 					edgeView.getArrowHead().setVisible(NumberUtils.parseBoolean(edgeData.get("arw")));
                 }
-            }
-        }
-    }
+			}
+		}
+	}
 
-    public static void importNewick(Pane contentPane, PhyloView view, File selectedFile) throws IOException {
+	public static void importNewick(Pane contentPane, PhyloView view, File selectedFile) throws IOException {
+		try (var reader = new FileReader(selectedFile)) {
+			importNewick(contentPane, view, reader);
+		}
+	}
 
-        final PhyloTree tree = new PhyloTree();
-        try (BufferedReader r = new BufferedReader(new FileReader(selectedFile))) {
-            tree.read(r, true);
-        }
+	public static void importNewick(Pane contentPane, PhyloView view, Reader reader) throws IOException {
+		final var tree = new PhyloTree();
+		tree.read(reader, true);
+		final var graph = view.getGraph();
+		graph.copy(tree);
+		RootedNetworkEmbedder.apply(contentPane, view, RootedNetworkEmbedder.Orientation.leftRight);
+	}
 
-        final PhyloTree graph = view.getGraph();
-        graph.copy(tree);
-
-        RootedNetworkEmbedder.apply(contentPane, view, RootedNetworkEmbedder.Orientation.leftRight);
-    }
-
-    /**
-     * export in extended Newick format
-     *
+	/**
+	 * export in extended Newick format
 	 */
-    public static void exportNewick(final Stage owner, PhyloView editor) {
-        final File previousDir = new File(ProgramProperties.get("ExportDir", ""));
-        final FileChooser fileChooser = new FileChooser();
-        if (previousDir.isDirectory())
-            fileChooser.setInitialDirectory(previousDir);
+	public static void exportNewick(final Stage owner, PhyloView editor) {
+		final File previousDir = new File(ProgramProperties.get("ExportDir", ""));
+		final FileChooser fileChooser = new FileChooser();
+		if (previousDir.isDirectory())
+			fileChooser.setInitialDirectory(previousDir);
 		fileChooser.setInitialFileName(FileUtils.replaceFileSuffix(FileUtils.getFileNameWithoutPath(editor.getFileName()), ".newick"));
 		fileChooser.setTitle("Export File");
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Extended Newick", "*.newick", "*.new", "*.tree", "*.tre"),

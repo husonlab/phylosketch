@@ -25,8 +25,8 @@
 <?import javafx.scene.input.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<AnchorPane prefHeight="400.0" prefWidth="820.0" xmlns="http://javafx.com/javafx/15.0.1"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="phylosketch.window.MainWindowController">
+<AnchorPane prefHeight="400.0" prefWidth="820.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="phylosketch.window.MainWindowController">
     <children>
         <BorderPane fx:id="borderPane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0"
                     AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -452,10 +452,17 @@
                                                                     shift="DOWN" shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
                                         <MenuItem fx:id="pasteMenuItem" text="Paste">
                                             <accelerator>
                                                 <KeyCodeCombination alt="UP" code="V" control="UP" meta="UP" shift="UP"
                                                                     shortcut="DOWN"/>
+                                            </accelerator>
+                                        </MenuItem>
+                                        <MenuItem fx:id="pasteNewickMenuItem" text="Paste Newick">
+                                            <accelerator>
+                                                <KeyCodeCombination alt="UP" code="V" control="UP" meta="UP"
+                                                                    shift="DOWN" shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
                                         <SeparatorMenuItem mnemonicParsing="false"/>

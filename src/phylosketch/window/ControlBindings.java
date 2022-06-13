@@ -44,6 +44,7 @@ import jloda.fx.util.FileOpenManager;
 import jloda.fx.util.Print;
 import jloda.fx.util.RecentFilesManager;
 import jloda.fx.window.MainWindowManager;
+import jloda.fx.window.NotificationManager;
 import jloda.fx.window.SplashScreen;
 import jloda.fx.window.WindowGeometry;
 import jloda.graph.Edge;
@@ -63,6 +64,7 @@ import splitstree5.gui.utils.RubberBandSelection;
 import splitstree5.main.CheckForUpdate;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.time.Duration;
 import java.util.LinkedList;
@@ -227,12 +229,23 @@ public class ControlBindings {
         controller.getRedoButton().setTooltip(new Tooltip());
         controller.getRedoButton().getTooltip().textProperty().bind(undoManager.redoNameProperty());
 
-
         controller.getPasteMenuItem().setOnAction(e -> {
             final Clipboard cb = Clipboard.getSystemClipboard();
             if (cb.hasImage()) {
                 Image image = cb.getImage();
                 undoManager.doAndAdd(new SetImageCommand(window.getStage(), controller.getContentPane(), image));
+            }
+        });
+
+        controller.getPasteNewickMenuItem().setOnAction(e -> {
+            final Clipboard cb = Clipboard.getSystemClipboard();
+            if (cb.hasString()) {
+                undoManager.clear();
+                try (var reader = new StringReader(cb.getString())) {
+                    PhyloSketchIO.importNewick(contentPane, view, reader);
+                } catch (IOException ex) {
+                    NotificationManager.showError("Paste Newick failed: " + ex);
+                }
             }
         });
 

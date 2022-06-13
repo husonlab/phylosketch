@@ -18,10 +18,6 @@
 -->
 <project name="PhyloSketch" default="jar" basedir=".">
 
-    <property name="ant.build.javac.source" value="13"/>
-    <property name="ant.build.javac.target" value="13"/>
-
-
     <property name="jfxDir" value="../../javafx/lib"/>
     <property name="jlodaAntDir" value="../../jloda/antbuild"/>
     <property name="splitstree5AntDir" value="../../splitstree5/antbuild"/>
@@ -78,7 +74,8 @@
     </target>
 
     <target name="compile" depends="copy_resources">
-        <javac includeantruntime="false"
+	     <javac source="17" target="17"
+	    	includeantruntime="false"
                srcdir="../antbuild/src/phylosketch"
                destdir="${buildModulesDir}/phylosketch"
                debug="on"

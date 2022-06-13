@@ -102,6 +102,9 @@ public class MainWindowController {
     private MenuItem pasteMenuItem;
 
     @FXML
+    private MenuItem pasteNewickMenuItem;
+
+    @FXML
     private MenuItem deleteMenuItem;
 
     @FXML
@@ -533,6 +536,10 @@ public class MainWindowController {
 
     public MenuItem getPasteMenuItem() {
         return pasteMenuItem;
+    }
+
+    public MenuItem getPasteNewickMenuItem() {
+        return pasteNewickMenuItem;
     }
 
     public MenuItem getDeleteMenuItem() {
