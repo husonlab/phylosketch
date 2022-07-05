@@ -64,7 +64,7 @@ public class TreeBasedTest {
 
                     if (count == 0) {
                         System.err.println("Special edges " + tree.getNumberReticulateEdges() + ": "
-                                           + StringUtils.toString(tree.edgeStream().filter(tree::isReticulatedEdge).map(e -> "(" + e.getSource().getId() + "," + e.getTarget().getId() + ")").collect(Collectors.toList()), ","));
+                                           + StringUtils.toString(tree.edgeStream().filter(tree::isReticulateEdge).map(e -> "(" + e.getSource().getId() + "," + e.getTarget().getId() + ")").collect(Collectors.toList()), ","));
                         for (Node v : tree.nodes()) {
                             System.err.println("node: " + v.getId() + " children: "
                                                + StringUtils.toString(StreamSupport.stream(v.children().spliterator(), false).map(Node::getId).collect(Collectors.toList()), ",")

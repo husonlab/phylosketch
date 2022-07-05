@@ -63,7 +63,7 @@ public class LSATreeUtilities {
             computeReticulation2LSA(tree, reticulation2LSA, null);
 
             for (var v : tree.nodes()) {
-                var lsaChildren = v.outEdgesStream(false).filter(e -> !tree.isReticulatedEdge(e)).map(Edge::getTarget).collect(Collectors.toList());
+                var lsaChildren = v.outEdgesStream(false).filter(e -> !tree.isReticulateEdge(e)).map(Edge::getTarget).collect(Collectors.toList());
                 node2LSAChildren.put(v, lsaChildren);
             }
             for (var v : tree.nodes()) {
@@ -216,7 +216,7 @@ public class LSATreeUtilities {
                 for (var f : v.outEdges()) {
                     var w = f.getTarget();
                     length += node2Dist.get(w);
-					if (!tree.isReticulatedEdge(f))
+					if (!tree.isReticulateEdge(f))
 						length += tree.getWeight(f);
 				}
 				if (v.getOutDegree() > 0)
@@ -297,9 +297,9 @@ public class LSATreeUtilities {
 		// make sure special attribute is set correctly:
 		for (Edge e = tree.getFirstEdge(); e != null; e = e.getNext()) {
 			boolean shouldBe = e.getTarget().getInDegree() > 1;
-			if (shouldBe != tree.isReticulatedEdge(e)) {
+			if (shouldBe != tree.isReticulateEdge(e)) {
 				System.err.println("WARNING: bad special state, fixing (to: " + shouldBe + ") for e=" + e);
-				tree.setReticulated(e, shouldBe);
+				tree.setReticulate(e, shouldBe);
 			}
 		}
 		// making sure leaves have labels:

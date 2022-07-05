@@ -74,17 +74,18 @@ public class MainWindow implements IMainWindow {
 
     @Override
     public void show(Stage stage0, double screenX, double screenY, double width, double height) {
-        if (stage == null)
-            stage = new Stage();
-        this.stage = stage0;
-        stage.getIcons().addAll(ProgramProperties.getProgramIconsFX());
+		if (stage == null)
+			stage = new Stage();
+		this.stage = stage0;
+		stage.getIcons().addAll(ProgramProperties.getProgramIconsFX());
 
-        final Scene scene = new Scene(root, width, height);
+		final var scene = new Scene(root);
 
 		stage.setScene(scene);
-		stage.sizeToScene();
 		stage.setX(screenX);
 		stage.setY(screenY);
+		stage.setWidth(width);
+		stage.setHeight(height);
 
 		getStage().titleProperty().addListener((e) -> MainWindowManager.getInstance().fireChanged());
 

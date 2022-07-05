@@ -462,7 +462,7 @@
                                         <MenuItem fx:id="pasteNewickMenuItem" text="Paste Newick">
                                             <accelerator>
                                                 <KeyCodeCombination alt="UP" code="V" control="UP" meta="UP"
-                                                                    shift="DOWN" shortcut="DOWN"/>
+                                                                    shift="DOWN4" shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
                                         <SeparatorMenuItem mnemonicParsing="false"/>

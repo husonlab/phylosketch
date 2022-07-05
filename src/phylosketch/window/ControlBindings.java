@@ -120,16 +120,16 @@ public class ControlBindings {
                 for (Edge e : c.getAddedSubList()) {
                     if (e.getTarget().getInDegree() > 1) {
                         for (Edge f : e.getTarget().inEdges()) {
-                            graph.setReticulated(f, true);
-                            graph.setWeight(f, 0);
+                            graph.setReticulate(f, true);
+							graph.setWeight(f, 0);
                         }
                     }
                 }
                 for (Edge e : c.getRemoved()) {
                     if (e.getTarget().getInDegree() <= 1) {
                         for (Edge f : e.getTarget().inEdges()) {
-                            graph.setReticulated(f, false);
-                            graph.setWeight(f, 1);
+							graph.setReticulate(f, false);
+							graph.setWeight(f, 1);
                         }
                     }
                 }
