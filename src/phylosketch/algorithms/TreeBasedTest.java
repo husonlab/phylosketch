@@ -60,7 +60,7 @@ public class TreeBasedTest {
                 final String line = it.next().trim();
                 if (line.length() > 0 && !line.startsWith("#")) {
                     final PhyloTree tree = new PhyloTree();
-                    tree.read(new StringReader(line), true);
+                    tree.read(new StringReader(line));
 
                     if (count == 0) {
                         System.err.println("Special edges " + tree.getNumberReticulateEdges() + ": "

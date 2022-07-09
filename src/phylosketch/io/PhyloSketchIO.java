@@ -233,7 +233,7 @@ public class PhyloSketchIO {
 
 	public static void importNewick(Pane contentPane, PhyloView view, Reader reader) throws IOException {
 		final var tree = new PhyloTree();
-		tree.read(reader, true);
+		tree.read(reader);
 		final var graph = view.getGraph();
 		graph.copy(tree);
 		RootedNetworkEmbedder.apply(contentPane, view, RootedNetworkEmbedder.Orientation.leftRight);
