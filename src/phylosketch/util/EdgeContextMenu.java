@@ -28,8 +28,8 @@ import javafx.scene.shape.CubicCurve;
 import jloda.graph.Edge;
 import phylosketch.commands.ChangeEdgeShapeCommand;
 import phylosketch.commands.SplitEdgeCommand;
-import phylosketch.window.EdgeView;
-import phylosketch.window.PhyloView;
+import phylosketch.view.EdgeView;
+import phylosketch.view.PhyloView;
 
 import java.util.Collection;
 import java.util.Collections;

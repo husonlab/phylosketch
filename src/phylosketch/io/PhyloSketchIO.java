@@ -37,9 +37,9 @@ import jloda.util.*;
 import jloda.util.parse.NexusStreamParser;
 import org.xml.sax.SAXException;
 import phylosketch.embed.RootedNetworkEmbedder;
-import phylosketch.window.EdgeView;
-import phylosketch.window.NodeView;
-import phylosketch.window.PhyloView;
+import phylosketch.view.EdgeView;
+import phylosketch.view.NodeView;
+import phylosketch.view.PhyloView;
 import splitstree5.core.datablocks.NetworkBlock;
 import splitstree5.core.datablocks.TaxaBlock;
 import splitstree5.io.imports.nexml.handlers.NexmlTreesHandler;
@@ -144,10 +144,10 @@ public class PhyloSketchIO {
         final TaxaNexusInput taxaInput = new TaxaNexusInput();
         final NetworkNexusInput networkInput = new NetworkNexusInput();
 
-        try (NexusStreamParser np = new NexusStreamParser(new FileReader(selectedFile))) {
-            taxaInput.parse(np, taxaBlock);
-            networkInput.parse(np, taxaBlock, networkBlock);
-        }
+		try (NexusStreamParser np = new NexusStreamParser(new FileReader(selectedFile))) {
+			taxaInput.parse(np, taxaBlock);
+			networkInput.parse(np, taxaBlock, networkBlock);
+		}
 
         for (Node v : graph.nodes()) {
 			final NetworkBlock.NodeData nodeData = networkBlock.getNodeData(v);

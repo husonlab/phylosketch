@@ -23,7 +23,7 @@ import javafx.stage.Stage;
 import jloda.fx.label.EditLabelDialog;
 import jloda.graph.Node;
 import phylosketch.commands.ChangeNodeLabelsCommand;
-import phylosketch.window.PhyloView;
+import phylosketch.view.PhyloView;
 
 import java.util.Collections;
 import java.util.Optional;

@@ -22,7 +22,7 @@ package phylosketch.commands;
 import javafx.scene.layout.Pane;
 import jloda.fx.undo.CompositeCommand;
 import jloda.graph.Node;
-import phylosketch.window.PhyloView;
+import phylosketch.view.PhyloView;
 
 import java.util.*;
 import java.util.stream.Collectors;

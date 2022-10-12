@@ -11,14 +11,16 @@ module phylosketch {
 
     exports phylosketch.main;
     exports phylosketch.window;
-    exports phylosketch.util;
-    exports phylosketch.commands;
+	exports phylosketch.util;
+	exports phylosketch.commands;
 
-    opens phylosketch.window;
-    opens phylosketch.resources.icons;
-    opens phylosketch.resources.images;
+	opens phylosketch.window;
+	opens phylosketch.resources.icons;
+	opens phylosketch.resources.images;
 
-    opens phylosketch.formattab;
-    opens phylosketch.formattab.fontselector;
+	opens phylosketch.formattab;
+	opens phylosketch.formattab.fontselector;
 	exports phylosketch.algorithms;
+	exports phylosketch.view;
+	opens phylosketch.view;
 }

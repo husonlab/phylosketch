@@ -24,7 +24,7 @@ import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
 import jloda.util.Pair;
 import phylosketch.commands.ChangeNodeLabelsCommand;
-import phylosketch.window.PhyloView;
+import phylosketch.view.PhyloView;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -44,7 +44,7 @@ public class LabelLeaves {
         final Set<String> seen = new HashSet<>();
         graph.nodeStream().filter(v -> graph.getLabel(v) != null).forEach(v -> seen.add(graph.getLabel(v)));
 
-        return sortLeaves(editor).stream().filter(v -> editor.getLabel(v).getText().length() == 0).map(v -> new ChangeNodeLabelsCommand.Data(v.getId(), editor.getLabel(v).getText(), getNextLabelABC(seen))).collect(Collectors.toList());
+        return sortLeaves(editor).stream().filter(v -> editor.getLabel(v).getRawText().length() == 0).map(v -> new ChangeNodeLabelsCommand.Data(v.getId(), editor.getLabel(v).getText(), getNextLabelABC(seen))).collect(Collectors.toList());
     }
 
     public static List<ChangeNodeLabelsCommand.Data> labelInternalABC(PhyloView editor) {
@@ -52,7 +52,7 @@ public class LabelLeaves {
 
         final Set<String> seen = new HashSet<>();
         graph.nodeStream().filter(v -> graph.getLabel(v) != null).forEach(v -> seen.add(graph.getLabel(v)));
-        return sortInternal(editor).stream().filter(v -> editor.getLabel(v).getText().length() == 0).map(v -> new ChangeNodeLabelsCommand.Data(v.getId(), editor.getLabel(v).getText(), getNextLabelABC(seen))).collect(Collectors.toList());
+        return sortInternal(editor).stream().filter(v -> editor.getLabel(v).getRawText().length() == 0).map(v -> new ChangeNodeLabelsCommand.Data(v.getId(), editor.getLabel(v).getText(), getNextLabelABC(seen))).collect(Collectors.toList());
     }
 
     public static List<ChangeNodeLabelsCommand.Data> labelLeaves123(PhyloView editor) {
@@ -60,7 +60,7 @@ public class LabelLeaves {
 
         final Set<String> seen = new HashSet<>();
         graph.nodeStream().filter(v -> graph.getLabel(v) != null).forEach(v -> seen.add(graph.getLabel(v)));
-        return sortLeaves(editor).stream().filter(v -> editor.getLabel(v).getText().length() == 0).map(v -> new ChangeNodeLabelsCommand.Data(v.getId(), editor.getLabel(v).getText(), getNextLabel123(seen))).collect(Collectors.toList());
+        return sortLeaves(editor).stream().filter(v -> editor.getLabel(v).getRawText().length() == 0).map(v -> new ChangeNodeLabelsCommand.Data(v.getId(), editor.getLabel(v).getText(), getNextLabel123(seen))).collect(Collectors.toList());
     }
 
     public static List<ChangeNodeLabelsCommand.Data> labelInternal123(PhyloView editor) {
@@ -68,7 +68,7 @@ public class LabelLeaves {
 
         final Set<String> seen = new HashSet<>();
         graph.nodeStream().filter(v -> graph.getLabel(v) != null).forEach(v -> seen.add(graph.getLabel(v)));
-        return sortInternal(editor).stream().filter(v -> editor.getLabel(v).getText().length() == 0).map(v -> new ChangeNodeLabelsCommand.Data(v.getId(), editor.getLabel(v).getText(), getNextLabel123(seen))).collect(Collectors.toList());
+        return sortInternal(editor).stream().filter(v -> editor.getLabel(v).getRawText().length() == 0).map(v -> new ChangeNodeLabelsCommand.Data(v.getId(), editor.getLabel(v).getText(), getNextLabel123(seen))).collect(Collectors.toList());
     }
 
     public static void labelLeaves(Stage owner, PhyloView editor) {

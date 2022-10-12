@@ -27,8 +27,8 @@ import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
 import jloda.util.Pair;
 import jloda.util.Triplet;
-import phylosketch.window.NodeView;
-import phylosketch.window.PhyloView;
+import phylosketch.view.NodeView;
+import phylosketch.view.PhyloView;
 
 import java.util.ArrayList;
 

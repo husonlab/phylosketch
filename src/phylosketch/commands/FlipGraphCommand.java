@@ -30,8 +30,8 @@ import jloda.util.IteratorUtils;
 import jloda.util.Pair;
 import jloda.util.ProgramProperties;
 import jloda.util.Triplet;
-import phylosketch.window.NodeView;
-import phylosketch.window.PhyloView;
+import phylosketch.view.NodeView;
+import phylosketch.view.PhyloView;
 
 import java.util.List;
 import java.util.stream.Collectors;

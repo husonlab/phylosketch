@@ -27,7 +27,7 @@ import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.fx.util.GeometryUtilsFX;
 import jloda.util.IteratorUtils;
 import jloda.util.ProgramProperties;
-import phylosketch.window.PhyloView;
+import phylosketch.view.PhyloView;
 
 /**
  * rotate the graph clockwise or anticlockwise by 90o

@@ -32,6 +32,7 @@ import jloda.fx.window.MainWindowManager;
 import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 import phylosketch.io.PhyloSketchFileOpener;
+import phylosketch.view.PhyloView;
 
 import java.util.Arrays;
 
@@ -89,7 +90,7 @@ public class MainWindow implements IMainWindow {
 
 		getStage().titleProperty().addListener((e) -> MainWindowManager.getInstance().fireChanged());
 
-		ControlBindings.setup(this);
+		MainWindowPresenter.setup(this);
 
 		view.fileNameProperty().addListener(c -> stage.setTitle(FileUtils.getFileNameWithoutPath(view.getFileName()) + (view.isDirty() ? "*" : "")
 																+ " - " + ProgramProperties.getProgramName()));

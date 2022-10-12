@@ -30,8 +30,8 @@ import jloda.graph.Node;
 import jloda.util.Single;
 import phylosketch.commands.*;
 import phylosketch.main.PhyloSketch;
+import phylosketch.view.PhyloView;
 import phylosketch.window.MainWindow;
-import phylosketch.window.PhyloView;
 
 /**
  * style tab for setting fonts etc

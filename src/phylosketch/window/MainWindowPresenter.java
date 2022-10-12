@@ -1,5 +1,5 @@
 /*
- * ControlBindings.java Copyright (C) 2022 Daniel H. Huson
+ * MainWindowPresenter.java Copyright (C) 2022 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -60,6 +60,7 @@ import phylosketch.io.*;
 import phylosketch.util.LabelLeaves;
 import phylosketch.util.NewWindow;
 import phylosketch.util.RubberBandSelectionHandler;
+import phylosketch.view.PhyloView;
 import splitstree5.gui.utils.RubberBandSelection;
 import splitstree5.main.CheckForUpdate;
 
@@ -77,7 +78,7 @@ import java.util.stream.Stream;
  * setup control bindings
  * Daniel Huson, 1.2020
  */
-public class ControlBindings {
+public class MainWindowPresenter {
 
     public static void setup(MainWindow window) {
         final MainWindowController controller = window.getController();

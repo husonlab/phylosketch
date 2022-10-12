@@ -25,8 +25,8 @@ import javafx.util.Duration;
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Node;
 import jloda.util.ProgramProperties;
-import phylosketch.window.NodeView;
-import phylosketch.window.PhyloView;
+import phylosketch.view.NodeView;
+import phylosketch.view.PhyloView;
 
 import java.util.ArrayList;
 import java.util.Collection;

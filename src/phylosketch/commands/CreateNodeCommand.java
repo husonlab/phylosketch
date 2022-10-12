@@ -23,7 +23,7 @@ import javafx.scene.layout.Pane;
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
-import phylosketch.window.PhyloView;
+import phylosketch.view.PhyloView;
 
 /**
  * create a node

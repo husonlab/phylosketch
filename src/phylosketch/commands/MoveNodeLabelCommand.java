@@ -22,7 +22,7 @@ package phylosketch.commands;
 import jloda.fx.control.RichTextLabel;
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Node;
-import phylosketch.window.PhyloView;
+import phylosketch.view.PhyloView;
 
 /**
  * move node label

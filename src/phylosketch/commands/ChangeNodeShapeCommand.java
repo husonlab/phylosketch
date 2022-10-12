@@ -22,7 +22,7 @@ package phylosketch.commands;
 import jloda.fx.shapes.NodeShape;
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Node;
-import phylosketch.window.PhyloView;
+import phylosketch.view.PhyloView;
 
 import java.util.ArrayList;
 import java.util.Collection;

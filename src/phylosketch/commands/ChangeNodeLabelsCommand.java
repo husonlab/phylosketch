@@ -20,7 +20,7 @@
 package phylosketch.commands;
 
 import jloda.fx.undo.UndoableRedoableCommand;
-import phylosketch.window.PhyloView;
+import phylosketch.view.PhyloView;
 
 import java.util.List;
 

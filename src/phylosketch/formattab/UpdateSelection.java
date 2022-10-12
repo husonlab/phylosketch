@@ -25,9 +25,9 @@ import jloda.fx.control.RichTextLabel;
 import jloda.fx.shapes.NodeShape;
 import jloda.graph.Edge;
 import jloda.graph.Node;
-import phylosketch.window.EdgeView;
-import phylosketch.window.NodeView;
-import phylosketch.window.PhyloView;
+import phylosketch.view.EdgeView;
+import phylosketch.view.NodeView;
+import phylosketch.view.PhyloView;
 
 public class UpdateSelection {
 

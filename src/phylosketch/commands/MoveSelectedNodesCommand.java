@@ -24,7 +24,7 @@ import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
-import phylosketch.window.PhyloView;
+import phylosketch.view.PhyloView;
 
 import java.util.HashMap;
 import java.util.List;

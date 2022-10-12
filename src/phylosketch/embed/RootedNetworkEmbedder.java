@@ -24,8 +24,8 @@ import javafx.scene.shape.CubicCurve;
 import jloda.graph.*;
 import jloda.phylo.PhyloTree;
 import jloda.util.NumberUtils;
-import phylosketch.window.EdgeView;
-import phylosketch.window.PhyloView;
+import phylosketch.view.EdgeView;
+import phylosketch.view.PhyloView;
 
 import java.util.*;
 

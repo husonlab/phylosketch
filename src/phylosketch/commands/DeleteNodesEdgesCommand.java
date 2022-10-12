@@ -27,9 +27,9 @@ import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
 import jloda.util.IteratorUtils;
-import phylosketch.window.EdgeView;
-import phylosketch.window.NodeView;
-import phylosketch.window.PhyloView;
+import phylosketch.view.EdgeView;
+import phylosketch.view.NodeView;
+import phylosketch.view.PhyloView;
 
 import java.util.ArrayList;
 import java.util.Collection;

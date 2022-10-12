@@ -21,7 +21,7 @@ package phylosketch.commands;
 
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Node;
-import phylosketch.window.PhyloView;
+import phylosketch.view.PhyloView;
 
 /**
  * change a node label

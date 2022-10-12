@@ -24,7 +24,7 @@ import javafx.scene.shape.CubicCurve;
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Edge;
 import jloda.util.Pair;
-import phylosketch.window.PhyloView;
+import phylosketch.view.PhyloView;
 
 /**
  * change edge shape command

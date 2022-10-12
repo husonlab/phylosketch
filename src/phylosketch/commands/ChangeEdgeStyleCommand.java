@@ -21,7 +21,7 @@ package phylosketch.commands;
 
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Edge;
-import phylosketch.window.PhyloView;
+import phylosketch.view.PhyloView;
 
 import java.util.ArrayList;
 import java.util.Collection;
