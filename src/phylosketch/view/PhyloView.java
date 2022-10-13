@@ -56,7 +56,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * editor
+ * phylo view
  * Daniel Huson, 1.2020
  */
 public class PhyloView {
@@ -74,17 +74,12 @@ public class PhyloView {
          * @return resulting root location
          */
         public RootLocation next(boolean clockwise) {
-            switch (this) {
-                default:
-                case Top:
-                    return clockwise ? Right : Left;
-                case Bottom:
-                    return clockwise ? Left : Right;
-                case Left:
-                    return clockwise ? Top : Bottom;
-                case Right:
-                    return clockwise ? Bottom : Top;
-            }
+            return switch (this) {
+                case Top -> clockwise ? Right : Left;
+                case Bottom -> clockwise ? Left : Right;
+                case Left -> clockwise ? Top : Bottom;
+                case Right -> clockwise ? Bottom : Top;
+            };
         }
 
         /**
@@ -94,17 +89,12 @@ public class PhyloView {
          * @return resulting root location
          */
         public RootLocation opposite(boolean horizontal) {
-            switch (this) {
-                default:
-                case Top:
-                    return horizontal ? Top : Bottom;
-                case Bottom:
-                    return horizontal ? Bottom : Top;
-                case Left:
-                    return horizontal ? Right : Left;
-                case Right:
-                    return horizontal ? Left : Right;
-            }
+            return switch (this) {
+                case Top -> horizontal ? Top : Bottom;
+                case Bottom -> horizontal ? Bottom : Top;
+                case Left -> horizontal ? Right : Left;
+                case Right -> horizontal ? Left : Right;
+            };
 
         }
     }
