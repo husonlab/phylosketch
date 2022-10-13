@@ -27,7 +27,7 @@ import javafx.scene.control.ComboBoxBase;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import jloda.fx.shapes.NodeShape;
-import jloda.util.ProgramProperties;
+import jloda.fx.util.ProgramProperties;
 import phylosketch.formattab.fontselector.FontSelector;
 
 public class FormatTabController {

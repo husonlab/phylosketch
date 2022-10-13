@@ -22,8 +22,8 @@ package phylosketch.io;
 import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import jloda.fx.util.ProgramProperties;
 import jloda.fx.window.NotificationManager;
-import jloda.util.ProgramProperties;
 
 import java.io.File;
 

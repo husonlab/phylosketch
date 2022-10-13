@@ -33,6 +33,7 @@ import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import jloda.fx.graph.GraphFX;
 import jloda.fx.util.AService;
+import jloda.fx.util.ProgramProperties;
 import jloda.graph.EdgeSet;
 import jloda.graph.Graph;
 import jloda.graph.Node;
@@ -40,7 +41,6 @@ import jloda.phylo.PhyloTree;
 import jloda.phylo.algorithms.OffspringGraphMatching;
 import jloda.phylo.algorithms.RootedNetworkProperties;
 import jloda.util.IteratorUtils;
-import jloda.util.ProgramProperties;
 
 /**
  * setup network properties

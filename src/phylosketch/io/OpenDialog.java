@@ -21,8 +21,8 @@ package phylosketch.io;
 
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import jloda.fx.util.ProgramProperties;
 import jloda.fx.util.TextFileFilter;
-import jloda.util.ProgramProperties;
 
 import java.io.File;
 

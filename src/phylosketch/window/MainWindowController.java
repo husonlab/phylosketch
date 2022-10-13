@@ -30,9 +30,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import jloda.fx.control.ZoomableScrollPane;
+import jloda.fx.util.ProgramProperties;
 import jloda.fx.window.IMainWindow;
 import jloda.fx.window.MainWindowManager;
-import jloda.util.ProgramProperties;
 
 import java.util.ArrayList;
 

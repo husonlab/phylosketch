@@ -23,8 +23,8 @@ import javafx.animation.Animation;
 import javafx.animation.Transition;
 import javafx.util.Duration;
 import jloda.fx.undo.UndoableRedoableCommand;
+import jloda.fx.util.ProgramProperties;
 import jloda.graph.Node;
-import jloda.util.ProgramProperties;
 import phylosketch.view.NodeView;
 import phylosketch.view.PhyloView;
 

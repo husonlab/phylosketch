@@ -27,10 +27,10 @@ import javafx.stage.Stage;
 import jloda.fx.util.ExtendedFXMLLoader;
 import jloda.fx.util.FileOpenManager;
 import jloda.fx.util.MemoryUsage;
+import jloda.fx.util.ProgramProperties;
 import jloda.fx.window.IMainWindow;
 import jloda.fx.window.MainWindowManager;
 import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
 import phylosketch.io.PhyloSketchFileOpener;
 import phylosketch.view.PhyloView;
 

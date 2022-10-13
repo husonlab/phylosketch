@@ -25,8 +25,8 @@ import javafx.geometry.Point2D;
 import javafx.util.Duration;
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.fx.util.GeometryUtilsFX;
+import jloda.fx.util.ProgramProperties;
 import jloda.util.IteratorUtils;
-import jloda.util.ProgramProperties;
 import phylosketch.view.PhyloView;
 
 /**

@@ -20,9 +20,9 @@
 package phylosketch.io;
 
 import javafx.stage.FileChooser;
+import jloda.fx.util.ProgramProperties;
 import jloda.fx.util.RecentFilesManager;
 import jloda.fx.util.TextFileFilter;
-import jloda.util.ProgramProperties;
 import phylosketch.window.MainWindow;
 
 import java.io.File;
