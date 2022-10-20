@@ -96,7 +96,7 @@ public class EdgeView {
         final BooleanProperty isSelected = new SimpleBooleanProperty(view.getEdgeSelection().isSelected(edge));
         view.getEdgeSelection().getSelectedItems().addListener((InvalidationListener) c -> isSelected.set(view.getEdgeSelection().isSelected(edge)));
 
-        MouseDragClosestNode.setup(curve, isSelected, view.getNode2View().get(edge.getSource()).getShapeGroup(), circle1,
+        MouseDragClosestNode.setup(false, curve, isSelected, view.getNode2View().get(edge.getSource()).getShapeGroup(), circle1,
                 view.getNode2View().get(edge.getTarget()).getShapeGroup(), circle2,
                 (circle, delta) -> view.getUndoManager().add(new EdgeShapeCommand(view, translatingControl.apply((Circle) circle), delta)));
 
