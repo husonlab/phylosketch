@@ -51,18 +51,17 @@ public class SetupNetworkProperties {
 
 	/**
 	 * setup network properties
-	 *
 	 */
-	public static <G extends Graph> void setup(FlowPane statusFlowPane, GraphFX<G> graphFX, BooleanProperty leafLabeledDAGProperty) {
+	public static <G extends Graph> void setup(FlowPane statusFlowPane, GraphFX<G> graphFX, BooleanProperty updatingProperties, BooleanProperty leafLabeledDAGProperty) {
 		if (fontSize.get() < 2)
 			fontSize.set(ProgramProperties.get("StatusPaneFontSize", 14));
 
-		graphFX.getNodeList().addListener((InvalidationListener) z -> update(statusFlowPane, graphFX, leafLabeledDAGProperty));
-		graphFX.getEdgeList().addListener((InvalidationListener) z -> update(statusFlowPane, graphFX, leafLabeledDAGProperty));
+		graphFX.getNodeList().addListener((InvalidationListener) z -> update(statusFlowPane, graphFX, updatingProperties, leafLabeledDAGProperty));
+		graphFX.getEdgeList().addListener((InvalidationListener) z -> update(statusFlowPane, graphFX, updatingProperties, leafLabeledDAGProperty));
 		graphFX.getNodeList().addListener((ListChangeListener<Node>) (z) -> {
 			while (z.next()) {
 				for (Node v : z.getAddedSubList()) {
-					graphFX.nodeLabelProperty(v).addListener(c -> update(statusFlowPane, graphFX, leafLabeledDAGProperty));
+					graphFX.nodeLabelProperty(v).addListener(c -> update(statusFlowPane, graphFX, updatingProperties, leafLabeledDAGProperty));
 				}
 			}
 		});
@@ -89,8 +88,9 @@ public class SetupNetworkProperties {
 		});
 	}
 
-	public static <G extends Graph> void update(FlowPane statusFlowPane, GraphFX<G> graphFX, BooleanProperty leafLabeledDAGProperty) {
-		if (graphFX.isNotUpdatingPropertiesAndSet()) {
+	public static <G extends Graph> void update(FlowPane statusFlowPane, GraphFX<G> graphFX, BooleanProperty updatingProperties, BooleanProperty leafLabeledDAGProperty) {
+		if (!updatingProperties.get()) {
+			updatingProperties.set(true);
 			statusFlowPane.getChildren().clear();
 
 			final PhyloTree graph = (PhyloTree) graphFX.getGraph();
@@ -161,10 +161,10 @@ public class SetupNetworkProperties {
 
 			service.stateProperty().addListener((c, o, n) -> {
 				if (o == Worker.State.RUNNING && n != Worker.State.RUNNING) {
-					graphFX.setUpdatingProperties(false);
-					for (Object object : statusFlowPane.getChildren()) {
-						if (object instanceof Shape) {
-							((Shape) object).prefWidth(30);
+					updatingProperties.set(false);
+					for (var object : statusFlowPane.getChildren()) {
+						if (object instanceof Shape shape) {
+							shape.prefWidth(30);
 						}
 					}
 				}

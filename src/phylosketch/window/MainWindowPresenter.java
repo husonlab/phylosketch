@@ -100,7 +100,7 @@ public class MainWindowPresenter {
         contentPane.prefWidthProperty().bind(controller.getBorderPane().widthProperty());
         contentPane.prefHeightProperty().bind(controller.getBorderPane().heightProperty());
 
-        final BooleanProperty hasBackgroundImage = new SimpleBooleanProperty(false);
+        final var hasBackgroundImage = new SimpleBooleanProperty(false);
         contentPane.getChildren().addListener((InvalidationListener) c -> hasBackgroundImage.set(contentPane.getChildren().size() > 0 && contentPane.getChildren().get(0) instanceof ImageView));
 
         controller.getInfoLabelsVBox().visibleProperty().bind(view.getGraphFX().emptyProperty());
@@ -109,24 +109,25 @@ public class MainWindowPresenter {
         new RubberBandSelection(contentPane, scrollPane, view.getWorld(), RubberBandSelectionHandler.create(graph, nodeSelection,
                 edgeSelection, v -> view.getNodeView(v).getShape(), view::getCurve));
 
-        final BooleanProperty isLeafLabeledDAG = new SimpleBooleanProperty(false);
-        SetupNetworkProperties.setup(controller.getStatusFlowPane(), view.getGraphFX(), isLeafLabeledDAG);
+        final var updatingProperties = new SimpleBooleanProperty(false);
+        final var isLeafLabeledDAG = new SimpleBooleanProperty(false);
+        SetupNetworkProperties.setup(controller.getStatusFlowPane(), view.getGraphFX(), updatingProperties, isLeafLabeledDAG);
 
         view.getGraphFX().getEdgeList().addListener((ListChangeListener<Edge>) c -> {
             while (c.next()) {
-                for (Edge e : c.getAddedSubList()) {
+                for (var e : c.getAddedSubList()) {
                     if (e.getTarget().getInDegree() > 1) {
-                        for (Edge f : e.getTarget().inEdges()) {
+                        for (var f : e.getTarget().inEdges()) {
                             graph.setReticulate(f, true);
-							graph.setWeight(f, 0);
+                            graph.setWeight(f, 0);
                         }
                     }
                 }
-                for (Edge e : c.getRemoved()) {
+                for (var e : c.getRemoved()) {
                     if (e.getTarget().getInDegree() <= 1) {
-                        for (Edge f : e.getTarget().inEdges()) {
-							graph.setReticulate(f, false);
-							graph.setWeight(f, 1);
+                        for (var f : e.getTarget().inEdges()) {
+                            graph.setReticulate(f, false);
+                            graph.setWeight(f, 1);
                         }
                     }
                 }

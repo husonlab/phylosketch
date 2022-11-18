@@ -25,7 +25,6 @@ import javafx.scene.shape.CubicCurve;
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
-import jloda.util.Pair;
 import jloda.util.Triplet;
 import phylosketch.view.NodeView;
 import phylosketch.view.PhyloView;
@@ -41,9 +40,6 @@ public class ZoomCommand extends UndoableRedoableCommand {
 
     private final ArrayList<Triplet<Integer, Double, Double>> oldNodes = new ArrayList<>();
     private final ArrayList<Triplet<Integer, Double, Double>> newNodes = new ArrayList<>();
-
-    private final ArrayList<Pair<Integer, double[]>> oldEdges = new ArrayList<>();
-    private final ArrayList<Pair<Integer, double[]>> newEdges = new ArrayList<>();
 
     public ZoomCommand(double zoomFactorX, double zoomFactorY, Pane mainPane, PhyloView editor) {
         super("Zoom");
