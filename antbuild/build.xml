@@ -18,7 +18,7 @@
 -->
 <project name="PhyloSketch" default="jar" basedir=".">
 
-    <property name="jfxDir" value="../../javafx/lib"/>
+    <property name="jfxDir" value="/Users/huson/lib/javafx/lib"/>
     <property name="jlodaAntDir" value="../../jloda/antbuild"/>
     <property name="splitstree5AntDir" value="../../splitstree5/antbuild"/>
     <property name="buildSrcDir" value="../antbuild/src"/>

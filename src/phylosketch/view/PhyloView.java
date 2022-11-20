@@ -41,6 +41,7 @@ import jloda.fx.undo.UndoManager;
 import jloda.fx.util.GeometryUtilsFX;
 import jloda.fx.util.SelectionEffect;
 import jloda.graph.*;
+import jloda.graph.algorithms.IsDAG;
 import jloda.phylo.PhyloTree;
 import jloda.util.IteratorUtils;
 import jloda.util.Single;
@@ -397,7 +398,18 @@ public class PhyloView {
                     final double y = line.getEndY();
 
                     final Node w = findNodeIfHit(c.getScreenX(), c.getScreenY());
-                    undoManager.doAndAdd(new NewEdgeAndNodeCommand(pane, this, v, w, x, y));
+
+                    var isDag = true;
+                    if (w != null) {
+                        var e = graph.newEdge(v, w);
+                        try {
+                            isDag = IsDAG.apply(graph);
+                        } finally {
+                            graph.deleteEdge(e);
+                        }
+                    }
+                    if (isDag)
+                        undoManager.doAndAdd(new NewEdgeAndNodeCommand(pane, this, v, w, x, y));
                     nodeView.getShapeGroup().setCursor(Cursor.CROSSHAIR);
                 }
                 moved.set(false);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<install4j version="9.0.5" transformSequenceNumber="9">
+<install4j version="10.0.3" transformSequenceNumber="10">
   <directoryPresets config="../../javafx-jmods" />
   <application name="PhyloSketch" applicationId="6936-1140-5584-9278" mediaDir="../../../builds" shortName="PhyloSketch" publisher="Daniel Huson and Mike Steel" publisherWeb="http://www.husonlab.org/phylosketch" version="0.0.1_alpha" allPathsRelative="true" macVolumeId="b8c0a1154e563a9a" javaMinVersion="13">
     <codeSigning macEnabled="true" macPkcs12File="../../../../etc/application.p12" windowsEnabled="true" windowsPkcs12File="../../../../etc/windows.pfx" macNotarize="true" appleId="daniel@huson.de">
@@ -9,11 +9,11 @@
         <entry>sqlite-*</entry>
       </macSearchedJars>
     </codeSigning>
-    <jreBundles jdkProviderId="Liberica" release="18/18.0.1+12">
+    <jreBundles jdkProviderId="Liberica" release="18/18.0.2.1+1">
       <modules />
     </jreBundles>
   </application>
-  <files preserveSymlinks="false">
+  <files>
     <mountPoints>
       <mountPoint id="1691242167" location="jars" />
       <mountPoint id="1691243203" location="jars2" />
@@ -74,7 +74,6 @@
           <directory location="jars" failOnError="false" />
         </modulePath>
       </java>
-      <macStaticAssociationActions mode="selected" />
       <iconImageFiles>
         <file path="../src/phylosketch/resources/icons/PhyloSketch-16.png" />
         <file path="../src/phylosketch/resources/icons/PhyloSketch-32.png" />
@@ -1128,7 +1127,7 @@ return true;</property>
       </variables>
       <jreBundle includedJre="macosx-amd64-12.0.1" />
     </macosFolder>
-    <windows name="Windows64bit" id="1691242288" installDir="PhyloSketch" overridePrincipalLanguage="true">
+    <windows name="Windows64bit" id="1691242288" installDir="PhyloSketch" overridePrincipalLanguage="true" architecture="64">
       <overriddenPrincipalLanguage id="409" />
       <exclude>
         <entry location="tools" />

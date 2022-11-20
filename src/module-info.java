@@ -1,5 +1,4 @@
 module phylosketch {
-    requires transitive jloda;
     requires transitive splitstreefive;
 
     requires transitive javafx.controls;
@@ -8,9 +7,10 @@ module phylosketch {
     requires transitive java.desktop;
 
     requires com.install4j.runtime;
+	requires jloda;
 
-    exports phylosketch.main;
-    exports phylosketch.window;
+	exports phylosketch.main;
+	exports phylosketch.window;
 	exports phylosketch.util;
 	exports phylosketch.commands;
 
