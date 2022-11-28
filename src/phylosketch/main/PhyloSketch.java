@@ -66,8 +66,8 @@ public class PhyloSketch extends Application {
                 "This is free software, licensed under the terms of the GNU General Public License, Version 3.\n" +
                 "Sources available at: https://github.com/husonlab/phylosketch\n");
 
-        CheckForUpdate.programURL = "http://software-ab.informatik.uni-tuebingen.de/download/phylosketch";
-        CheckForUpdate.applicationId = "1691242391";
+        CheckForUpdate.programURL = "https://software-ab.cs.uni-tuebingen.de/download/phylosketch";
+		CheckForUpdate.applicationId = "1691242391";
 
         SplashScreen.setLabelAnchor(new Point2D(230, 10));
         SplashScreen.setVersionString(ProgramProperties.getProgramVersion());
