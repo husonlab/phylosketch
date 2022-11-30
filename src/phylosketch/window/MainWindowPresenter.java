@@ -38,6 +38,8 @@ import jloda.fx.control.RichTextLabel;
 import jloda.fx.control.ZoomableScrollPane;
 import jloda.fx.find.FindToolBar;
 import jloda.fx.find.GraphSearcher;
+import jloda.fx.selection.rubberband.RubberBandSelection;
+import jloda.fx.selection.rubberband.RubberBandSelectionHandler;
 import jloda.fx.undo.UndoManager;
 import jloda.fx.util.*;
 import jloda.fx.window.MainWindowManager;
@@ -55,9 +57,7 @@ import phylosketch.formattab.FormatTab;
 import phylosketch.io.*;
 import phylosketch.util.LabelLeaves;
 import phylosketch.util.NewWindow;
-import phylosketch.util.RubberBandSelectionHandler;
 import phylosketch.view.PhyloView;
-import splitstree5.gui.utils.RubberBandSelection;
 import splitstree5.main.CheckForUpdate;
 
 import java.io.IOException;
@@ -106,8 +106,8 @@ public class MainWindowPresenter {
         controller.getInfoLabelsVBox().visibleProperty().bind(view.getGraphFX().emptyProperty());
         controller.getInfoLabelsVBox().setMouseTransparent(true);
 
-        new RubberBandSelection(contentPane, scrollPane, view.getWorld(), RubberBandSelectionHandler.create(graph, nodeSelection,
-                edgeSelection, v -> view.getNodeView(v).getShape(), view::getCurve));
+		new RubberBandSelection(contentPane, scrollPane, view.getWorld(), RubberBandSelectionHandler.create(graph, nodeSelection,
+				edgeSelection, v -> view.getNodeView(v).getShape()));
 
         final var updatingProperties = new SimpleBooleanProperty(false);
         final var isLeafLabeledDAG = new SimpleBooleanProperty(false);
