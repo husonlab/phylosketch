@@ -86,16 +86,16 @@ public class PhyloSketchIO {
 			}
 
             nodeData.put("type", NodeShape.getCode(nodeView.getShape()));
-            if (!nodeView.getShape().getFill().equals(Color.WHITE))
-                nodeData.put("clr", nodeView.getShape().getFill().toString());
+            if (nodeView.getShape().getFill() != null)
+				nodeData.put("clr", nodeView.getShape().getFill().toString());
             final RichTextLabel label = nodeView.getLabel();
             if (label.getText().length() > 0) {
                 nodeData.put("text", label.getText());
                 nodeData.put("lx", String.format("%.2f", label.getLayoutX()));
                 nodeData.put("ly", String.format("%.2f", label.getLayoutY()));
 
-                if (!label.getTextFill().equals(Color.BLACK))
-                    nodeData.put("lclr", label.getTextFill().toString());
+				if (label.getTextFill() != null)
+					nodeData.put("lclr", label.getTextFill().toString());
 
                 if (!label.getFont().equals(PhyloView.DefaultFont))
                     nodeData.put("font", label.getFont().getFamily() + "," + label.getFont().getStyle() + "," + label.getFont().getSize());

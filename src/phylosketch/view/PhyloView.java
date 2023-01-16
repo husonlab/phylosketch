@@ -399,17 +399,19 @@ public class PhyloView {
 
                     final Node w = findNodeIfHit(c.getScreenX(), c.getScreenY());
 
-                    var isDag = true;
-                    if (w != null) {
-                        var e = graph.newEdge(v, w);
-                        try {
-                            isDag = IsDAG.apply(graph);
-                        } finally {
-                            graph.deleteEdge(e);
+                    if (w != v) {
+                        var isDag = true;
+                        if (w != null) {
+                            var e = graph.newEdge(v, w);
+                            try {
+                                isDag = IsDAG.apply(graph);
+                            } finally {
+                                graph.deleteEdge(e);
+                            }
                         }
+                        if (isDag)
+                            undoManager.doAndAdd(new NewEdgeAndNodeCommand(pane, this, v, w, x, y));
                     }
-                    if (isDag)
-                        undoManager.doAndAdd(new NewEdgeAndNodeCommand(pane, this, v, w, x, y));
                     nodeView.getShapeGroup().setCursor(Cursor.CROSSHAIR);
                 }
                 moved.set(false);
