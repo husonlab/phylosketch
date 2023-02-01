@@ -561,6 +561,7 @@
                                                                     shift="DOWN" shortcut="DOWN"/>
                                             </accelerator>
                                         </MenuItem>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
                                         <MenuItem fx:id="selectLowestStableAncestorMenuItem"
                                                   text="Lowest Stable Ancestor"/>
                                     </items>
