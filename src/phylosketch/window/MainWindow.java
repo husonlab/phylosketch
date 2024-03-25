@@ -75,8 +75,8 @@ public class MainWindow implements IMainWindow {
 
     @Override
     public void show(Stage stage0, double screenX, double screenY, double width, double height) {
-		if (stage == null)
-			stage = new Stage();
+		if (stage0 == null)
+			stage0 = new Stage();
 		this.stage = stage0;
 		stage.getIcons().addAll(ProgramProperties.getProgramIconsFX());
 

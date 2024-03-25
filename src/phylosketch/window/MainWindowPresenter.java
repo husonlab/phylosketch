@@ -33,6 +33,7 @@ import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 import jloda.fx.control.ItemSelectionModel;
 import jloda.fx.control.RichTextLabel;
 import jloda.fx.control.ZoomableScrollPane;
@@ -40,6 +41,7 @@ import jloda.fx.find.FindToolBar;
 import jloda.fx.find.GraphSearcher;
 import jloda.fx.selection.rubberband.RubberBandSelection;
 import jloda.fx.selection.rubberband.RubberBandSelectionHandler;
+import jloda.fx.undo.CompositeCommand;
 import jloda.fx.undo.UndoManager;
 import jloda.fx.util.*;
 import jloda.fx.window.MainWindowManager;
@@ -50,16 +52,19 @@ import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.phylo.PhyloTree;
 import jloda.phylo.algorithms.RootedNetworkProperties;
+import jloda.util.FileUtils;
 import jloda.util.StringUtils;
-import phylosketch.algorithms.RunNormalize;
+import phylosketch.algorithms.Extract;
 import phylosketch.commands.*;
 import phylosketch.formattab.FormatTab;
 import phylosketch.io.*;
+import phylosketch.pdf.SaveToPDF;
 import phylosketch.util.LabelLeaves;
 import phylosketch.util.NewWindow;
 import phylosketch.view.PhyloView;
 import splitstree5.main.CheckForUpdate;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -164,8 +169,28 @@ public class MainWindowPresenter {
 
         controller.getExportMenuItem().setOnAction(e -> PhyloSketchIO.exportNewick(window.getStage(), view));
         controller.getExportMenuItem().disableProperty().bind(isLeafLabeledDAG.not());
+
         controller.getExportButton().setOnAction(controller.getExportMenuItem().getOnAction());
         controller.getExportButton().disableProperty().bind(controller.getExportMenuItem().disableProperty());
+
+        controller.getExportPDFMenuItem().setOnAction(e -> {
+            var fileChooser = new FileChooser();
+            fileChooser.setTitle("Export to PDF - " + ProgramProperties.getProgramVersion());
+            var file = new File(FileUtils.replaceFileSuffix(window.getView().getFileName(), ".pdf"));
+            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("PDF", "*.pdf"));
+            fileChooser.setInitialDirectory(file.getParentFile());
+            fileChooser.setInitialFileName(file.getName());
+            file = fileChooser.showSaveDialog(window.getStage());
+            if (file != null) {
+                try {
+                    SaveToPDF.apply(contentPane, file);
+                } catch (IOException ex) {
+                    NotificationManager.showError("Export to PDF failed: " + ex.getMessage());
+                }
+            }
+        });
+        controller.getExportPDFMenuItem().disableProperty().bind(isLeafLabeledDAG.not());
+
 
         controller.getPageSetupMenuItem().setOnAction((e) -> Print.showPageLayout(window.getStage()));
 
@@ -247,8 +272,11 @@ public class MainWindowPresenter {
             }
         });
 
-        controller.getNormalizationMenuItem().setOnAction(c -> RunNormalize.apply(window));
+        controller.getNormalizationMenuItem().setOnAction(c -> Extract.apply(window, Extract.Normalization));
         controller.getNormalizationMenuItem().disableProperty().bind(isLeafLabeledDAG.not());
+
+        controller.getLsaTreeMenuItem().setOnAction(c -> Extract.apply(window, Extract.LSA));
+        controller.getLsaTreeMenuItem().disableProperty().bind(isLeafLabeledDAG.not());
 
         controller.getRemoveBackgroundImageMenuItem().setOnAction(e -> undoManager.doAndAdd(new SetImageCommand(window.getStage(), controller.getContentPane(), null)));
         controller.getRemoveBackgroundImageMenuItem().disableProperty().bind(hasBackgroundImage.not());
@@ -403,6 +431,10 @@ public class MainWindowPresenter {
         controller.getAddDiNodesMenuItem().setOnAction(c -> undoManager.doAndAdd(SplitEdgeCommand.createAddDiNodesCommand(controller.getContentPane(), view, view.selectedOrAllEdges())));
         controller.getAddDiNodesMenuItem().disableProperty().bind(view.getEdgeSelection().emptyProperty());
 
+        controller.getInducedNetworkMenuItem().setOnAction(c -> undoManager.doAndAdd(new CompositeCommand("Induced Network", new InduceNetworkCommand(controller.getContentPane(), view),
+                new RemoveDiNodesCommand(controller.getContentPane(), view, List.of()))));
+        controller.getInducedNetworkMenuItem().disableProperty().bind(view.getNodeSelection().emptyProperty());
+
         controller.getStraightenEdgesMenuItem().setOnAction(c -> undoManager.doAndAdd(new ChangeEdgeShapeCommand(view, view.selectedOrAllEdges(), ChangeEdgeShapeCommand.EdgeShape.Straight)));
         controller.getStraightenEdgesMenuItem().disableProperty().bind(Bindings.isEmpty(view.getGraphFX().getEdgeList()));
 
@@ -482,9 +514,9 @@ public class MainWindowPresenter {
         controller.getSelectTreeNodesMenuItem().disableProperty().bind(view.getGraphFX().emptyProperty());
 
         controller.getSelectAllAboveMenuItem().setOnAction(c -> {
-            final Queue<Node> list = new LinkedList<>(nodeSelection.getSelectedItems());
+            var list = new LinkedList<>(nodeSelection.getSelectedItems());
 
-            while (list.size() > 0) {
+            while (!list.isEmpty()) {
                 Node v = list.remove();
                 for (Edge e : v.inEdges()) {
                     Node w = e.getSource();

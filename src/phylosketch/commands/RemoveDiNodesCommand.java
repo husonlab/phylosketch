@@ -20,11 +20,14 @@
 package phylosketch.commands;
 
 import javafx.scene.layout.Pane;
+import jloda.fx.control.RichTextLabel;
 import jloda.fx.undo.CompositeCommand;
 import jloda.graph.Node;
 import phylosketch.view.PhyloView;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.stream.Collectors;
 
 /**
@@ -36,30 +39,35 @@ public class RemoveDiNodesCommand extends CompositeCommand {
     public RemoveDiNodesCommand(Pane pane, PhyloView view, Collection<Node> nodes) {
         super("Remove Di Nodes");
 
-        final List<Node> diNodes = nodes.stream().filter(v -> v.getInDegree() == 1 && v.getOutDegree() == 1 && view.getGraph().getLabel(v) == null)
+		var diNodes = nodes.stream().filter(v -> v.getInDegree() == 1 && v.getOutDegree() == 1 && (view.getGraph().getLabel(v) == null || RichTextLabel.getRawText(view.getGraph().getLabel(v)).isBlank()))
                 .collect(Collectors.toList());
 
-        if (diNodes.size() > 0) {
+		if (!diNodes.isEmpty()) {
             add(new DeleteNodesEdgesCommand(pane, view, diNodes, Collections.emptyList()));
 
-            if (true) {
-                final Set<Node> set = new HashSet<>(diNodes);
-                for (Node v : diNodes) {
+			{
+				var set = new HashSet<>(diNodes);
+				for (var v : diNodes) {
                     if (set.contains(v)) {
-                        Node a = v;
+						var a = v;
                         while (set.contains(a)) {
                             if (a != v)
                                 set.remove(a);
                             a = a.getFirstInEdge().getOpposite(a);
                         }
-                        Node b = v;
+						var b = v;
+						var e = b.getFirstInEdge();
                         while (set.contains(b)) {
                             if (b != v)
                                 set.remove(b);
                             b = b.getFirstOutEdge().getOpposite(b);
+							e = b.getFirstInEdge();
                         }
-                        if (a != v && b != v && a != b)
-                            add(new CreateEdgeCommand(view, a, b));
+						if (a != v && b != v && a != b) {
+							var edgeView = view.getEdgeView(e);
+							add(new CreateEdgeCommand(view, a, b, edgeView.getArrowHead().isVisible(), edgeView.getCurve().getStrokeWidth(), edgeView.getCurve().getStroke()));
+							//add(new CreateEdgeCommand(view, a,b));
+						}
                     }
                 }
             }

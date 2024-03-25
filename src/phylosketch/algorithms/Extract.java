@@ -1,5 +1,5 @@
 /*
- * RunNormalize.java Copyright (C) 2023 Daniel H. Huson
+ * Extract.java Copyright (C) 2023 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -36,11 +36,13 @@ import phylosketch.window.MainWindow;
  * run the normalization algorithm
  * Daniel Huson, 1.2022
  */
-public class RunNormalize {
-	public static void apply(MainWindow mainWindow) {
+public enum Extract {
+	Normalization, LSA;
+
+	public static void apply(MainWindow mainWindow, Extract task) {
 		var newWindow = NewWindow.apply();
 
-		newWindow.getView().setFileName(FileUtils.replaceFileSuffix(mainWindow.getView().getFileName(), "-normalized.sptree5"));
+		newWindow.getView().setFileName(FileUtils.replaceFileSuffix(mainWindow.getView().getFileName(), "-" + task.name().toLowerCase() + ".sptree5"));
 
 		final AService<Pair<PhyloTree, NodeArray<Point2D>>> service = new AService<>(newWindow.getController().getStatusFlowPane());
 
@@ -48,12 +50,18 @@ public class RunNormalize {
 			var phyloTree = new PhyloTree();
 			var coordinates = new NodeArray<Point2D>(phyloTree);
 			var view = mainWindow.getView();
-			Normalize.apply(view.getGraph(), v -> new Point2D(view.getNodeView(v).getTranslateX(), view.getNodeView(v).getTranslateY()),
-					phyloTree, coordinates::put);
+			switch (task) {
+				case Normalization ->
+						Normalize.apply(view.getGraph(), v -> new Point2D(view.getNodeView(v).getTranslateX(), view.getNodeView(v).getTranslateY()),
+								phyloTree, coordinates::put);
+				case LSA ->
+						LSATree.apply(view.getGraph(), v -> new Point2D(view.getNodeView(v).getTranslateX(), view.getNodeView(v).getTranslateY()),
+								phyloTree, coordinates::put);
+			}
 			return new Pair<>(phyloTree, coordinates);
 		});
 
-		service.setOnFailed(c -> NotificationManager.showError("Normalization failed: " + service.getException()));
+		service.setOnFailed(c -> NotificationManager.showError("Run " + task + " failed: " + service.getException()));
 
 		service.setOnSucceeded(c -> {
 			var view = newWindow.getView();

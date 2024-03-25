@@ -69,6 +69,9 @@ public class MainWindowController {
     private MenuItem exportMenuItem;
 
     @FXML
+    private MenuItem exportPDFMenuItem;
+
+    @FXML
     private MenuItem printMenuItem;
 
     @FXML
@@ -219,6 +222,9 @@ public class MainWindowController {
 
     @FXML
     private MenuItem addDiNodesMenuItem;
+
+    @FXML
+    private MenuItem inducedNetworkMenuItem;
 
     @FXML
     private MenuItem straightenEdgesMenuItem;
@@ -400,6 +406,10 @@ public class MainWindowController {
     private MenuItem normalizationMenuItem;
 
     @FXML
+    private MenuItem lsaTreeMenuItem;
+
+
+    @FXML
     private Button undoButton;
 
     @FXML
@@ -492,6 +502,10 @@ public class MainWindowController {
 
     public MenuItem getExportMenuItem() {
         return exportMenuItem;
+    }
+
+    public MenuItem getExportPDFMenuItem() {
+        return exportPDFMenuItem;
     }
 
     public MenuItem getPrintMenuItem() {
@@ -794,6 +808,10 @@ public class MainWindowController {
         return addDiNodesMenuItem;
     }
 
+    public MenuItem getInducedNetworkMenuItem() {
+        return inducedNetworkMenuItem;
+    }
+
     public MenuItem getStraightenEdgesMenuItem() {
         return straightenEdgesMenuItem;
     }
@@ -881,6 +899,10 @@ public class MainWindowController {
 
     public MenuItem getNormalizationMenuItem() {
         return normalizationMenuItem;
+    }
+
+    public MenuItem getLsaTreeMenuItem() {
+        return lsaTreeMenuItem;
     }
 
     public MenuItem getRotateGraphClockwiseMenuItem() {

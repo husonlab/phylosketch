@@ -89,7 +89,7 @@ public class PhyloSketchIO {
             if (nodeView.getShape().getFill() != null)
 				nodeData.put("clr", nodeView.getShape().getFill().toString());
             final RichTextLabel label = nodeView.getLabel();
-            if (label.getText().length() > 0) {
+			if (!label.getText().isEmpty()) {
                 nodeData.put("text", label.getText());
                 nodeData.put("lx", String.format("%.2f", label.getLayoutX()));
                 nodeData.put("ly", String.format("%.2f", label.getLayoutY()));
@@ -235,7 +235,8 @@ public class PhyloSketchIO {
 		final var tree = new PhyloTree();
 		tree.read(reader);
 		final var graph = view.getGraph();
-		graph.copy(tree);
+		var map = graph.copy(tree);
+		map.close();
 		RootedNetworkEmbedder.apply(contentPane, view, RootedNetworkEmbedder.Orientation.leftRight);
 	}
 

@@ -389,13 +389,9 @@
                                         <SeparatorMenuItem mnemonicParsing="false"/>
                                         <MenuItem fx:id="importMenuItem" text="Import..."/>
                                         <MenuItem fx:id="exportMenuItem" text="Export..."/>
-                                        <SeparatorMenuItem mnemonicParsing="false"/>
-                                        <MenuItem fx:id="loadBackgroundImageMenuItem" text="Load Background Image...">
-                                            <accelerator>
-                                                <KeyCodeCombination alt="UP" code="O" control="UP" meta="UP"
-                                                                    shift="DOWN" shortcut="DOWN"/>
-                                            </accelerator>
-                                        </MenuItem>
+                                        <MenuItem fx:id="exportPDFMenuItem" text="Export PDF..."/>
+
+
                                         <SeparatorMenuItem mnemonicParsing="false"/>
                                         <MenuItem fx:id="printMenuItem" text="Print...">
                                             <accelerator>
@@ -473,7 +469,21 @@
                                             </accelerator>
                                         </MenuItem>
                                         <MenuItem fx:id="deleteLabelsMenuItem" text="Delete Labels"/>
-                                        <MenuItem fx:id="removeBackgroundImageMenuItem" text="Delete Background Image"/>
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="removeDiNodesMenuItem" text="Remove Di Nodes">
+                                            <accelerator>
+                                                <KeyCodeCombination alt="UP" code="D" control="UP" meta="UP" shift="UP"
+                                                                    shortcut="DOWN"/>
+                                            </accelerator>
+                                        </MenuItem>
+                                        <MenuItem fx:id="addDiNodesMenuItem" text="Add Di Nodes">
+                                            <accelerator>
+                                                <KeyCodeCombination alt="UP" code="D" control="UP" meta="UP"
+                                                                    shift="DOWN" shortcut="DOWN"/>
+                                            </accelerator>
+                                        </MenuItem>
+                                        <MenuItem fx:id="inducedNetworkMenuItem" text="Induced Network"/>
+
                                         <SeparatorMenuItem mnemonicParsing="false"/>
                                         <MenuItem fx:id="findMenuItem" text="Find...">
                                             <accelerator>
@@ -645,19 +655,6 @@
                                             </items>
                                         </Menu>
                                         <SeparatorMenuItem mnemonicParsing="false"/>
-                                        <MenuItem fx:id="removeDiNodesMenuItem" text="Remove Di Nodes">
-                                            <accelerator>
-                                                <KeyCodeCombination alt="UP" code="D" control="UP" meta="UP" shift="UP"
-                                                                    shortcut="DOWN"/>
-                                            </accelerator>
-                                        </MenuItem>
-                                        <MenuItem fx:id="addDiNodesMenuItem" text="Add Di Nodes">
-                                            <accelerator>
-                                                <KeyCodeCombination alt="UP" code="D" control="UP" meta="UP"
-                                                                    shift="DOWN" shortcut="DOWN"/>
-                                            </accelerator>
-                                        </MenuItem>
-                                        <SeparatorMenuItem mnemonicParsing="false"/>
                                         <MenuItem fx:id="straightenEdgesMenuItem" text="Straighten Edges">
                                             <accelerator>
                                                 <KeyCodeCombination alt="UP" code="E" control="UP" meta="UP" shift="UP"
@@ -675,12 +672,23 @@
                                 <Menu mnemonicParsing="false" text="Algorithms">
                                     <items>
                                         <MenuItem fx:id="normalizationMenuItem" text="Compute Normalization..."/>
+                                        <MenuItem fx:id="lsaTreeMenuItem" text="Compute LSA Tree..."/>
                                     </items>
                                 </Menu>
                                 <Menu mnemonicParsing="false" text="View">
                                     <items>
                                         <CheckMenuItem fx:id="useDarkThemeCheckMenuItem" mnemonicParsing="false"
                                                        text="Use Dark Theme"/>
+
+                                        <SeparatorMenuItem mnemonicParsing="false"/>
+                                        <MenuItem fx:id="loadBackgroundImageMenuItem" text="Load Background Image...">
+                                            <accelerator>
+                                                <KeyCodeCombination alt="UP" code="O" control="UP" meta="UP"
+                                                                    shift="DOWN" shortcut="DOWN"/>
+                                            </accelerator>
+                                        </MenuItem>
+                                        <MenuItem fx:id="removeBackgroundImageMenuItem" text="Delete Background Image"/>
+
                                         <SeparatorMenuItem mnemonicParsing="false"/>
                                         <MenuItem fx:id="increaseFontSizeMenuItem" text="Increase Font Size">
                                             <accelerator>

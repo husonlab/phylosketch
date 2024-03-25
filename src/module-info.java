@@ -1,5 +1,6 @@
 module phylosketch {
     requires transitive splitstreefive;
+	requires pdfbox.app;
 
     requires transitive javafx.controls;
     requires transitive javafx.graphics;

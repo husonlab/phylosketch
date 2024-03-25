@@ -19,6 +19,7 @@
 
 package phylosketch.commands;
 
+import javafx.scene.paint.Paint;
 import jloda.fx.undo.UndoableRedoableCommand;
 import jloda.graph.Edge;
 import jloda.graph.Node;
@@ -36,6 +37,10 @@ public class CreateEdgeCommand extends UndoableRedoableCommand {
     private int eId;
 
     public CreateEdgeCommand(PhyloView phyloView, Node v, Node w) {
+		this(phyloView, v, w, null, null, null);
+	}
+
+	public CreateEdgeCommand(PhyloView phyloView, Node v, Node w, Boolean arrowHeadVisible, Double strokeWidth, Paint stroke) {
         super("Create Edge");
         final PhyloTree graph = phyloView.getGraph();
 
@@ -59,7 +64,13 @@ public class CreateEdgeCommand extends UndoableRedoableCommand {
                 eId = e.getId();
             } else
                 e = graph.newEdge(vv, ww, null, eId);
-            phyloView.addEdge(e);
+			var edgeView = phyloView.addEdge(e);
+			if (arrowHeadVisible != null)
+				edgeView.getArrowHead().setVisible(arrowHeadVisible);
+			if (strokeWidth != null)
+				edgeView.getCurve().setStrokeWidth(strokeWidth);
+			if (stroke != null)
+				edgeView.getCurve().setStroke(stroke);
         };
     }
 
